@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5173
 
 # Start your React app
-CMD ["npm", "run", "dev"]
+CMD ["vite", "build"]
