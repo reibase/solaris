@@ -13,6 +13,11 @@ RUN npm install
 # Copy the rest of your application code to the working directory
 COPY . .
 
+RUN npm run client:build
+# server build needs to run after client build because the client build using Vite
+# removes the dist/ folder before compiling its code
+RUN npm run server:build
+
 # Expose a port to communicate with the React app
 EXPOSE 5173
 
