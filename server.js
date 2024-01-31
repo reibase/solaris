@@ -1,15 +1,68 @@
-import fs from "node:fs/promises";
 import express from "express";
 import passport from "passport";
 import session from "express-session";
 import GitHubStrategy from "passport-github2";
+import fs from "fs";
 import "dotenv/config";
+import { App, Octokit } from "octokit";
+import jwt from "jsonwebtoken";
 
 // Constants
 const isProduction = process.env.NODE_ENV === "production";
 const port = process.env.PORT || 5173;
 const base = process.env.BASE || "/";
 
+// GitHub App:
+const appId = Number(process.env.GITHUB_APP_ID);
+const privateKeyPath = process.env.GITHUB_APP_PRIVATE_KEY_PATH;
+const privateKey = fs.readFileSync(privateKeyPath, "utf8");
+const secret = process.env.GITHUB_WEBHOOK_SECRET;
+
+// Create an authenticated Octokit client authenticated as a GitHub App
+const gitHubApp = new App({
+	appId,
+	privateKey,
+	webhooks: {
+		secret,
+	},
+});
+
+const payload = {
+	// issued at time, 60 seconds in the past to allow for clock drift
+	iat: Math.floor(Date.now() / 1000) - 60,
+	// JWT expiration time (10 minute maximum)
+	exp: Math.floor(Date.now() / 1000) + 10 * 60,
+	iss: appId,
+};
+
+const jwtToken = jwt.sign(payload, privateKey, { algorithm: "RS256" });
+
+const { data } = await gitHubApp.octokit.request(
+	"/repos/reibase/demo-repository/installation",
+	{
+		headers: {
+			"X-GitHub-Api-Version": "2022-11-28",
+			Authorization: `Bearer ${jwtToken}`,
+		},
+	}
+);
+const installationId = data.id;
+
+const octokit = await gitHubApp.getInstallationOctokit(installationId);
+
+const gitHubRes = async () => {
+	const res = await octokit.request("GET /repos/jex441/demo/pulls", {
+		headers: {
+			"X-GitHub-Api-Version": "2022-11-28",
+			Authorization: `Bearer ${jwtToken}`,
+		},
+	});
+	console.log(res);
+};
+
+gitHubRes();
+
+// GitHub Oauth App:
 const GITHUB_CLIENT_ID =
 	process.env.NODE_ENV === "production"
 		? process.env.GITHUB_CLIENT_ID
@@ -127,6 +180,10 @@ function ensureAuthenticated(req, res, next) {
 	}
 	res.redirect("/login");
 }
+
+app.post("/api/webhooks/github", function (req, res) {
+	console.log(req.body);
+});
 
 // Serve HTML
 app.use("*", async (req, res, next) => {
