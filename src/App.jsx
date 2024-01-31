@@ -1,9 +1,14 @@
+import Login from './components/Login.jsx'
+import RequestAccess from './components/RequestAccess.jsx'
+import Profile from './components/Profile.jsx'
+
 function App() {
-	return (
-		<div className="text-3xl font-bold underline text-blue-800">
-			Hello world
-		</div>
-	);
+
+  return (
+      <>
+        <Profile/>
+      </>
+  )
 }
 
 export default App;
