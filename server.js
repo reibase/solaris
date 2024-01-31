@@ -22,7 +22,7 @@ const GITHUB_CLIENT_SECRET =
 const callbackURL =
 	process.env.NODE_ENV === "production"
 		? "https://turbosrc-reibase-auth.fly.dev/authenticated/"
-		: "http://localhost:5173/home";
+		: "http://localhost:5173/api/auth/github/callback";
 
 // Create http server
 const app = express();
@@ -64,10 +64,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get(
-	"/auth/github",
+	"/api/auth/github",
 	passport.authenticate("github", { scope: ["user:email"] }),
 	function (req, res) {
-		console.log("req", req);
 		// The request will be redirected to GitHub for authentication, so this
 		// function will not be called.
 	}
@@ -79,16 +78,20 @@ app.get(
 //   login page.  Otherwise, the primary route function will be called,
 //   which, in this example, will redirect the user to the home page.
 app.get(
-	"/auth/github/callback",
+	"/api/auth/github/callback",
 	passport.authenticate("github", { failureRedirect: "/login" }),
 	function (req, res) {
 		res.redirect("/");
 	}
 );
 
-app.get("/logout", function (req, res) {
-	req.logout();
-	res.redirect("/");
+app.get("/api/auth/logout", function (req, res) {
+	req.logout(function (err) {
+		if (err) {
+			return next(err);
+		}
+		res.redirect("/");
+	});
 });
 
 // Simple route middleware to ensure user is authenticated.
