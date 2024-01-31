@@ -1,5 +1,5 @@
 # Use an official Node.js runtime as a parent image
-FROM node:16
+FROM node:18-alpine
 
 # Set the working directory in the container
 WORKDIR /app
@@ -7,19 +7,17 @@ WORKDIR /app
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-# Install app dependencies
+# Install dependencies
 RUN npm install
 
 # Copy the rest of your application code to the working directory
 COPY . .
 
-RUN npm run build:client
-# server build needs to run after client build because the client build using Vite
-# removes the dist/ folder before compiling its code
-RUN npm run build:server
+# Build client
+RUN npm run build
 
 # Expose a port to communicate with the React app
-EXPOSE 5173
+EXPOSE 3000
 
-# Start your React app
-CMD ["npm", "run", "dev"]
+# Start server 
+CMD ["npm", "run", "preview"]
