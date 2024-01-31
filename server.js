@@ -1,4 +1,3 @@
-import fs from "node:fs/promises";
 import express from "express";
 import passport from "passport";
 import session from "express-session";
@@ -6,9 +5,7 @@ import GitHubStrategy from "passport-github2";
 import "dotenv/config";
 
 // Constants
-const isProduction = process.env.NODE_ENV === "production";
 const port = process.env.PORT || 3000;
-const base = process.env.BASE || "/";
 
 const GITHUB_CLIENT_ID =
 	process.env.NODE_ENV === "production"
@@ -19,10 +16,7 @@ const GITHUB_CLIENT_SECRET =
 		? process.env.GITHUB_CLIENT_SECRET
 		: process.env.GITHUB_CLIENT_SECRET_LOCAL;
 
-const callbackURL =
-	process.env.NODE_ENV === "production"
-		? "https://turbosrc-reibase-auth.fly.dev/authenticated/"
-		: "http://localhost:5173/api/auth/github/callback";
+const callbackURL = process.env.GITHUB_OAUTH_CALLBACK_URL;
 
 // Create http server
 const app = express();
