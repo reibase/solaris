@@ -1,0 +1,28 @@
+version: "3.7"
+
+services:
+  client:
+    image: solaris-client:latest
+    restart: always
+    depends_on:
+      - server
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+    build: 
+      context: .
+      dockerfile: src/client/Dockerfile
+    command: ["npm", "run", "preview"]
+
+  server:
+    image: solaris-server:latest
+    restart: always
+    ports:
+      - "3001:3001"
+    expose:
+      - "3001"
+    build: 
+      context: .
+      dockerfile: src/server/Dockerfile
+    command: ["npm", "start"]
