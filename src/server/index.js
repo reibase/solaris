@@ -20,6 +20,9 @@ const {
 // Create http server
 const app = express();
 
+// body parsing middleware
+app.use(express.json());
+
 passport.serializeUser(function (user, done) {
 	done(null, user);
 });
@@ -100,6 +103,8 @@ app.get("/api/auth/logout", function (req, res) {
 
 // Route for when user clicks submit access code:
 app.post("/api/auth/access-code", function (req, res) {
+	console.log("REQ BODY:", req.body);
+
 	const accessCodes = [
 		process.env.ACCESS_CODE_1,
 		process.env.ACCESS_CODE_2,
@@ -108,9 +113,9 @@ app.post("/api/auth/access-code", function (req, res) {
 		process.env.ACCESS_CODE_5,
 	];
 	if (accessCodes.includes(req.body.code)) {
-		res.status(200);
+		return res.send({ status: 200 });
 	} else {
-		res.status(401);
+		return res.send({ status: 401 });
 	}
 });
 
