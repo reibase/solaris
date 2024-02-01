@@ -2,21 +2,20 @@ import express from "express";
 import passport from "passport";
 import session from "express-session";
 import GitHubStrategy from "passport-github2";
+import path from "path";
 import "dotenv/config";
+
+import db from "../db/index.js";
+import { User } from "../db/models/index.js";
 
 // Constants
 const port = process.env.PORT || 3001;
 
-const GITHUB_CLIENT_ID =
-	process.env.NODE_ENV === "production"
-		? process.env.GITHUB_CLIENT_ID
-		: process.env.GITHUB_CLIENT_ID_LOCAL;
-const GITHUB_CLIENT_SECRET =
-	process.env.NODE_ENV === "production"
-		? process.env.GITHUB_CLIENT_SECRET
-		: process.env.GITHUB_CLIENT_SECRET_LOCAL;
-
-const callbackURL = process.env.GITHUB_OAUTH_CALLBACK_URL;
+const {
+	GITHUB_OAUTH_APP_CLIENT_ID,
+	GITHUB_OAUTH_APP_CALLBACK_URL,
+	GITHUB_OAUTH_APP_CLIENT_SECRET,
+} = process.env;
 
 // Create http server
 const app = express();
@@ -32,18 +31,23 @@ passport.deserializeUser(function (obj, done) {
 passport.use(
 	new GitHubStrategy(
 		{
-			clientID: GITHUB_CLIENT_ID,
-			clientSecret: GITHUB_CLIENT_SECRET,
-			callbackURL: callbackURL,
+			clientID: GITHUB_OAUTH_APP_CLIENT_ID,
+			clientSecret: GITHUB_OAUTH_APP_CLIENT_SECRET,
+			callbackURL: GITHUB_OAUTH_APP_CALLBACK_URL,
 		},
 		function (accessToken, refreshToken, profile, done) {
-			// asynchronous verification, for effect...
-			process.nextTick(function () {
-				// To keep the example simple, the user's GitHub profile is returned to
-				// represent the logged-in user.  In a typical application, you would want
-				// to associate the GitHub account with a user record in your database,
-				// and return that user instead.
-				return done(null, profile);
+			process.nextTick(async function () {
+				const [user, created] = await User.findOrCreate({
+					where: { gitHubID: profile._json.id },
+					defaults: {
+						username: profile._json.login,
+						gitHubID: profile._json.id,
+						avatar: profile._json.avatar_url,
+						verifiedThru: "github",
+					},
+				});
+
+				return done(null, user);
 			});
 		}
 	)
@@ -75,6 +79,7 @@ app.get(
 //   request.  If authentication fails, the user will be redirected back to the
 //   login page.  Otherwise, the primary route function will be called,
 //   which, in this example, will redirect the user to the home page.
+
 app.get(
 	"/api/auth/github/callback",
 	passport.authenticate("github", { failureRedirect: "/login" }),
@@ -92,6 +97,26 @@ app.get("/api/auth/logout", function (req, res) {
 	});
 });
 
+app.get("/account", function (req, res) {
+	console.log(req.user);
+	res.send(req.user);
+});
+
+app.post("/access-code", function (req, res) {
+	const accessCodes = [
+		process.env.ACCESS_CODE_1,
+		process.env.ACCESS_CODE_2,
+		process.env.ACCESS_CODE_3,
+		process.env.ACCESS_CODE_4,
+		process.env.ACCESS_CODE_5,
+	];
+	if (accessCodes.includes(req.body.code)) {
+		res.status(200);
+	} else {
+		res.status(401);
+	}
+});
+
 // Simple route middleware to ensure user is authenticated.
 //   Use this route middleware on any resource that needs to be protected.  If
 //   the request is authenticated (typically via a persistent login session),
@@ -103,6 +128,32 @@ function ensureAuthenticated(req, res, next) {
 	}
 	res.redirect("/login");
 }
+
+const __dirname = path.resolve();
+
+app.use("/", express.static(__dirname + "/dist"));
+
+app.use("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "/dist/index.html"));
+});
+
+// Connect to database
+const syncDB = async () => {
+	await db.sync({ force: true });
+	console.log("All models were synchronized successfully.");
+};
+
+const authenticateDB = async () => {
+	try {
+		await db.authenticate();
+		console.log("Connection has been established successfully.");
+	} catch (error) {
+		console.error("Unable to connect to the database:", error);
+	}
+};
+
+syncDB();
+authenticateDB();
 
 // Start http server
 app.listen(port, () => {

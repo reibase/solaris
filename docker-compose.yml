@@ -1,0 +1,47 @@
+version: "3.7"
+
+services:
+  client:
+    image: solaris-client:latest
+    restart: always
+    depends_on:
+      - server
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+    build: 
+      context: .
+      dockerfile: src/client/Dockerfile
+    environment:
+      NODE_ENV: preview
+    command: ["npm", "run", "preview"]
+
+  server:
+    image: solaris-server:latest
+    restart: always
+    ports:
+      - "3001:3001"
+    expose:
+      - "3001"
+    build: 
+      context: .
+      dockerfile: src/server/Dockerfile
+    environment:
+      DB_URL: postgresql://user:password@db:5432/solaris
+    command: ["npm", "start"]
+
+  db:
+    image: postgres:13.7-bullseye
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: solaris
+    volumes:
+      - db-data:/db-data/
+
+volumes:
+  db-data:
