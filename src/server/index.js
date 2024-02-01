@@ -11,11 +11,11 @@ import { User } from "../db/models/index.js";
 // Constants
 const port = process.env.PORT || 3001;
 
-const GITHUB_OAUTH_APP_CLIENT_ID = process.env.GITHUB_OAUTH_APP_CLIENT_ID;
-const GITHUB_OAUTH_APP_CLIENT_SECRET =
-	process.env.GITHUB_OAUTH_APP_CLIENT_SECRET;
-
-const callbackURL = process.env.GITHUB_OAUTH_APP_CALLBACK_URL;
+const {
+	GITHUB_OAUTH_APP_CLIENT_ID,
+	GITHUB_OAUTH_APP_CALLBACK_URL,
+	GITHUB_OAUTH_APP_CLIENT_SECRET,
+} = process.env;
 
 // Create http server
 const app = express();
@@ -33,7 +33,7 @@ passport.use(
 		{
 			clientID: GITHUB_OAUTH_APP_CLIENT_ID,
 			clientSecret: GITHUB_OAUTH_APP_CLIENT_SECRET,
-			callbackURL: callbackURL,
+			callbackURL: GITHUB_OAUTH_APP_CALLBACK_URL,
 		},
 		function (accessToken, refreshToken, profile, done) {
 			process.nextTick(async function () {
