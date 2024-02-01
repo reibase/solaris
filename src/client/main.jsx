@@ -6,6 +6,7 @@ import Login from './components/Login.jsx'
 import Profile from './components/Profile.jsx'
 import AccessCode from './components/AccessCode.jsx'
 import RequestAccess from './components/RequestAccess.jsx'
+import Thanks from './components/Thanks.jsx'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 const router = createBrowserRouter([
@@ -13,7 +14,8 @@ const router = createBrowserRouter([
   { path: "/profile", element: <Profile/> },
   { path: "/requestaccess", element: <RequestAccess/> },
   { path: "/login", element: <Login/> },
-  { path: "/access", element: <AccessCode/> }  
+  { path: "/access", element: <AccessCode/> },
+  { path: "/thanks", element: <Thanks/> }  
 
 ]);
 

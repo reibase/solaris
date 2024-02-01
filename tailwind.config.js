@@ -5,6 +5,10 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+    fontFamily: {
+      inter: ['Inter'],
+      rubik: ['Rubik Glitch Pop']
+    },
     extend: {},
   },
   plugins: [],
