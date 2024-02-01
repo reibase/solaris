@@ -3,7 +3,7 @@ import passport from "passport";
 import session from "express-session";
 import GitHubStrategy from "passport-github2";
 import "dotenv/config";
-
+import path from "path";
 // Constants
 const port = process.env.PORT || 3001;
 
@@ -103,6 +103,14 @@ function ensureAuthenticated(req, res, next) {
 	}
 	res.redirect("/login");
 }
+
+const __dirname = path.resolve();
+
+app.use("/", express.static(__dirname + "/dist"));
+
+app.use("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "/dist/index.html"));
+});
 
 // Start http server
 app.listen(port, () => {
