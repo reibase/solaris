@@ -15,6 +15,7 @@ services:
       dockerfile: src/client/Dockerfile
     environment:
       NODE_ENV: preview
+    command: ["npm", "run", "preview"]
 
   server:
     image: solaris-server:latest
@@ -27,14 +28,14 @@ services:
       context: .
       dockerfile: src/server/Dockerfile
     environment:
-      DATABASE_URL: postgresql://user:password@db:5432/solaris
+      DB_URL: postgresql://user:password@db:5432/solaris
     command: ["npm", "start"]
 
   db:
     image: postgres:13.7-bullseye
     restart: always
     ports:
-      - 5435:5432
+      - 5432:5432
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
