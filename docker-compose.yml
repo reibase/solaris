@@ -25,4 +25,21 @@ services:
     build: 
       context: .
       dockerfile: src/server/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/solaris
     command: ["npm", "start"]
+
+  db:
+    image: postgres:13.7-bullseye
+    restart: always
+    ports:
+      - 5435:5432
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: solaris
+    volumes:
+      - db-data:/db-data/
+
+volumes:
+  db-data:
