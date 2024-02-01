@@ -80,6 +80,7 @@ app.get(
 //   login page.  Otherwise, the primary route function will be called,
 //   which, in this example, will redirect the user to the home page.
 
+// Route for when user clicks Login with Github:
 app.get(
 	"/api/auth/github/callback",
 	passport.authenticate("github", { failureRedirect: "/login" }),
@@ -97,12 +98,8 @@ app.get("/api/auth/logout", function (req, res) {
 	});
 });
 
-app.get("/account", function (req, res) {
-	console.log(req.user);
-	res.send(req.user);
-});
-
-app.post("/access-code", function (req, res) {
+// Route for when user clicks submit access code:
+app.post("/api/auth/access-code", function (req, res) {
 	const accessCodes = [
 		process.env.ACCESS_CODE_1,
 		process.env.ACCESS_CODE_2,
