@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import "dotenv/config";
-console.log(process.env.NODE_ENV)
+
 // https://vitejs.dev/config/
 export default defineConfig({
 	base: "/",
