@@ -7,8 +7,8 @@ const Login = () => {
     return(
         <>  
             <Nav />
-            <div className="mx-auto bg-white shadow-lg rounded-lg flex flex-col items-center py-[50px] w-5/6">
- 
+            <div className="mx-auto bg-white shadow-lg rounded-lg flex flex-col items-center py-[50px] w-5/6 md:w-2/3 lg:w-1/2">
+
                 <h1 className="font-inter mb-[70px] text-3xl font-bold underline text-center">
                     Solaris Logo
                 </h1>
