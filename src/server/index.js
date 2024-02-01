@@ -5,8 +5,8 @@ import GitHubStrategy from "passport-github2";
 import path from "path";
 import "dotenv/config";
 
-import db from "./src/db/index.js";
-import { User } from "./src/db/models/index.js";
+import db from "../db/index.js";
+import { User } from "../db/models/index.js";
 
 // Constants
 const port = process.env.PORT || 3001;
