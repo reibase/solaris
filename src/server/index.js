@@ -11,16 +11,11 @@ import { User } from "../db/models/index.js";
 // Constants
 const port = process.env.PORT || 3001;
 
-const GITHUB_CLIENT_ID =
-	process.env.NODE_ENV === "production"
-		? process.env.GITHUB_CLIENT_ID
-		: process.env.GITHUB_CLIENT_ID_LOCAL;
-const GITHUB_CLIENT_SECRET =
-	process.env.NODE_ENV === "production"
-		? process.env.GITHUB_CLIENT_SECRET
-		: process.env.GITHUB_CLIENT_SECRET_LOCAL;
+const GITHUB_OAUTH_APP_CLIENT_ID = process.env.GITHUB_OAUTH_APP_CLIENT_ID;
+const GITHUB_OAUTH_APP_CLIENT_SECRET =
+	process.env.GITHUB_OAUTH_APP_CLIENT_SECRET;
 
-const callbackURL = process.env.GITHUB_OAUTH_CALLBACK_URL;
+const callbackURL = process.env.GITHUB_OAUTH_APP_CALLBACK_URL;
 
 // Create http server
 const app = express();
@@ -36,8 +31,8 @@ passport.deserializeUser(function (obj, done) {
 passport.use(
 	new GitHubStrategy(
 		{
-			clientID: GITHUB_CLIENT_ID,
-			clientSecret: GITHUB_CLIENT_SECRET,
+			clientID: GITHUB_OAUTH_APP_CLIENT_ID,
+			clientSecret: GITHUB_OAUTH_APP_CLIENT_SECRET,
 			callbackURL: callbackURL,
 		},
 		function (accessToken, refreshToken, profile, done) {
