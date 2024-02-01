@@ -16,11 +16,11 @@ const Profile = () => {
                 </h1>
                 <div class="flex flex-col gap-[20px]">
                     <Link to="/">
-                        <button className='flex font-bold max-w-[300px] rounded-md border-2 border-gray-500' >
+                        <button className='flex font-bold w-[300px] rounded-md border-2 border-gray-500' >
                             <span className='font-inter mx-auto text-gray-500'>Log out</span>
                         </button>
                     </Link>
-                    <button className='flex font-bold max-w-[300px] rounded-md border-2 border-red-500' >
+                    <button className='flex font-bold w-[300px] rounded-md border-2 border-red-500' >
                         <span className='font-inter mx-auto text-red-500'>Delete Account</span>
                     </button>
                 </div>
