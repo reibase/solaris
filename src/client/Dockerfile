@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Expose a port to communicate with the React app
-EXPOSE 3001
+EXPOSE 3000
 
 # Start server 
-CMD ["npm", "start"]
+CMD ["npm", "run", "preview"]
