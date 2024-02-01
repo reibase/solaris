@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-
+import "dotenv/config";
+console.log(process.env.NODE_ENV)
 // https://vitejs.dev/config/
 export default defineConfig({
 	base: "/",
@@ -13,7 +14,10 @@ export default defineConfig({
 	server: {
 		proxy: {
 			"/api": {
-				target: "http://solaris-server-1:3001",
+				target:
+					process.env.NODE_ENV === "preview"
+						? "http://solaris-server-1:3001"
+						: "http://localhost:3001",
 				changeOrigin: true,
 				secure: false,
 				ws: true,
