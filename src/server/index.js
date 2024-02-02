@@ -32,6 +32,9 @@ const {
 // Create http server
 const app = express();
 
+
+// body parsing middleware
+app.use(express.json());
 app.use("/", express.static(__dirname + "/dist"));
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -43,6 +46,7 @@ app.use(
 // persistent login sessions (recommended).
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 passport.serializeUser(function (user, done) {
 	done(null, user);
@@ -148,6 +152,7 @@ app.get("/api/auth/gitlab", passport.authenticate("gitlab"));
 //   login page.  Otherwise, the primary route function will be called,
 //   which, in this example, will redirect the user to the home page.
 
+// Route for when user clicks Login with Github:
 app.get(
 	"/api/auth/github/callback",
 	passport.authenticate("github", { failureRedirect: "/login" }),
@@ -194,11 +199,8 @@ app.get("/api/auth/me", function (req, res) {
 	return res.send(req.user);
 });
 
-app.get("/account", function (req, res) {
-	res.send(req.user);
-});
-
-app.post("/access-code", function (req, res) {
+// Route for when user clicks submit access code:
+app.post("/api/auth/access-code", function (req, res) {
 	const accessCodes = [
 		process.env.ACCESS_CODE_1,
 		process.env.ACCESS_CODE_2,
@@ -207,9 +209,9 @@ app.post("/access-code", function (req, res) {
 		process.env.ACCESS_CODE_5,
 	];
 	if (accessCodes.includes(req.body.code)) {
-		res.status(200);
+		return res.send({ status: 200 });
 	} else {
-		res.status(401);
+		return res.send({ status: 401 });
 	}
 });
 
@@ -244,8 +246,8 @@ const authenticateDB = async () => {
 	}
 };
 
-syncDB();
-authenticateDB();
+//syncDB();
+//authenticateDB();
 
 // Start http server
 app.listen(port, () => {
