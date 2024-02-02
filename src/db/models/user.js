@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes } from "sequelize";
-import db from '../index.js'
+import db from "../index.js";
 
 const User = db.define("User", {
 	firstName: {
@@ -23,6 +23,10 @@ const User = db.define("User", {
 		type: DataTypes.BIGINT,
 		unique: true,
 	},
+	googleID: {
+		type: DataTypes.STRING,
+		unique: true,
+	},
 	gitLabID: {
 		type: DataTypes.STRING,
 		unique: true,
@@ -32,4 +36,4 @@ const User = db.define("User", {
 	},
 });
 
-export default User
+export default User;
