@@ -188,6 +188,9 @@ app.get("/api/auth/logout", function (req, res) {
 });
 
 app.get("/api/auth/me", function (req, res) {
+	if (!req.user) {
+		return res.sendStatus(404);
+	}
 	return res.send(req.user);
 });
 
