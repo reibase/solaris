@@ -3,6 +3,9 @@ import passport from "passport";
 import session from "express-session";
 import GitHubStrategy from "passport-github2";
 import GoogleStrategy from "passport-google-oauth20";
+import GitLabStrategy from "passport-gitlab2";
+import cookieParser from "cookie-parser";
+import bodyParser from "body-parser";
 
 import path from "path";
 import "dotenv/config";
@@ -12,6 +15,7 @@ import { User } from "../db/models/index.js";
 
 // Constants
 const port = process.env.PORT || 3001;
+const __dirname = path.resolve();
 
 const {
 	GITHUB_OAUTH_APP_CLIENT_ID,
@@ -20,10 +24,25 @@ const {
 	GOOGLE_OAUTH_APP_CLIENT_ID,
 	GOOGLE_OAUTH_APP_CALLBACK_URL,
 	GOOGLE_OAUTH_APP_CLIENT_SECRET,
+	GITLAB_OAUTH_APP_CLIENT_ID,
+	GITLAB_OAUTH_APP_CALLBACK_URL,
+	GITLAB_OAUTH_APP_CLIENT_SECRET,
 } = process.env;
 
 // Create http server
 const app = express();
+
+app.use("/", express.static(__dirname + "/dist"));
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+	session({ secret: "keyboard cat", resave: false, saveUninitialized: false })
+);
+// Initialize Passport!  Also use passport.session() middleware, to support
+// persistent login sessions (recommended).
+app.use(passport.initialize());
+app.use(passport.session());
 
 passport.serializeUser(function (user, done) {
 	done(null, user);
@@ -84,13 +103,31 @@ passport.use(
 	)
 );
 
-app.use(
-	session({ secret: "keyboard cat", resave: false, saveUninitialized: false })
+passport.use(
+	new GitLabStrategy(
+		{
+			clientID: GITLAB_OAUTH_APP_CLIENT_ID,
+			clientSecret: GITLAB_OAUTH_APP_CLIENT_SECRET,
+			callbackURL: GITLAB_OAUTH_APP_CALLBACK_URL,
+		},
+		function (accessToken, refreshToken, profile, done) {
+			process.nextTick(async function () {
+				const [user, created] = await User.findOrCreate({
+					where: { gitLabID: profile.id },
+					defaults: {
+						username: profile.username,
+						email: profile.emails[0].value,
+						gitLabID: profile.id,
+						avatar: profile.avatarUrl,
+						verifiedThru: "gitlab",
+					},
+				});
+
+				return done(null, user);
+			});
+		}
+	)
 );
-// Initialize Passport!  Also use passport.session() middleware, to support
-// persistent login sessions (recommended).
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.get("/api/test", function (req, res) {
 	return res.send(200);
@@ -98,14 +135,12 @@ app.get("/api/test", function (req, res) {
 
 app.get(
 	"/api/auth/github",
-	passport.authenticate("github", { scope: ["user:email"] }),
-	function (req, res) {
-		// The request will be redirected to GitHub for authentication, so this
-		// function will not be called.
-	}
+	passport.authenticate("github", { scope: ["user:email"] })
 );
 
 app.get("/api/auth/google", passport.authenticate("google"));
+
+app.get("/api/auth/gitlab", passport.authenticate("gitlab"));
 
 // GET /auth/github/callback
 //   Use passport.authenticate() as route middleware to authenticate the
@@ -132,6 +167,17 @@ app.get(
 	}
 );
 
+app.get(
+	"/api/auth/gitlab/callback",
+	passport.authenticate("gitlab", {
+		failureRedirect: "/login",
+	}),
+	function (req, res) {
+		// Successful authentication, redirect home.
+		res.redirect("/");
+	}
+);
+
 app.get("/api/auth/logout", function (req, res) {
 	req.logout(function (err) {
 		if (err) {
@@ -141,8 +187,11 @@ app.get("/api/auth/logout", function (req, res) {
 	});
 });
 
+app.get("/api/auth/me", function (req, res) {
+	return res.send(req.user);
+});
+
 app.get("/account", function (req, res) {
-	console.log(req.user);
 	res.send(req.user);
 });
 
@@ -172,10 +221,6 @@ function ensureAuthenticated(req, res, next) {
 	}
 	res.redirect("/login");
 }
-
-const __dirname = path.resolve();
-
-app.use("/", express.static(__dirname + "/dist"));
 
 app.use("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "/dist/index.html"));
