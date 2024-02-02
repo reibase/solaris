@@ -6,6 +6,7 @@ import GoogleStrategy from "passport-google-oauth20";
 import GitLabStrategy from "passport-gitlab2";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
+import { Octokit } from "octokit";
 
 import path from "path";
 import "dotenv/config";
@@ -61,9 +62,20 @@ passport.use(
 		},
 		function (accessToken, refreshToken, profile, done) {
 			process.nextTick(async function () {
+				const octokit = new Octokit({ auth: accessToken });
+				const { data } = await octokit.request(`GET /user/emails`);
+				let email = "";
+				for (let i = 0; i < data.length; i++) {
+					if (data[i].primary) {
+						email = data[i].email;
+						break;
+					}
+				}
+
 				const [user, created] = await User.findOrCreate({
 					where: { gitHubID: profile._json.id },
 					defaults: {
+						email: email,
 						username: profile._json.login,
 						gitHubID: profile._json.id,
 						avatar: profile._json.avatar_url,
