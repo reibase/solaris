@@ -4,23 +4,20 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
-// task at hand: query POST /api/auth/access-code
-// with a request body which has a 'code' field with the code supplied in the input
-
-// if res.status === 200 -> then navigate('/login') state.update('access = true')
-// if res.status === 401 -> then display text which says 'The access code you have entered is invalid.'
-
 const AccessCode = () => {
   const [clicked, setClicked] = useState(false);
-  const [codeAccepted, setcodeAccepted] = useState(false);
+  const [codeAccepted, setCodeAccepted] = useState(false);
+  const [code, setCode] = useState("");
   const navigate = useNavigate();
 
   const access = async () => {
-    const code = document.getElementById("code").value;
+    if (code.length < 5) {
+      throw new Error("Invalid access code");
+    }
     try {
       const res = await axios.post("/api/auth/access-code", { code });
       setClicked(false);
-      setcodeAccepted(true);
+      setCodeAccepted(true);
       return res.data;
     } catch (error) {
       setClicked(false);
@@ -28,16 +25,19 @@ const AccessCode = () => {
     }
   };
 
-  const { data } = useQuery({
+  const changeHandler = (e) => {
+    setCode(e.target.value);
+  };
+
+  const { data, error } = useQuery({
     queryKey: ["confirmed"],
     queryFn: access,
     enabled: clicked,
   });
 
   if (data && data.status === 200 && codeAccepted) {
-    console.log(data, "checking");
-    setcodeAccepted(false);
-    navigate("/profile");
+    setCodeAccepted(false);
+    navigate("/login");
   }
 
   return (
@@ -54,7 +54,7 @@ const AccessCode = () => {
           Please enter your access code to continue.
         </p>
         <div className="flex gap-[20px]">
-          <div className="w-[300px]">
+          <div className="w-[300px] flex flex-col">
             <label
               for="code"
               className="font-inter text-sm font-light text-gray-900"
@@ -62,12 +62,22 @@ const AccessCode = () => {
             <input
               type="text"
               id="code"
-              className="font-light px-[5px] py-[5px] rounded-md border border-black focus:ring-blue-500 focus:border-blue-500 block w-full border border-black"
+              className={`font-light block w-full px-[5px] py-[5px] rounded-md border ${
+                error
+                  ? "border-red-500 text-red-500 focus:border-red-500"
+                  : "border-black focus:border-blue-500"
+              } `}
               placeholder="Access Code"
+              onChange={(e) => changeHandler(e)}
             />
+            {error ? (
+              <p className="text-red-500">
+                The access code you have entered is invalid.
+              </p>
+            ) : null}
           </div>
           <button
-            className="font-inter mx-auto bg-[#313131] w-[175px] px-[25px] text-white rounded-md py-[5px]"
+            className="font-inter mx-auto bg-[#313131] h-[36px] w-[175px] px-[25px] text-white rounded-md py-[5px]"
             onClick={() => setClicked(true)}
           >
             Continue
