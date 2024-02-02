@@ -17,12 +17,13 @@
     "express-session": "^1.18.0",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
+    "passport-google-oauth20": "^2.0.0",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "sequelize": "^6.35.2",
-    "react-router-dom": "^6.10.0"
+    "react-router-dom": "^6.10.0",
+    "sequelize": "^6.35.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

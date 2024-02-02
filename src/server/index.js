@@ -2,6 +2,8 @@ import express from "express";
 import passport from "passport";
 import session from "express-session";
 import GitHubStrategy from "passport-github2";
+import GoogleStrategy from "passport-google-oauth20";
+
 import path from "path";
 import "dotenv/config";
 
@@ -15,6 +17,9 @@ const {
 	GITHUB_OAUTH_APP_CLIENT_ID,
 	GITHUB_OAUTH_APP_CALLBACK_URL,
 	GITHUB_OAUTH_APP_CLIENT_SECRET,
+	GOOGLE_OAUTH_APP_CLIENT_ID,
+	GOOGLE_OAUTH_APP_CALLBACK_URL,
+	GOOGLE_OAUTH_APP_CLIENT_SECRET,
 } = process.env;
 
 // Create http server
@@ -53,6 +58,32 @@ passport.use(
 	)
 );
 
+passport.use(
+	new GoogleStrategy(
+		{
+			clientID: GOOGLE_OAUTH_APP_CLIENT_ID,
+			clientSecret: GOOGLE_OAUTH_APP_CLIENT_SECRET,
+			callbackURL: GOOGLE_OAUTH_APP_CALLBACK_URL,
+			scope: ["profile"],
+			state: true,
+		},
+		async function (accessToken, refreshToken, profile, cb) {
+			const [user, created] = await User.findOrCreate({
+				where: { googleID: profile.id },
+				defaults: {
+					firstName: profile._json.given_name,
+					lastName: profile._json.family_name,
+					username: profile._json.name,
+					googleID: profile.id,
+					avatar: profile._json.picture,
+					verifiedThru: "google",
+				},
+			});
+			return cb(null, user);
+		}
+	)
+);
+
 app.use(
 	session({ secret: "keyboard cat", resave: false, saveUninitialized: false })
 );
@@ -74,6 +105,8 @@ app.get(
 	}
 );
 
+app.get("/api/auth/google", passport.authenticate("google"));
+
 // GET /auth/github/callback
 //   Use passport.authenticate() as route middleware to authenticate the
 //   request.  If authentication fails, the user will be redirected back to the
@@ -83,6 +116,17 @@ app.get(
 app.get(
 	"/api/auth/github/callback",
 	passport.authenticate("github", { failureRedirect: "/login" }),
+	function (req, res) {
+		res.redirect("/");
+	}
+);
+
+app.get(
+	"/api/auth/google/callback",
+	passport.authenticate("google", {
+		failureRedirect: "/login",
+		failureMessage: true,
+	}),
 	function (req, res) {
 		res.redirect("/");
 	}
