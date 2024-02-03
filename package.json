@@ -11,6 +11,7 @@
     "start-server": "concurrently \"npm run preview\" \"npm start\""
   },
   "dependencies": {
+    "@tanstack/react-query": "4.28",
     "axios": "^1.6.7",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
