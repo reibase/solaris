@@ -33,7 +33,6 @@ const {
 // Create http server
 const app = express();
 
-
 // body parsing middleware
 app.use(express.json());
 app.use("/", express.static(__dirname + "/dist"));
@@ -47,7 +46,6 @@ app.use(
 // persistent login sessions (recommended).
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 passport.serializeUser(function (user, done) {
 	done(null, user);
@@ -77,7 +75,7 @@ passport.use(
 				}
 
 				const [user, created] = await User.findOrCreate({
-					where: { gitHubID: profile._json.id },
+					where: { email: email },
 					defaults: {
 						email: email,
 						username: profile._json.login,
@@ -106,7 +104,7 @@ passport.use(
 			const email = profile.emails[0].value;
 			const username = email.split("@")[0];
 			const [user, created] = await User.findOrCreate({
-				where: { googleID: profile.id },
+				where: { email: email },
 				defaults: {
 					username: username,
 					email: profile.emails[0].value,
@@ -129,8 +127,9 @@ passport.use(
 		},
 		function (accessToken, refreshToken, profile, done) {
 			process.nextTick(async function () {
+				const email = profile.emails[0].value;
 				const [user, created] = await User.findOrCreate({
-					where: { gitLabID: profile.id },
+					where: { email: email },
 					defaults: {
 						username: profile.username,
 						email: profile.emails[0].value,
