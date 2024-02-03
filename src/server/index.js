@@ -95,18 +95,19 @@ passport.use(
 			clientID: GOOGLE_OAUTH_APP_CLIENT_ID,
 			clientSecret: GOOGLE_OAUTH_APP_CLIENT_SECRET,
 			callbackURL: GOOGLE_OAUTH_APP_CALLBACK_URL,
-			scope: ["profile"],
+			scope: ["https://www.googleapis.com/auth/userinfo.email"],
 			state: true,
 		},
 		async function (accessToken, refreshToken, profile, cb) {
+			const email = profile.emails[0].value;
+			const username = email.split("@")[0];
 			const [user, created] = await User.findOrCreate({
 				where: { googleID: profile.id },
 				defaults: {
-					firstName: profile._json.given_name,
-					lastName: profile._json.family_name,
-					username: profile._json.name,
+					username: username,
+					email: profile.emails[0].value,
 					googleID: profile.id,
-					avatar: profile._json.picture,
+					avatar: profile.photos[0].value,
 					verifiedThru: "google",
 				},
 			});
