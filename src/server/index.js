@@ -6,6 +6,7 @@ import GoogleStrategy from "passport-google-oauth20";
 import GitLabStrategy from "passport-gitlab2";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
+import { Octokit } from "octokit";
 
 import path from "path";
 import "dotenv/config";
@@ -32,7 +33,6 @@ const {
 // Create http server
 const app = express();
 
-
 // body parsing middleware
 app.use(express.json());
 app.use("/", express.static(__dirname + "/dist"));
@@ -46,7 +46,6 @@ app.use(
 // persistent login sessions (recommended).
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 passport.serializeUser(function (user, done) {
 	done(null, user);
@@ -65,9 +64,20 @@ passport.use(
 		},
 		function (accessToken, refreshToken, profile, done) {
 			process.nextTick(async function () {
+				const octokit = new Octokit({ auth: accessToken });
+				const { data } = await octokit.request(`GET /user/emails`);
+				let email = "";
+				for (let i = 0; i < data.length; i++) {
+					if (data[i].primary) {
+						email = data[i].email;
+						break;
+					}
+				}
+
 				const [user, created] = await User.findOrCreate({
-					where: { gitHubID: profile._json.id },
+					where: { email: email },
 					defaults: {
+						email: email,
 						username: profile._json.login,
 						gitHubID: profile._json.id,
 						avatar: profile._json.avatar_url,
@@ -87,18 +97,19 @@ passport.use(
 			clientID: GOOGLE_OAUTH_APP_CLIENT_ID,
 			clientSecret: GOOGLE_OAUTH_APP_CLIENT_SECRET,
 			callbackURL: GOOGLE_OAUTH_APP_CALLBACK_URL,
-			scope: ["profile"],
+			scope: ["https://www.googleapis.com/auth/userinfo.email"],
 			state: true,
 		},
 		async function (accessToken, refreshToken, profile, cb) {
+			const email = profile.emails[0].value;
+			const username = email.split("@")[0];
 			const [user, created] = await User.findOrCreate({
-				where: { googleID: profile.id },
+				where: { email: email },
 				defaults: {
-					firstName: profile._json.given_name,
-					lastName: profile._json.family_name,
-					username: profile._json.name,
+					username: username,
+					email: profile.emails[0].value,
 					googleID: profile.id,
-					avatar: profile._json.picture,
+					avatar: profile.photos[0].value,
 					verifiedThru: "google",
 				},
 			});
@@ -116,8 +127,9 @@ passport.use(
 		},
 		function (accessToken, refreshToken, profile, done) {
 			process.nextTick(async function () {
+				const email = profile.emails[0].value;
 				const [user, created] = await User.findOrCreate({
-					where: { gitLabID: profile.id },
+					where: { email: email },
 					defaults: {
 						username: profile.username,
 						email: profile.emails[0].value,
