@@ -205,10 +205,10 @@ app.get("/api/auth/logout", function (req, res) {
 });
 
 app.get("/api/auth/me", function (req, res) {
-	if (!req.user) {	
-		return res.sendStatus(404);
+	if (!req.user) {
+		return res.send({ isLoggedIn: false });
 	}
-	return res.send(req.user);
+	return res.send({ ...req.user, isLoggedIn: true });
 });
 
 // Route for when user clicks submit access code:
