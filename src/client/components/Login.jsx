@@ -34,7 +34,7 @@ const Login = () => {
 						<img src={gitlab} />
 					</a>
 					<a
-						href="/api/auth/etc"
+						href="/api/auth/google"
 						className="flex gap-[10px] w-[300px] px-[20px] items-center justify-space-between w-full rounded-md border border-black"
 					>
 						<span className="font-inter">Continue with Google</span>
