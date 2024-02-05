@@ -16,9 +16,9 @@ const queryClient = new QueryClient();
 // get /api/auth/me -> if user is logged in, returns a user obj, else returns 404. set isLogged in to true if user obj
 // change / route to be loging if not logged in and profile if logged in
 const router = createBrowserRouter([
-	{ path: "/", element: <AccessCode /> },
-	{ path: "/profile", element: <Login /> },
-	{ path: "/requestaccess", element: <Login /> },
+	{ path: "/", element: <Profile /> },
+	{ path: "/profile", element: <Profile /> },
+	{ path: "/requestaccess", element: <RequestAccess /> },
 	{ path: "/login", element: <Login /> },
 	{ path: "/access", element: <AccessCode /> },
 	{ path: "/thanks", element: <Thanks /> },

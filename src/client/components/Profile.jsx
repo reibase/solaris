@@ -18,7 +18,7 @@ const Profile = () => {
 				</h1>
 				<div class="flex flex-col gap-[20px]">
 					<a
-						href="/api/auth/etc"
+						href="/api/auth/logout"
 						className="flex font-bold w-[150px] text-sm font-medium rounded-md border-2 border-gray-500"
 					>
 						<span className="font-inter mx-auto text-gray-500">Log out</span>

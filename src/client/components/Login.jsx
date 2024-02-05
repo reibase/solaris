@@ -1,6 +1,7 @@
 import Nav from "./Nav.jsx";
-import githubLogo from "../assets/github-logo.png";
-import gmailLogo from "../assets/gmail-logo.png";
+import githubLogo from "../assets/github.svg";
+import gmailLogo from "../assets/gmail.svg";
+import gitlab from "../assets/gitlab.svg"
 import { Link } from "react-router-dom";
 
 // To do:
@@ -30,7 +31,7 @@ const Login = () => {
 						className="flex gap-[10px] w-[300px] px-[20px] items-center justify-space-between w-full rounded-md border border-black"
 					>
 						<span className="font-inter">Continue with GitLab</span>
-						<img src={gmailLogo} />
+						<img src={gitlab} />
 					</a>
 					<a
 						href="/api/auth/etc"

@@ -3,6 +3,8 @@ import Nav from "./Nav.jsx";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import CircularProgress from '@mui/material/CircularProgress';
+
 
 const AccessCode = () => {
   const [clicked, setClicked] = useState(false);
@@ -29,7 +31,7 @@ const AccessCode = () => {
     setCode(e.target.value);
   };
 
-  const { data, error } = useQuery({
+  const { data, error, isLoading } = useQuery({
     queryKey: ["confirmed"],
     queryFn: access,
     enabled: clicked,
@@ -82,6 +84,7 @@ const AccessCode = () => {
           >
             Continue
           </button>
+		  {isLoading ? <CircularProgress /> : null}
         </div>
         <div className="text-slate-600 mt-[100px]">
           <p className="font-inter">
