@@ -20,5 +20,3 @@ export default async function closeGitHubPullRequest(repoName, pull) {
 	);
 	return { status, data };
 }
-
-closeGitHubPullRequest("reibase/demo-repository", 2);
