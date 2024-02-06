@@ -12,16 +12,15 @@ const AccessCode = () => {
   const navigate = useNavigate();
 
   const access = async () => {
+    setClicked(false);
     if (code.length < 5) {
-      throw new Error("Invalid access code");
+      return { status: 401 };
     }
     try {
       const res = await axios.post("/api/auth/access-code", { code });
-      setClicked(false);
       setCodeAccepted(true);
       return res.data;
     } catch (error) {
-      setClicked(false);
       throw new Error("Invalid access code");
     }
   };
@@ -44,7 +43,7 @@ const AccessCode = () => {
   return (
     <>
       <Nav />
-      <div className="mx-auto bg-white shadow-lg rounded-lg flex flex-col items-center py-[40px] w-2/3 min-h-[505px] justify-between">
+      <div className="mx-auto bg-white shadow-lg rounded-lg flex flex-col items-center py-[40px] w-2/3 md:w-1/2 lg:w-1/2 min-h-[505px] justify-between">
         <div className="flex flex-col">
           <div>
             <h1 className="font-inter mb-[20px] text-3xl font-bold text-center">
@@ -58,7 +57,7 @@ const AccessCode = () => {
             </p>
             <div className="flex flex-col items-center gap-[50px]">
               <div className="flex gap-[20px]">
-                <div className="w-[300px] flex flex-col">
+                <div className="w-[250px] flex flex-col">
                   <label
                     for="code"
                     className="font-inter text-sm font-light text-gray-900"
@@ -67,21 +66,26 @@ const AccessCode = () => {
                     type="text"
                     id="code"
                     className={`font-light block w-full px-[5px] py-[5px] rounded-md border ${
-                      error
+                      error || data?.status === 401
                         ? "border-red-500 text-red-500 focus:border-red-500"
                         : "border-black focus:border-blue-500"
                     } `}
                     placeholder="Access Code"
                     onChange={(e) => changeHandler(e)}
                   />
-                  {error ? (
+                  {data?.status === 401 ? (
                     <p className="text-red-500">
                       The access code you have entered is invalid.
                     </p>
                   ) : null}
+                  {error ? (
+                    <p className="text-red-500">
+                      Please contact an administrator
+                    </p>
+                  ) : null}
                 </div>
                 <button
-                  className="font-inter mx-auto bg-[#313131] h-[36px] w-[175px] px-[25px] text-white rounded-md py-[5px]"
+                  className="font-inter mx-auto bg-[#313131] h-[36px] w-[125px] px-[30px] text-white rounded-md py-[5px]"
                   onClick={() => setClicked(true)}
                 >
                   Continue

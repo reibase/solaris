@@ -1,14 +1,21 @@
 import Nav from "./Nav.jsx";
 import githubLogo from "../assets/github.svg";
+import gitlabLogo from "../assets/gitlab.svg";
+import gmailLogo from "../assets/gmail.svg";
 
-// To do:
-// 1. Add endpoint <a href... > /api/auth/logout
-
-const Profile = ({ data: { avatar, username } }) => {
+const Profile = ({ data: { verifiedThru, username, avatar } }) => {
+  const logo =
+    verifiedThru === "github"
+      ? githubLogo
+      : verifiedThru === "gitlab"
+      ? gitlabLogo
+      : verifiedThru === "google"
+      ? gmailLogo
+      : null;
   return (
     <>
       <Nav />
-      <div className="mx-auto bg-white shadow-lg rounded-lg flex flex-col items-center py-[40px] w-5/6 md:w-2/3 lg:w-1/2">
+      <div className="mx-auto bg-white shadow-lg rounded-lg flex flex-col items-center py-[40px] w-2/3 md:w-1/3 lg:w-1/3">
         <h1 className="font-inter mb-[50px] w-4/5 text-xl font-bold text-left">
           Profile
         </h1>
@@ -19,7 +26,8 @@ const Profile = ({ data: { avatar, username } }) => {
         />
 
         <div className="font-inter gap-[15px] flex mb-[90px] font-medium text-center">
-          <img src={githubLogo} /> {username}
+          {logo && <img src={logo} alt={verifiedThru} />}
+          {username}
         </div>
         <div class="flex flex-col gap-[20px]">
           <a
