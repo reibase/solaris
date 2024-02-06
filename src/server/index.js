@@ -14,6 +14,11 @@ import "dotenv/config";
 import db from "../db/index.js";
 import { User } from "../db/models/index.js";
 
+import userProjects from "./lib/userProjects.js";
+import projects from "./lib/projects.js";
+import users from "./lib/users.js";
+import issues from "./lib/issues.js";
+
 // Constants
 const port = process.env.PORT || 3001;
 const __dirname = path.resolve();
@@ -238,6 +243,11 @@ function ensureAuthenticated(req, res, next) {
 	}
 	res.redirect("/login");
 }
+
+app.use("/api/users/:id/projects", userProjects);
+app.use("/api/projects", projects);
+app.use("/api/users", users);
+app.use("/api/issues", issues);
 
 app.use("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "/dist/index.html"));
