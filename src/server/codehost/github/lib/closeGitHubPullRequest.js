@@ -1,23 +1,17 @@
-import httpClient from "../httpClient";
+import httpClient from "../httpClient.js";
 
-export default async function mergeGitHubPullRequest(
-	repoName,
-	pull,
-	commitTitle = "merged via solaris",
-	commitMessage = "contributors to this repo have voted in favor of merging this branch head"
-) {
+export default async function closeGitHubPullRequest(repoName, pull) {
 	const owner = repoName.split("/")[0];
 	const repo = repoName.split("/")[1];
 	const { client, jwtToken } = await httpClient(repoName);
 
 	const { status, data } = await client.request(
-		`PUT /repos/${repoName}/pulls/${pull}/merge`,
+		`PATCH /repos/${repoName}/pulls/${pull}`,
 		{
 			owner: owner,
 			repo: repo,
 			pull_number: pull,
-			commit_title: commitTitle,
-			commit_message: commitMessage,
+			state: "closed",
 			headers: {
 				"X-GitHub-Api-Version": "2022-11-28",
 				Authorization: `Bearer ${jwtToken}`,
@@ -26,3 +20,5 @@ export default async function mergeGitHubPullRequest(
 	);
 	return { status, data };
 }
+
+closeGitHubPullRequest("reibase/demo-repository", 2);

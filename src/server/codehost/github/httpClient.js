@@ -25,17 +25,17 @@ Create access token with JWT and our GitHub App's ID to query the /installation 
 and receive an authenticated client for this repo's installation instance.
 */
 
-const payload = {
-	// issued at time, 60 seconds in the past to allow for clock drift
-	iat: Math.floor(Date.now() / 1000) - 60,
-	// JWT expiration time (10 minute maximum)
-	exp: Math.floor(Date.now() / 1000) + 10 * 60,
-	iss: GITHUB_APP_ID,
-};
+const httpClient = async (repoName) => {
+	const payload = {
+		// issued at time, 60 seconds in the past to allow for clock drift
+		iat: Math.floor(Date.now() / 1000) - 60,
+		// JWT expiration time (10 minute maximum)
+		exp: Math.floor(Date.now() / 1000) + 10 * 60,
+		iss: GITHUB_APP_ID,
+	};
 
-const jwtToken = jwt.sign(payload, privateKey, { algorithm: "RS256" });
+	const jwtToken = jwt.sign(payload, privateKey, { algorithm: "RS256" });
 
-export default httpClient = async (repoName) => {
 	const { data } = await gitHubApp.octokit.request(
 		`/repos/${repoName}/installation`,
 		{
@@ -48,6 +48,7 @@ export default httpClient = async (repoName) => {
 	const installationId = data.id;
 
 	// Returns an authenticated client instance for this repository:
-	const httpClient = await gitHubApp.getInstallationOctokit(installationId);
-	return httpClient;
+	const client = await gitHubApp.getInstallationOctokit(installationId);
+	return { client, jwtToken };
 };
+export default httpClient;
