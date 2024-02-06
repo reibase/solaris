@@ -20,6 +20,7 @@
     "emailjs": "^4.0.3",
     "express": "^4.18.2",
     "express-session": "^1.18.0",
+    "jsonwebtoken": "^9.0.2",
     "octokit": "^3.1.2",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",

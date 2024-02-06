@@ -258,8 +258,8 @@ const authenticateDB = async () => {
 	}
 };
 
-//syncDB();
-//authenticateDB();
+syncDB();
+authenticateDB();
 
 // Start http server
 app.listen(port, () => {
