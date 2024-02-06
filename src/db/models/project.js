@@ -2,6 +2,9 @@ import { Sequelize, DataTypes } from "sequelize";
 import db from "../index.js";
 
 const Project = db.define("Project", {
+	owner: {
+		type: DataTypes.INTEGER,
+	},
 	title: {
 		type: DataTypes.STRING,
 	},
@@ -36,7 +39,7 @@ const Project = db.define("Project", {
 	url: {
 		type: DataTypes.STRING,
 	},
-	private: {
+	public: {
 		type: DataTypes.BOOLEAN,
 	},
 });

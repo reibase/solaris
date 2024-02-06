@@ -22,10 +22,4 @@ Issue.hasMany(Vote);
  * for example, we can say: const {User} = require('../db/models')
  * instead of: const User = require('../db/models/user')
  */
-export {
-	User,
-	Project,
-	Transfer,
-	Issue,
-	Vote,
-};
+export { User, Project, Transfer, Issue, Vote };
