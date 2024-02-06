@@ -5,7 +5,7 @@ import lock from "../assets/Lock.svg";
 const Nav = () => {
   return (
     <>
-      <div className="mx-auto flex items-center py-[30px] w-5/6 justify-between">
+      <div className="mx-auto flex items-center py-[30px] w-2/3 justify-between">
         <div className="flex items-center gap-[30px]">
           <Link to="/">
             <h1 className="font-inter text-[24px] font-bold text-center">

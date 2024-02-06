@@ -74,7 +74,7 @@ const AccessCode = () => {
                     onChange={(e) => changeHandler(e)}
                   />
                   {data?.status === 401 ? (
-                    <p className="text-red-500">
+                    <p className="text-red-500 mt-[10px]">
                       The access code you have entered is invalid.
                     </p>
                   ) : null}
