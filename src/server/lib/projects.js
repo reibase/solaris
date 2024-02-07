@@ -20,7 +20,7 @@ router.put("/:id/mode", async (_req, res) => {
 });
 
 // create project
-router.post("/:id", async (_req, res) => {
+router.post("/", async (_req, res) => {
 	res.status(200).json({ message: "Hello World!" });
 });
 

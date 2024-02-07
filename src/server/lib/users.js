@@ -1,5 +1,5 @@
 import express from "express";
-import User from "../../db/models/index.js";
+import { User } from "../../db/models/index.js";
 const router = express.Router();
 //endpoint: /users
 

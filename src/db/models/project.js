@@ -8,6 +8,9 @@ const Project = db.define("Project", {
 	title: {
 		type: DataTypes.STRING,
 	},
+	installationID: {
+		type: DataTypes.STRING,
+	},
 	description: {
 		type: DataTypes.STRING,
 	},

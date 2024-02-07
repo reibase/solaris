@@ -248,6 +248,12 @@ app.use("/api/users/:id/projects", userProjects);
 app.use("/api/projects", projects);
 app.use("/api/users", users);
 app.use("/api/issues", issues);
+// app.use("/api/codehost/github/installed", (req, res) => {
+// 	const body = req.params.split("installation_id=")[1];
+// 	const id = body.split("&")[0];
+// 	console.log("req.params", req.params);
+// 	res.redirect({ installationID: id }, "/create");
+// });
 
 app.use("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "/dist/index.html"));
