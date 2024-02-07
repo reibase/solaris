@@ -6,8 +6,11 @@ import Thanks from "./components/Thanks.jsx";
 import { useQuery } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
+import { useStore } from "./store";
 
 function App() {
+  const { dark } = useStore();
+
   const getUser = async () => {
     const { data } = await axios.get("/api/auth/me").then((res) => res);
     return data;
@@ -38,9 +41,9 @@ function App() {
   );
 
   return (
-    <>
+    <div className={` ${dark ? "bg-[#0d0d0e]" : "bg-[#f9f9f9]"} min-h-[100vh]`}>
       <RouterProvider router={router} />
-    </>
+    </div>
   );
 }
 
