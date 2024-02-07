@@ -5,12 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --watch",
     "preview": "vite preview",
     "start": "nodemon src/server",
     "start-server": "concurrently \"npm run preview\" \"npm start\""
   },
   "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.15.7",
     "@emailjs/browser": "^4.1.0",
     "@tanstack/react-query": "4.28",
     "axios": "^1.6.7",
