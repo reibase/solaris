@@ -6,7 +6,7 @@ const Installation = db.define("Installation", {
 		type: DataTypes.STRING,
 	},
 	installationID: {
-		type: DataTypes.STRING,
+		type: DataTypes.BIGINT,
 		unique: true,
 	},
 });

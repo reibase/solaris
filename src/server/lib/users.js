@@ -30,11 +30,6 @@ router.put("/:id", async (_req, res) => {
 	res.status(200).json({ message: "Hello World!" });
 });
 
-// create user..? needed?
-// router.post("/:id", async (_req, res) => {
-// 	res.status(200).json({ message: "Hello World!" });
-// });
-
 // create codehost app installation id
 router.post("/:id/installations", async (_req, res) => {
 	try {
@@ -59,7 +54,6 @@ router.post("/:id/installations", async (_req, res) => {
 				}
 			})
 		);
-		console.log("res", installationRepos);
 		return res.send(installationRepos);
 	} catch (error) {
 		return res.send({ status: 500, error: error.message });

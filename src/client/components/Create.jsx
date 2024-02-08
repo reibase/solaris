@@ -17,7 +17,7 @@ const Create = (props) => {
 
 	const installationID =
 		(window.location.href.includes("installation_id=") &&
-			window.location.href.split("=")[1].split("&")[0]) ||
+			parseInt(window.location.href.split("=")[1].split("&")[0])) ||
 		false;
 
 	const [project, setProject] = useState({
@@ -50,7 +50,6 @@ const Create = (props) => {
 					});
 					return res;
 				});
-			console.log("data from serfers", data);
 			return data;
 		} catch (error) {
 			console.log(error);

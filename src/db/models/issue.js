@@ -15,7 +15,7 @@ const Issue = db.define("Issue", {
 		type: DataTypes.STRING,
 	},
 	hostID: {
-		type: DataTypes.STRING,
+		type: DataTypes.BIGINT,
 	},
 	totalYesVotes: {
 		type: DataTypes.INTEGER,
