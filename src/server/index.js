@@ -14,7 +14,6 @@ import "dotenv/config";
 import db from "../db/index.js";
 import { User } from "../db/models/index.js";
 
-import userProjects from "./lib/userProjects.js";
 import projects from "./lib/projects.js";
 import users from "./lib/users.js";
 import issues from "./lib/issues.js";
