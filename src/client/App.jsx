@@ -9,7 +9,7 @@ import { useStore } from "./store";
 import { React, useEffect } from "react";
 
 function App() {
-  const { dark, setUserInfo } = useStore();
+  const { dark, user, setUserInfo } = useStore();
 
   const getUser = async () => {
     const { data } = await axios.get("/api/auth/me").then((res) => res);
@@ -37,7 +37,7 @@ function App() {
   }, [data]);
 
   const router = createBrowserRouter(
-    !data?.isLoggedIn
+    !user.isLoggedIn
       ? [
           { path: "/", element: <AccessCode /> },
           { path: "/requestaccess", element: <RequestAccess /> },
@@ -45,11 +45,11 @@ function App() {
           { path: "/access", element: <AccessCode /> },
         ]
       : [
-          { path: "/", element: <Profile data={data} /> },
-          { path: "/profile", element: <Profile data={data} /> },
-          { path: "/requestaccess", element: <Profile data={data} /> },
-          { path: "/login", element: <Profile data={data} /> },
-          { path: "/access", element: <Profile data={data} /> },
+          { path: "/", element: <Profile /> },
+          { path: "/profile", element: <Profile /> },
+          { path: "/requestaccess", element: <Profile /> },
+          { path: "/login", element: <Profile /> },
+          { path: "/access", element: <Profile /> },
         ]
   );
 

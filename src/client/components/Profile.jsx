@@ -4,22 +4,30 @@ import gitlabLogo from "../assets/gitlab.svg";
 import gmailLogo from "../assets/gmail.svg";
 import { useStore } from "../store.js";
 
-const Profile = ({ data: { verifiedThru, username, avatar } }) => {
-  const { user } = useStore();
+const Profile = () => {
+  const { dark, user } = useStore();
   const logo =
-    verifiedThru === "github"
+    user.info.verifiedThru === "github"
       ? githubLogo
-      : verifiedThru === "gitlab"
+      : user.info.verifiedThru === "gitlab"
       ? gitlabLogo
-      : verifiedThru === "google"
+      : user.info.verifiedThru === "google"
       ? gmailLogo
       : null;
 
   return (
     <>
       <Nav />
-      <div className="mx-auto bg-white h-[550px] w-[375px] my-10 shadow-lg rounded-lg flex flex-col items-center py-[40px]">
-        <h1 className="font-inter mb-[50px] w-4/5 text-xl font-bold text-left">
+      <div
+        className={`mx-auto h-[550px] w-[375px] my-10 shadow-lg rounded-lg flex flex-col items-center py-[40px] ${
+          dark ? "bg-[#202530]" : "bg-white"
+        }`}
+      >
+        <h1
+          className={`font-inter mb-[50px] w-4/5 text-xl font-bold text-left ${
+            dark ? "text-[#DDDCDC]" : null
+          }`}
+        >
           Profile
         </h1>
         <img
@@ -28,8 +36,12 @@ const Profile = ({ data: { verifiedThru, username, avatar } }) => {
           alt="User avatar"
         />
 
-        <div className="font-inter gap-[15px] flex mb-[90px] font-medium text-center">
-          {logo && <img src={logo} alt={verifiedThru} />}
+        <div
+          className={`font-inter gap-[15px] flex mb-[90px] font-medium text-center ${
+            dark ? "text-white" : null
+          }`}
+        >
+          {logo && <img src={logo} alt={user.info.verifiedThru} />}
           {user.info.username}
         </div>
         <div class="flex flex-col gap-[20px]">
