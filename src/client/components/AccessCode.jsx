@@ -82,11 +82,19 @@ const AccessCode = () => {
                   <input
                     type="text"
                     id="code"
-                    className={`font-light block w-full px-[5px] py-[5px] rounded-md border ${
-                      error || data?.status === 401
-                        ? "border-red-500 text-red-500 focus:border-red-500"
-                        : "border-black focus:border-blue-500"
-                    } `}
+                    className={`font-light block w-full px-[5px] py-[5px] rounded-md border
+					${
+            dark
+              ? error || data?.status === 401
+                ? "bg-[#202530] border-red-500 text-red-500 focus:border-red-500"
+                : "bg-[#202530] border-black focus:border-blue-500"
+              : "null"
+          }
+					${
+            !dark && (error || data?.status === 401)
+              ? "border-red-500 text-red-500 focus:border-red-500"
+              : "border-black focus:border-blue-500"
+          } `}
                     placeholder="Access Code"
                     onChange={(e) => changeHandler(e)}
                   />

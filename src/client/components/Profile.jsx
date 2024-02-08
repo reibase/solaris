@@ -1,19 +1,24 @@
 import Nav from "./Nav.jsx";
 import githubLogo from "../assets/github.svg";
 import gitlabLogo from "../assets/gitlab.svg";
+import githubDarkmode from "../assets/github-darkmode.svg";
 import gmailLogo from "../assets/gmail.svg";
 import { useStore } from "../store.js";
 
 const Profile = () => {
   const { dark, user } = useStore();
-  const logo =
-    user.info.verifiedThru === "github"
-      ? githubLogo
-      : user.info.verifiedThru === "gitlab"
-      ? gitlabLogo
-      : user.info.verifiedThru === "google"
-      ? gmailLogo
-      : null;
+  const logo = (() => {
+    switch (user.info.verifiedThru) {
+      case "github":
+        return dark ? githubDarkmode : githubLogo; // Use a conditional expression within the case
+      case "gitlab":
+        return gitlabLogo;
+      case "google":
+        return gmailLogo;
+      default:
+        return null;
+    }
+  })();
 
   return (
     <>
@@ -41,7 +46,11 @@ const Profile = () => {
             dark ? "text-white" : null
           }`}
         >
-          {logo && <img src={logo} alt={user.info.verifiedThru} />}
+          <img
+            src={logo}
+            className={`w-[20px] h-[20px]`}
+            alt={user.info.verifiedThru}
+          />
           {user.info.username}
         </div>
         <div class="flex flex-col gap-[20px]">

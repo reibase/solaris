@@ -1,5 +1,6 @@
 import Nav from "./Nav.jsx";
 import githubLogo from "../assets/github.svg";
+import githubDarkmode from "../assets/github-darkmode.svg";
 import gmailLogo from "../assets/gmail.svg";
 import gitlab from "../assets/gitlab.svg";
 import { Link } from "react-router-dom";
@@ -53,7 +54,10 @@ const Login = () => {
               <span
                 className={`w-1/6  mx-auto flex ${dark ? "text-white" : null}`}
               >
-                <img src={githubLogo} />
+                <img
+                  className={`w-[20px] h-[20px]`}
+                  src={dark ? githubDarkmode : githubLogo}
+                />
               </span>
             </div>
           </a>

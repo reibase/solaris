@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import lightmode from "../assets/lightmode.svg";
 import darkmode from "../assets/darkmode.svg";
 import lock from "../assets/Lock.svg";
-import darkmodeLock from "../assets/darkmodeLock.svg";
+import darkmodeLock from "../assets/lock-darkmode.svg";
 import { useStore } from "../store";
 
 const Nav = () => {
