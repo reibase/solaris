@@ -23,15 +23,15 @@ const Nav = () => {
           </Link>
           <div
             className={`flex space-around gap-[20px] items-center text-gray-600 rounded-2xl border  px-[20px] ${
-              dark ? "border-white" : "border-black"
+              dark ? "border-[#373D47]" : "border-[black]"
             }`}
           >
             <img
-              className="w-[15px] h-[15px] "
+              className="w-[12px] h-[12px] "
               src={dark ? darkmodeLock : lock}
             />
             <h1
-              className={`font-inter text-[12px] font-bold ${
+              className={`font-inter text-[12px] font-medium ${
                 dark ? "text-white" : null
               }`}
             >

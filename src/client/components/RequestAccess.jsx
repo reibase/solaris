@@ -86,7 +86,19 @@ const RequestAccess = () => {
                     type="text"
                     name="user_name"
                     id="name"
-                    class="rounded-md p-1 border-gray-300 focus:ring-blue-500 focus:border-blue-500 block w-full border border-black"
+                    className={`rounded-md p-1 block w-full border 
+					${
+            dark
+              ? error || data?.status === 401
+                ? "bg-[#202530] border-red-500 text-red-500 focus:border-red-500"
+                : "bg-[#202530] border-gray-300 focus:border-blue-500"
+              : "null"
+          }
+								${
+                  !dark && (error || data?.status === 401)
+                    ? "border-red-500 text-red-500 focus:border-red-500"
+                    : "border-gray-300 focus:border-blue-500"
+                } `}
                     placeholder=""
                     required
                   />
