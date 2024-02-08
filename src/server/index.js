@@ -244,9 +244,8 @@ function ensureAuthenticated(req, res, next) {
 	}
 	res.redirect("/login");
 }
-app.use("/api/users", users);
 
-app.use("/api/users/:id/projects", userProjects);
+app.use("/api/users", users);
 app.use("/api/projects", projects);
 app.use("/api/issues", issues);
 app.use("/api/installation", installation);

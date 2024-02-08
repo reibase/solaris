@@ -1,5 +1,5 @@
 import express from "express";
-import { User, Installation } from "../../db/models/index.js";
+import { User, Installation, Project } from "../../db/models/index.js";
 import getInstallationRepos from "../codehost/github/getInstallationRepos.js";
 
 const router = express.Router();
@@ -57,6 +57,50 @@ router.post("/:id/installations", async (_req, res) => {
 		return res.send(installationRepos);
 	} catch (error) {
 		return res.send({ status: 500, error: error.message });
+	}
+});
+
+router.post("/:id/projects", async (_req, res) => {
+	const {
+		title,
+		description,
+		host,
+		identifier,
+		hostID,
+		installationID,
+		url,
+		live,
+		quorum,
+		clawBack,
+	} = _req.body;
+	try {
+		const project = await Project.create({
+			title,
+			description,
+			identifier,
+			installationID,
+			url,
+			quorum,
+			host,
+			hostID,
+			live,
+			clawBack,
+		});
+		res.status(200).json({ project });
+	} catch (error) {
+		res.status(500).json(error.message);
+	}
+});
+
+router.delete("/:id/projects/:id", async (_req, res) => {
+	const { id } = _req.body;
+	try {
+		const project = await Project.destroy({
+			where: { id: id },
+		});
+		res.status(200).json({ message: "project deleted successfully" });
+	} catch (error) {
+		res.status(500).json(error.message);
 	}
 });
 
