@@ -18,6 +18,7 @@ import userProjects from "./lib/userProjects.js";
 import projects from "./lib/projects.js";
 import users from "./lib/users.js";
 import issues from "./lib/issues.js";
+import installation from "./lib/installation.js";
 
 // Constants
 const port = process.env.PORT || 3001;
@@ -248,12 +249,7 @@ app.use("/api/users/:id/projects", userProjects);
 app.use("/api/projects", projects);
 app.use("/api/users", users);
 app.use("/api/issues", issues);
-// app.use("/api/codehost/github/installed", (req, res) => {
-// 	const body = req.params.split("installation_id=")[1];
-// 	const id = body.split("&")[0];
-// 	console.log("req.params", req.params);
-// 	res.redirect({ installationID: id }, "/create");
-// });
+app.use("/api/installation", installation);
 
 app.use("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "/dist/index.html"));

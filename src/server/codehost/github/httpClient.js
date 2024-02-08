@@ -33,7 +33,6 @@ const httpClient = async (repoName) => {
 		exp: Math.floor(Date.now() / 1000) + 10 * 60,
 		iss: GITHUB_APP_ID,
 	};
-
 	const jwtToken = jwt.sign(payload, privateKey, { algorithm: "RS256" });
 
 	const { data } = await gitHubApp.octokit.request(
@@ -48,7 +47,10 @@ const httpClient = async (repoName) => {
 	const installationId = data.id;
 
 	// Returns an authenticated client instance for this repository:
-	const client = await gitHubApp.getInstallationOctokit(installationId);
+	const client = await gitHubApp.getInstallationOctokit(47056785);
+	const res = await client.request("GET /installation/repositories");
+	console.log(res.data.repositories);
 	return { client, jwtToken };
 };
 export default httpClient;
+httpClient("reibase/demo-repository");
