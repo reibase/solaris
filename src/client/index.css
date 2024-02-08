@@ -2,7 +2,3 @@
 @tailwind components;
 @tailwind utilities;
 
-#root {
-    background-color: #f9f9f9;
-    min-height:100vh;
-}
