@@ -3,6 +3,7 @@ import Project from "./project.js";
 import Transfer from "./transfer.js";
 import Issue from "./issue.js";
 import Vote from "./vote.js";
+import Installation from "./installation.js";
 
 /**
  * If we had any associations to make, this would be a great place to put them!
@@ -11,6 +12,8 @@ import Vote from "./vote.js";
  *    BlogPost.belongsTo(User)
  */
 User.hasMany(Project);
+User.hasMany(Installation);
+Installation.belongsTo(User);
 Project.hasMany(User);
 Project.hasMany(Transfer);
 Project.hasMany(Issue);
@@ -22,4 +25,4 @@ Issue.hasMany(Vote);
  * for example, we can say: const {User} = require('../db/models')
  * instead of: const User = require('../db/models/user')
  */
-export { User, Project, Transfer, Issue, Vote };
+export { User, Project, Transfer, Issue, Vote, Installation };

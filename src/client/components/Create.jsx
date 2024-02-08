@@ -4,7 +4,9 @@ import Nav from "./Nav.jsx";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-const Create = () => {
+const Create = (props) => {
+	console.log(props);
+
 	const navigate = useNavigate();
 
 	const [step, setStep] = useState("Connect");
@@ -35,21 +37,20 @@ const Create = () => {
 	const getInstallationRepos = async () => {
 		try {
 			const { data } = await axios
-				.post("/api/installation/repos", {
+				.post(`/api/users/1/installations`, {
+					provider: project.host,
 					installationID: installationID,
 				})
 				.then((res) => {
-					const firstRepo = res.data.repos[0];
+					const firstRepo = res.data[0].repositories[0];
 					setProject({
 						...project,
-						identifier: firstRepo.full_name,
-						title: firstRepo.full_name,
 						hostID: firstRepo.id,
-						owner: firstRepo.owner.id,
-						url: firstRepo.url,
+						identifier: firstRepo.full_name,
 					});
 					return res;
 				});
+			console.log("data from serfers", data);
 			return data;
 		} catch (error) {
 			console.log(error);
@@ -61,7 +62,7 @@ const Create = () => {
 		queryFn: getInstallationRepos,
 		enabled: installed,
 	});
-
+	console.log(project);
 	switch (step) {
 		case "Connect":
 			return (
@@ -88,16 +89,20 @@ const Create = () => {
 							}
 						>
 							{data &&
-								data.repos.map((repo) => (
-									<option
-										selected="selected"
-										key={repo.id}
-										id={repo.id}
-										value={repo.full_name}
-									>
-										{repo.full_name}
-									</option>
-								))}
+								data.map((installation) => {
+									return installation.repositories.map((repo) => {
+										return (
+											<option
+												selected="selected"
+												key={repo.installationID}
+												id={repo.id}
+												value={repo.full_name}
+											>
+												{repo.full_name}
+											</option>
+										);
+									});
+								})}
 						</select>
 					</form>
 					<a href="https://github.com/organizations/reibase/settings/apps/solaris-local/installations">
@@ -158,5 +163,4 @@ const Create = () => {
 			);
 	}
 };
-
 export default Create;

@@ -25,7 +25,7 @@ function App() {
 					{ path: "/requestaccess", element: <RequestAccess /> },
 					{ path: "/login", element: <Login /> },
 					{ path: "/access", element: <AccessCode /> },
-					{ path: "/create", element: <Create /> },
+					{ path: "/create", element: <Create data={data} /> },
 			  ]
 			: [
 					{ path: "/", element: <Profile data={data} /> },
@@ -33,7 +33,7 @@ function App() {
 					{ path: "/requestaccess", element: <Profile data={data} /> },
 					{ path: "/login", element: <Profile data={data} /> },
 					{ path: "/access", element: <Profile data={data} /> },
-					{ path: "/create", element: <Create /> },
+					{ path: "/create", element: <Create data={data} /> },
 			  ]
 	);
 

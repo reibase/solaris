@@ -26,7 +26,15 @@ const getInstallationRepos = async (installationID) => {
 		const { data, status } = await client.request(
 			"GET /installation/repositories"
 		);
-		return { status, data: data.repositories };
+		const repos = data.repositories.map((repo) => {
+			repo.installationID = installationID;
+			return repo;
+		});
+		return {
+			status,
+			installationID: installationID,
+			repositories: repos,
+		};
 	} catch (error) {
 		return { status: 500, data: error.message };
 	}
