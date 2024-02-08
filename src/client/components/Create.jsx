@@ -81,9 +81,10 @@ const Create = (props) => {
 							onChange={(e) =>
 								setProject({
 									...project,
-									identifier: e.target.value,
+									identifier: e.target.name,
+									installationID: parseInt(e.target.value),
 									hostID: e.target.id,
-									title: e.target.full_name,
+									title: e.target.name,
 								})
 							}
 						>
@@ -93,9 +94,10 @@ const Create = (props) => {
 										return (
 											<option
 												selected="selected"
+												name={repo.full_name}
 												key={repo.installationID}
 												id={repo.id}
-												value={repo.full_name}
+												value={repo.installationID}
 											>
 												{repo.full_name}
 											</option>
