@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Nav from "./Nav.jsx";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -7,43 +6,42 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useStore } from "../store.js";
 
 const AccessCode = () => {
-	const [clicked, setClicked] = useState(false);
-	const [codeAccepted, setCodeAccepted] = useState(false);
-	const [code, setCode] = useState("");
-	const navigate = useNavigate();
-	const { dark } = useStore();
-	const access = async () => {
-		setClicked(false);
-		if (code.length < 5) {
-			return { status: 401 };
-		}
-		try {
-			const res = await axios.post("/api/auth/access-code", { code });
-			setCodeAccepted(true);
-			return res.data;
-		} catch (error) {
-			throw new Error("Invalid access code");
-		}
-	};
+  const [clicked, setClicked] = useState(false);
+  const [codeAccepted, setCodeAccepted] = useState(false);
+  const [code, setCode] = useState("");
+  const navigate = useNavigate();
+  const { dark } = useStore();
+  const access = async () => {
+    setClicked(false);
+    if (code.length < 5) {
+      return { status: 401 };
+    }
+    try {
+      const res = await axios.post("/api/auth/access-code", { code });
+      setCodeAccepted(true);
+      return res.data;
+    } catch (error) {
+      throw new Error("Invalid access code");
+    }
+  };
 
-	const changeHandler = (e) => {
-		setCode(e.target.value);
-	};
+  const changeHandler = (e) => {
+    setCode(e.target.value);
+  };
 
-	const { data, error, isFetching } = useQuery({
-		queryKey: ["confirmed"],
-		queryFn: access,
-		enabled: clicked,
-	});
+  const { data, error, isFetching } = useQuery({
+    queryKey: ["confirmed"],
+    queryFn: access,
+    enabled: clicked,
+  });
 
-	if (data && data.status === 200 && codeAccepted) {
-		setCodeAccepted(false);
-		navigate("/login");
-	}
+  if (data && data.status === 200 && codeAccepted) {
+    setCodeAccepted(false);
+    navigate("/login");
+  }
 
 	return (
 		<>
-			<Nav />
 			<div className="mx-auto block h-[455px] my-10 shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-2/5 bg-white dark:bg-[#202530] dark:border-[#373D47] dark:border-2">
 				<div className="flex items-center flex-col h-full w-full">
 					<h1 className="font-inter mb-[20px] text-3xl font-bold text-center dark:text-[#DDDCDC]">

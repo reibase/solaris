@@ -1,4 +1,3 @@
-import Nav from "./Nav.jsx";
 import githubLogo from "../assets/github.svg";
 import githubDarkmode from "../assets/github-darkmode.svg";
 import gmailLogo from "../assets/gmail.svg";
@@ -6,11 +5,10 @@ import gitlab from "../assets/gitlab.svg";
 import { Link } from "react-router-dom";
 import { useStore } from "../store.js";
 const Login = () => {
-	const { dark, toggleDark, user } = useStore();
+  const { dark, toggleDark, user } = useStore();
 
 	return (
 		<>
-			<Nav />
 			<div className="mx-auto block h-[455px] my-10 shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-2/5 bg-white dark:bg-[#202530] dark:border-[#373D47] dark:border-2">
 				<h1 className="font-inter mb-[25px] text-3xl font-bold text-center dark:text-white">
 					SOLARIS
