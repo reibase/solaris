@@ -40,7 +40,11 @@ const Nav = () => {
 						</h1>
 					</div>
 				</div>
-				<div className="flex flex-col lg:flex-row items-end lg:items-center gap-[10px] lg:gap-[50px] lg:self-center">
+				<div
+					className={`flex  m-2 ${
+						user.isLoggedIn ? "flex-row" : "flex-col"
+					} lg:flex-row items-end lg:items-center gap-[10px] lg:gap-[50px] lg:self-center`}
+				>
 					<span>
 						<img
 							onClick={() => themeHandler()}
@@ -51,9 +55,8 @@ const Nav = () => {
 					<span>
 						{user.isLoggedIn ? (
 							<img
-								class="w-4 h-4 rounded-full object-cover"
+								class="w-6 h-6 me-1 rounded-full object-cover"
 								src={user.info.avatar}
-								alt="User avatar"
 							/>
 						) : (
 							<Link to="/">
