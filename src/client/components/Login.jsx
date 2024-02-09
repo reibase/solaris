@@ -15,10 +15,10 @@ const Login = () => {
 				<h1 className="font-inter mb-[25px] text-3xl font-bold text-center dark:text-white">
 					SOLARIS
 				</h1>
-				<p className="font-inter font-light text-center text-sm leading-6 dark:text-[#8B929F]">
+				<p className="font-inter text-center text-sm leading-6 dark:text-[#8B929F]">
 					Welcome to the Solaris Technical Preview.
 				</p>
-				<p className="font-inter font-light mb-[60px] text-center dark:text-[#8B929F]">
+				<p className="font-inter mb-[60px] text-center dark:text-[#8B929F]">
 					Please log in or sign up to continue.
 				</p>
 				<div class="flex flex-col gap-[20px]">

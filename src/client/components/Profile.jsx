@@ -40,7 +40,7 @@ const Profile = () => {
 				/>
 
 				<div
-					className="font-inter gap-[15px] flex mb-[90px] font-medium text-center
+					className="font-inter gap-[15px] flex mb-[90px] text-center
             dark:text-white"
 				>
 					<img
@@ -53,13 +53,13 @@ const Profile = () => {
 				<div class="flex flex-col gap-[20px]">
 					<a
 						href="/api/auth/logout"
-						className="flex font-bold w-[150px] text-sm font-medium rounded-md border-2 border-gray-500"
+						className="flex font-bold w-[150px] text-sm rounded-md border-2 border-gray-500"
 					>
 						<span className="font-inter mx-auto text-gray-500">Log out</span>
 					</a>
 					<a
 						href="/api/auth/etc"
-						className="flex font-bold w-[150px] text-sm font-medium rounded-md border-2 border-red-500"
+						className="flex font-bold w-[150px] text-sm rounded-md border-2 border-red-500"
 					>
 						<span className="font-inter mx-auto text-red-500">
 							Delete Account
