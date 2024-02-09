@@ -1,7 +1,7 @@
 import { create, useState } from "zustand";
 
 const initialState = {
-	dark: false,
+	dark: localStorage.theme === "dark" ? true : false,
 	user: {
 		isLoggedIn: false,
 		info: {
