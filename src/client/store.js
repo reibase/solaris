@@ -17,9 +17,7 @@ export const useStore = create((set) => ({
 	...initialState,
 
 	// State setters (actions):
-	toggleDark: () => {
-		return set((state) => ({ dark: !state.dark }));
-	},
+	toggleDark: () => set((state) => ({ dark: !state.dark })),
 	setUserInfo: (newUserInfo) =>
 		set((state) => ({ user: { ...state.user, ...newUserInfo } })),
 }));
