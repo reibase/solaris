@@ -21,7 +21,7 @@ const Nav = () => {
 	};
 	return (
 		<>
-			<div className="mx-auto flex items-end lg:items-center p-2 lg:py-[30px] lg:w-2/3 justify-between dark:text-white">
+			<div className="mx-auto flex items-center p-4 lg:items-end lg:py-[30px] lg:w-2/3 justify-between dark:text-white">
 				<div className="flex items-start lg:items-center flex-col lg:flex-row lg:gap-[30px]">
 					<span>
 						<Link to="/">
@@ -40,19 +40,32 @@ const Nav = () => {
 						</h1>
 					</div>
 				</div>
-				<div className="flex gap-[15px] cursor-pointer">
-					<img
-						onClick={() => themeHandler()}
-						className="w-[15px] h-[15px]"
-						src={dark ? darkmode : lightmode}
-					/>
-					{user.isLoggedIn ? (
+				<div className="flex flex-col lg:flex-row items-end lg:items-center gap-[10px] lg:gap-[50px] lg:self-center">
+					<span>
 						<img
-							class="mb-[35px] w-4 h-4 rounded-full object-cover"
-							src={user.info.avatar}
-							alt="User avatar"
+							onClick={() => themeHandler()}
+							className="w-[16px] h-[16px]"
+							src={dark ? darkmode : lightmode}
 						/>
-					) : null}
+					</span>
+					<span>
+						{user.isLoggedIn ? (
+							<img
+								class="w-4 h-4 rounded-full object-cover"
+								src={user.info.avatar}
+								alt="User avatar"
+							/>
+						) : (
+							<Link to="/">
+								<button
+									className="font-light rounded-md border border-[#313131] px-4 hover:bg-[#313131] hover:text-white dark:bg-[#18181B] dark:border-[#373D47] dark:border-2 dark:text-white "
+									type="button"
+								>
+									Sign in
+								</button>
+							</Link>
+						)}
+					</span>
 				</div>
 			</div>
 		</>

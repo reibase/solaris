@@ -68,7 +68,7 @@ const RequestAccess = () => {
 										type="text"
 										name="user_name"
 										id="name"
-										className="rounded-md p-1 block w-full border border-gray-300 dark:bg-[#202530] dark:text-white"
+										className="rounded-md p-2 block w-full border border-gray-300 dark:bg-[#202530] dark:text-white dark:border-[#373D47] dark:focus:border-indigo-400"
 										placeholder=""
 										required
 									/>
@@ -84,7 +84,8 @@ const RequestAccess = () => {
 										type="text"
 										id="email"
 										name="user_email"
-										class="rounded-md p-1 border-gray-300 focus:ring-blue-500 dark:bg-[#202530] dark:text-white focus:border-blue-500 block w-full border border-black"
+										className={`font-light w-full p-2 rounded-md border dark:bg-[#202530] dark:text-white dark:border-[#373D47] dark:focus:border-indigo-400
+					${errorText !== "" && "border-red-500 text-red-500 dark:border-red-500"}`}
 										placeholder=""
 										required
 									/>

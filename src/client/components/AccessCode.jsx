@@ -66,8 +66,8 @@ const AccessCode = () => {
 							<input
 								type="text"
 								id="code"
-								className={`font-light w-full bg- p-2 rounded-md border dark:bg-[#202530] dark:text-white
-					${data?.status === 401 && "border-red-500 text-red-500 focus:border-red-500"}`}
+								className={`font-light w-full bg- p-2 rounded-md border dark:bg-[#202530] dark:text-white dark:border-[#373D47] dark:focus:border-indigo-400
+					${data?.status === 401 && "border-red-500 text-red-500 dark:border-red-500"}`}
 								placeholder="Access Code"
 								onChange={(e) => changeHandler(e)}
 							/>
