@@ -35,7 +35,7 @@ const Nav = () => {
 							className="w-[14px] h-[14px]"
 							src={dark ? darkmodeLock : lock}
 						/>
-						<h1 className="font-inter text-[12px] font-medium dark:text-white">
+						<h1 className="font-inter text-[12px] font-semibold dark:text-white">
 							TECHNICAL PREVIEW
 						</h1>
 					</div>
@@ -61,7 +61,7 @@ const Nav = () => {
 						) : (
 							<Link to="/">
 								<button
-									className="font-light rounded-md border border-[#313131] px-4 hover:bg-[#313131] hover:text-white dark:bg-[#18181B] dark:border-[#373D47] dark:border-2 dark:text-white "
+									className=" rounded-md border border-[#313131] px-4 hover:bg-[#313131] hover:text-white dark:bg-[#18181B] dark:border-[#373D47] dark:border-2 dark:text-white "
 									type="button"
 								>
 									Sign in

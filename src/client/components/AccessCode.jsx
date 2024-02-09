@@ -49,10 +49,10 @@ const AccessCode = () => {
 					<h1 className="font-inter mb-[20px] text-3xl font-bold text-center dark:text-[#DDDCDC]">
 						SOLARIS
 					</h1>
-					<p className="font-inter font-light text-sm text-center dark:text-white">
+					<p className="font-inter text-sm text-center dark:text-white">
 						Welcome to the Solaris Technical Preview{" "}
 					</p>
-					<p className="font-inter text-sm font-light mb-[50px] text-center dark:text-white">
+					<p className="font-inter text-sm  mb-[50px] text-center dark:text-white">
 						Please enter your access code to continue.
 					</p>
 					{/* Wraps input and button */}
@@ -61,12 +61,12 @@ const AccessCode = () => {
 						<span className="w-full lg:w-3/5">
 							<label
 								for="code"
-								className="font-inter text-sm font-light text-gray-900"
+								className="font-inter text-sm  text-gray-900"
 							></label>
 							<input
 								type="text"
 								id="code"
-								className={`font-light w-full bg- p-2 rounded-md border dark:bg-[#202530] dark:text-white dark:border-[#373D47] dark:focus:border-indigo-400
+								className={` w-full bg- p-2 rounded-md border dark:bg-[#202530] dark:text-white dark:border-[#373D47] dark:focus:border-indigo-400
 					${data?.status === 401 && "border-red-500 text-red-500 dark:border-red-500"}`}
 								placeholder="Access Code"
 								onChange={(e) => changeHandler(e)}

@@ -53,7 +53,7 @@ const RequestAccess = () => {
 						</p>
 					) : (
 						<>
-							<p className="mb-[20px] font-inter text-sm dark:text-[#DDDCDC]">
+							<p className="mb-[20px] text-center font-inter text-sm dark:text-[#DDDCDC]">
 								Request Access to Solaris Technical Preview
 							</p>
 							<form ref={form} onSubmit={submitHandler}>
@@ -84,18 +84,18 @@ const RequestAccess = () => {
 										type="text"
 										id="email"
 										name="user_email"
-										className={`font-light w-full p-2 rounded-md border dark:bg-[#202530] dark:text-white dark:border-[#373D47] dark:focus:border-indigo-400
+										className={` w-full p-2 rounded-md border dark:bg-[#202530] dark:text-white dark:border-[#373D47] dark:focus:border-indigo-400
 					${errorText !== "" && "border-red-500 text-red-500 dark:border-red-500"}`}
 										placeholder=""
 										required
 									/>
-									<div className="h-6 mb-2 text-sm font-light text-red-500">
+									<div className="h-6 mb-2 text-sm  text-red-500">
 										{errorText}
 									</div>
 								</div>
 								<button
 									type="submit"
-									className="font-light font-inter mt-[30px] mx-auto bg-[#313131] w-[300px] px-[20px] text-white rounded-md py-2 dark:bg-[#18181B] dark:border-[#373D47] dark:border-2"
+									className=" font-inter mt-[30px] mx-auto bg-[#313131] w-[300px] px-[20px] text-white rounded-md py-2 dark:bg-[#18181B] dark:border-[#373D47] dark:border-2"
 								>
 									Request Access
 								</button>
