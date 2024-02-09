@@ -1,30 +1,77 @@
 import { Link } from "react-router-dom";
 import lightmode from "../assets/lightmode.svg";
 import darkmode from "../assets/darkmode.svg";
-import lock from "../assets/Lock.svg";
+import lock from "../assets/lock.png";
+import darkmodeLock from "../assets/darkmodelock.png";
+import { useStore } from "../store";
+
 const Nav = () => {
+	const { dark, toggleDark, user } = useStore();
+
+	const themeHandler = () => {
+		toggleDark();
+
+		localStorage.theme === "light"
+			? document.documentElement.classList.add("dark")
+			: document.documentElement.classList.remove("dark");
+
+		localStorage.theme === "dark"
+			? (localStorage.theme = "light")
+			: (localStorage.theme = "dark");
+	};
 	return (
-		<div className="mx-auto flex items-center h-[120px] w-3/5 justify-between">
-			<div className="flex items-center gap-[30px]">
-				<Link to="/">
-					<h1 className="font-inter text-[24px] font-bold text-center">
-						SOLARIS
-					</h1>
-				</Link>
-				<div className="flex space-around gap-[20px] items-center text-gray-600 rounded-2xl border border-black py-[2px] px-[20px]">
+		<>
+			<div className="mx-auto flex items-center p-4 lg:items-end lg:py-[30px] lg:w-2/3 justify-between dark:text-white">
+				<div className="flex items-start lg:items-center flex-col lg:flex-row lg:gap-[30px]">
 					<span>
-						<img className="w-[15px] h-[15px] " src={lock} />
+						<Link to="/">
+							<h1 className="font-inter text-[28px] lg:text-[24px] font-bold text-center">
+								SOLARIS
+							</h1>
+						</Link>
 					</span>
-					<span className="font-inter text-[12px] font-semibold">
-						TECHNICAL PREVIEW
+					<div className="flex space-around gap-[20px] items-center text-gray-600 rounded-2xl border border-1 dark:border-2 h-[23px] px-[20px] dark:border-[#373D47] border-[#313131]">
+						<img
+							className="w-[14px] h-[14px]"
+							src={dark ? darkmodeLock : lock}
+						/>
+						<h1 className="font-inter text-[12px] font-medium dark:text-white">
+							TECHNICAL PREVIEW
+						</h1>
+					</div>
+				</div>
+				<div
+					className={`flex  m-2 ${
+						user.isLoggedIn ? "flex-row" : "flex-col"
+					} lg:flex-row items-end lg:items-center gap-[10px] lg:gap-[50px] lg:self-center`}
+				>
+					<span>
+						<img
+							onClick={() => themeHandler()}
+							className="w-[16px] h-[16px] cursor-pointer"
+							src={dark ? darkmode : lightmode}
+						/>
+					</span>
+					<span>
+						{user.isLoggedIn ? (
+							<img
+								class="w-6 h-6 me-1 rounded-full object-cover"
+								src={user.info.avatar}
+							/>
+						) : (
+							<Link to="/">
+								<button
+									className="font-light rounded-md border border-[#313131] px-4 hover:bg-[#313131] hover:text-white dark:bg-[#18181B] dark:border-[#373D47] dark:border-2 dark:text-white "
+									type="button"
+								>
+									Sign in
+								</button>
+							</Link>
+						)}
 					</span>
 				</div>
 			</div>
-			<div className="flex gap-[15px]">
-				<img className="w-[15px] h-[15px] " src={lightmode} />
-				<img className="w-[15px] h-[15px] " src={darkmode} />
-			</div>
-		</div>
+		</>
 	);
 };
 
