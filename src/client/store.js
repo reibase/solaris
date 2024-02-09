@@ -1,4 +1,4 @@
-import { create, useState } from "zustand";
+import { create } from "zustand";
 
 const initialState = {
 	dark: localStorage.theme === "dark" ? true : false,
