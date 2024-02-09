@@ -44,7 +44,7 @@ const Nav = () => {
 					<span>
 						<img
 							onClick={() => themeHandler()}
-							className="w-[16px] h-[16px]"
+							className="w-[16px] h-[16px] cursor-pointer"
 							src={dark ? darkmode : lightmode}
 						/>
 					</span>
