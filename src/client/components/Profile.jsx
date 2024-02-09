@@ -29,7 +29,7 @@ const Profile = () => {
 			>
 				<h1
 					className="font-inter mb-[50px] w-4/5 text-xl font-bold text-left
-            dark:text-[#DDDCDC]"
+            dark:text-d1"
 				>
 					Profile
 				</h1>

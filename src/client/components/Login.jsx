@@ -11,19 +11,19 @@ const Login = () => {
 	return (
 		<>
 			<Nav />
-			<div className="mx-auto block h-[455px] my-10 shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-2/5 bg-white dark:bg-[#202530] dark:border-[#373D47] dark:border-2">
+			<div className="mx-auto block h-[455px] my-10 shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-2/5 bg-white dark:bg-[#202530] dark:border-d3 dark:border-2">
 				<h1 className="font-inter mb-[25px] text-3xl font-bold text-center dark:text-white">
 					SOLARIS
 				</h1>
-				<p className="font-inter text-center text-sm leading-6 dark:text-[#8B929F]">
+				<p className="font-inter text-center text-sm leading-6 dark:text-d1">
 					Welcome to the Solaris Technical Preview.
 				</p>
-				<p className="font-inter mb-[60px] text-center dark:text-[#8B929F]">
+				<p className="font-inter mb-[60px] text-center dark:text-d1">
 					Please log in or sign up to continue.
 				</p>
 				<div class="flex flex-col gap-[20px]">
 					<a href="/api/auth/github">
-						<div className="flex flex-row w-[310px] space-between rounded-md p-1.5 border  border-[#313131] dark:bg-[#18181B] dark:border-[#373D47] dark:border-2">
+						<div className="flex flex-row w-[310px] space-between rounded-md p-1.5 border  border-l5 dark:bg-[#18181B] dark:border-d3 dark:border-2">
 							<span className="font-inter w-5/6 ml-4 dark:text-white">
 								Continue with GitHub
 							</span>
@@ -36,7 +36,7 @@ const Login = () => {
 						</div>
 					</a>
 					<a href="/api/auth/gitlab">
-						<div className="flex flex-row w-[310px] space-between rounded-md p-1.5 border  border-[#313131] dark:bg-[#18181B] dark:border-[#373D47] dark:border-2">
+						<div className="flex flex-row w-[310px] space-between rounded-md p-1.5 border  border-l5 dark:bg-[#18181B] dark:border-d3 dark:border-2">
 							<span className="font-inter w-5/6 ml-4 dark:text-white">
 								Continue with GitLab
 							</span>
@@ -46,7 +46,7 @@ const Login = () => {
 						</div>
 					</a>
 					<a href="/api/auth/google">
-						<div className="flex flex-row w-[310px] space-between rounded-md p-1.5 border  border-[#313131] dark:bg-[#18181B] dark:border-[#373D47] dark:border-2">
+						<div className="flex flex-row w-[310px] space-between rounded-md p-1.5 border  border-l5 dark:bg-[#18181B] dark:border-d3 dark:border-2">
 							<span className="font-inter w-5/6 ml-4 dark:text-white">
 								Continue with Google
 							</span>

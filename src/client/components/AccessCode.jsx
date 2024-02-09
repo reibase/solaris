@@ -44,9 +44,9 @@ const AccessCode = () => {
 	return (
 		<>
 			<Nav />
-			<div className="mx-auto block h-[455px] my-10 shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-2/5 bg-white dark:bg-[#202530] dark:border-[#373D47] dark:border-2">
+			<div className="mx-auto block h-[455px] my-10 shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-2/5 bg-white dark:bg-[#202530] dark:border-d3 dark:border-2">
 				<div className="flex items-center flex-col h-full w-full">
-					<h1 className="font-inter mb-[20px] text-3xl font-bold text-center dark:text-[#DDDCDC]">
+					<h1 className="font-inter mb-[20px] text-3xl font-bold text-center dark:text-d1">
 						SOLARIS
 					</h1>
 					<p className="font-inter text-sm text-center dark:text-white">
@@ -66,7 +66,7 @@ const AccessCode = () => {
 							<input
 								type="text"
 								id="code"
-								className={` w-full bg- p-2 rounded-md border dark:bg-[#202530] dark:text-white dark:border-[#373D47] dark:focus:border-indigo-400
+								className={` w-full bg- p-2 rounded-md border dark:bg-[#202530] dark:text-white dark:border-d3 dark:focus:border-primary
 					${data?.status === 401 && "border-red-500 text-red-500 dark:border-red-500"}`}
 								placeholder="Access Code"
 								onChange={(e) => changeHandler(e)}
@@ -81,7 +81,7 @@ const AccessCode = () => {
 						</span>
 						<span className="lg:w-2/5 w-full">
 							<button
-								className="font-inter bg-[#313131] p-2 w-full text-white rounded-md dark:bg-[#18181B] dark:border-[#373D47] dark:border-2"
+								className="font-inter bg-l5 p-2 w-full text-white rounded-md dark:bg-[#18181B] dark:border-d3 dark:border-2"
 								onClick={() => setClicked(true)}
 							>
 								Continue

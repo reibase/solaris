@@ -30,7 +30,7 @@ const Nav = () => {
 							</h1>
 						</Link>
 					</span>
-					<div className="flex space-around gap-[20px] items-center text-gray-600 rounded-2xl border border-1 dark:border-2 h-[23px] px-[20px] dark:border-[#373D47] border-[#313131]">
+					<div className="flex space-around gap-[20px] items-center text-gray-600 rounded-2xl border border-1 dark:border-2 h-[23px] px-[20px] dark:border-d3 border-l5">
 						<img
 							className="w-[14px] h-[14px]"
 							src={dark ? darkmodeLock : lock}
@@ -61,7 +61,7 @@ const Nav = () => {
 						) : (
 							<Link to="/">
 								<button
-									className=" rounded-md border border-[#313131] px-4 hover:bg-[#313131] hover:text-white dark:bg-[#18181B] dark:border-[#373D47] dark:border-2 dark:text-white "
+									className=" rounded-md border border-l5 px-4 hover:bg-l5 hover:text-white dark:bg-[#18181B] dark:border-d3 dark:border-2 dark:text-white "
 									type="button"
 								>
 									Sign in

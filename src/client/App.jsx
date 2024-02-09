@@ -54,7 +54,7 @@ function App() {
 	);
 
 	return (
-		<div className="dark:bg-[#131723] bg-[#f9f9f9] min-h-[100vh]">
+		<div className="dark:bg-[#131723] bg-l2 min-h-[100vh]">
 			<RouterProvider router={router} />
 		</div>
 	);
