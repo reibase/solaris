@@ -18,6 +18,18 @@
 		<div id="root"><!--app-html--></div>
 		<script type="module" src="/src/client/main.jsx"></script>
 		<script>
+			// For automatic - needs testing:
+			// if (!localStorage.theme) {
+			// 	if (
+			// 		window.matchMedia &&
+			// 		window.matchMedia("(prefers-color-scheme: dark)").matches
+			// 	) {
+			// 		localStorage.theme = "dark";
+			// 	} else {
+			// 		localStorage.theme = "light";
+			// 	}
+			// }
+			// For user toggling:
 			if (localStorage.theme === "dark") {
 				document.documentElement.classList.add("dark");
 			} else {

@@ -40,7 +40,7 @@ const RequestAccess = () => {
 	return (
 		<>
 			<Nav />
-			<div className="mx-auto block h-[455px] my-10 shadow-lg rounded-lg flex flex-col items-center p-[50px] lg:w-2/5 dark:bg-[#202530] bg-white">
+			<div className="mx-auto block h-[455px] my-10 shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-2/5 bg-white dark:bg-[#202530] dark:border-[#373D47] dark:border-2">
 				<h1 className="mb-[20px] font-inter text-3xl font-bold text-center dark:text-[#DDDCDC]">
 					SOLARIS
 				</h1>
@@ -68,7 +68,7 @@ const RequestAccess = () => {
 										type="text"
 										name="user_name"
 										id="name"
-										className="rounded-md p-1 block w-full border dark:bg-[#202530] dark:text-white"
+										className="rounded-md p-1 block w-full border border-gray-300 dark:bg-[#202530] dark:text-white"
 										placeholder=""
 										required
 									/>
@@ -94,7 +94,7 @@ const RequestAccess = () => {
 								</div>
 								<button
 									type="submit"
-									className="font-light font-inter mt-[30px] mx-auto bg-[#313131] w-[300px] px-[20px] text-white rounded-md px-4 py-[3px]"
+									className="font-light font-inter mt-[30px] mx-auto bg-[#313131] w-[300px] px-[20px] text-white rounded-md py-2 dark:bg-[#18181B] dark:border-[#373D47] dark:border-2"
 								>
 									Request Access
 								</button>
