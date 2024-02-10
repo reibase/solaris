@@ -7,8 +7,8 @@ const Layout = () => {
 			<Nav />
 			<Outlet />
 			{/* top */}
-			<div className="top-[11%] lg:top-[11%] left-0 right-0 absolute w-[100vw] h-[1px] opacity-50 bg-[#DDDCDC] dark:bg-[#373D47]"></div>
-			<div className="top-[12.5%] lg:top-[13.5%] left-0 right-0 absolute w-[100vw] h-[1px] opacity-30 bg-[#DDDCDC] dark:bg-[#373D47]"></div>
+			<div className="top-[12%] lg:top-[11%] left-0 right-0 absolute w-[100vw] h-[1px] opacity-50 bg-[#DDDCDC] dark:bg-[#373D47]"></div>
+			<div className="top-[13.5%] lg:top-[13.5%] left-0 right-0 absolute w-[100vw] h-[1px] opacity-30 bg-[#DDDCDC] dark:bg-[#373D47]"></div>
 
 			{/* right */}
 			<div className="right-[2%] lg:right-[17%] absolute top-0 bottom-0  h-[100vh] w-[1px] opacity-50 bg-[#DDDCDC] dark:bg-[#373D47]"></div>
