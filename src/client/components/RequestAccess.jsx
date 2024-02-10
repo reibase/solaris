@@ -2,41 +2,41 @@ import emailjs from "@emailjs/browser";
 import { useState, useRef } from "react";
 
 const RequestAccess = () => {
-  const [submitted, setSubmitted] = useState(false);
-  const [errorText, setErrorText] = useState("");
-  const form = useRef();
-  const changeHandler = (e) => {
-    e.preventDefault();
-    setForm({ ...form, [e.target.id]: e.target.value });
-  };
+	const [submitted, setSubmitted] = useState(false);
+	const [errorText, setErrorText] = useState("");
+	const form = useRef();
+	const changeHandler = (e) => {
+		e.preventDefault();
+		setForm({ ...form, [e.target.id]: e.target.value });
+	};
 
-  const submitHandler = (e) => {
-    e.preventDefault();
-    if (!form.current["email"].value.split("").includes("@")) {
-      setErrorText("Please enter a valid email address.");
-      return;
-    } else {
-      setErrorText("");
-    }
-    emailjs
-      .sendForm("service_wmtm7u2", "template_v1ulh7q", form.current, {
-        publicKey: "user_kDFY4AFTuoji3GQqaGDsn",
-      })
-      .then(
-        function () {
-          console.log("SUCCESS!");
-          setSubmitted(true);
-        },
-        function (error) {
-          console.log("FAILED...", error);
-          setErrorText("There was an error submitting your request.");
-        }
-      );
-  };
+	const submitHandler = (e) => {
+		e.preventDefault();
+		if (!form.current["email"].value.split("").includes("@")) {
+			setErrorText("Please enter a valid email address.");
+			return;
+		} else {
+			setErrorText("");
+		}
+		emailjs
+			.sendForm("service_wmtm7u2", "template_v1ulh7q", form.current, {
+				publicKey: "user_kDFY4AFTuoji3GQqaGDsn",
+			})
+			.then(
+				function () {
+					console.log("SUCCESS!");
+					setSubmitted(true);
+				},
+				function (error) {
+					console.log("FAILED...", error);
+					setErrorText("There was an error submitting your request.");
+				}
+			);
+	};
 
 	return (
 		<>
-			<div className="mx-auto block h-[455px] my-10 shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-2/5 bg-white dark:bg-[#202530] dark:border-[#373D47] dark:border-2">
+			<div className="mx-2 lg:mx-auto  block h-[455px] my-10 shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-2/5 bg-white border border-1 border-transparent dark:bg-[#202530] dark:border-[#373D47]">
 				<h1 className="mb-[20px] font-inter text-3xl font-bold text-center dark:text-[#DDDCDC]">
 					SOLARIS
 				</h1>
