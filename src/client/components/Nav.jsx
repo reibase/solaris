@@ -23,7 +23,7 @@ const Nav = () => {
 	};
 	return (
 		<>
-			<div className="mx-auto justify-between flex items-end h-[11vh] w-full px-2 lg:p-0 lg:items-end lg:w-[66%] dark:text-white">
+			<div className="mx-auto justify-between flex items-end h-[11vh] w-full px-2 lg:p-0 lg:items-end lg:w-[66%] mb-16 dark:text-white">
 				<div className="grid justify-items-start flex-col gap-[10px] lg:flex lg:items-end lg:flex-row lg:gap-[30px] lg:h-1/3">
 					<span className="text-[28px] font-bold lg:text-[24px]">
 						<Link to="/">
