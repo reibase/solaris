@@ -5,37 +5,34 @@ import gmailLogo from "../assets/gmail.svg";
 import { useStore } from "../store.js";
 
 const Profile = () => {
-  const { dark, user } = useStore();
-  const logo = (() => {
-    switch (user.info.verifiedThru) {
-      case "github":
-        return dark ? githubDarkmode : githubLogo; // Use a conditional expression within the case
-      case "gitlab":
-        return gitlabLogo;
-      case "google":
-        return gmailLogo;
-      default:
-        return null;
-    }
-  })();
+	const { dark, user } = useStore();
+	const logo = (() => {
+		switch (user.info.verifiedThru) {
+			case "github":
+				return dark ? githubDarkmode : githubLogo; // Use a conditional expression within the case
+			case "gitlab":
+				return gitlabLogo;
+			case "google":
+				return gmailLogo;
+			default:
+				return null;
+		}
+	})();
 
-  return (
-    <>
-      <div
-        className="mx-auto h-[550px] w-[375px] my-10 shadow-lg rounded-lg flex flex-col items-center py-[40px]
-          dark:bg-[#202530] bg-white"
-      >
-        <h1
-          className="font-inter mb-[50px] w-4/5 text-xl font-bold text-left
+	return (
+		<>
+			<div className="mx-auto h-[550px] w-[375px] my-10 shadow-lg rounded-lg flex flex-col items-center py-[40px] bg-white dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+				<h1
+					className="font-inter mb-[50px] w-4/5 text-xl text-left
             dark:text-[#DDDCDC]"
-        >
-          Profile
-        </h1>
-        <img
-          class="mb-[35px] w-28 h-28 rounded-full object-cover"
-          src={user.info.avatar}
-          alt="User avatar"
-        />
+				>
+					Profile
+				</h1>
+				<img
+					class="mb-[35px] w-28 h-28 rounded-full object-cover"
+					src={user.info.avatar}
+					alt="User avatar"
+				/>
 				<div
 					className="font-inter gap-[15px] flex mb-[90px] text-center
             dark:text-white"
@@ -50,13 +47,13 @@ const Profile = () => {
 				<div class="flex flex-col gap-[20px]">
 					<a
 						href="/api/auth/logout"
-						className="flex font-bold w-[150px] text-sm rounded-md border-2 border-gray-500"
+						className="flex px-1 w-[150px] rounded-md border border-1 border-gray-500"
 					>
 						<span className="font-inter mx-auto text-gray-500">Log out</span>
 					</a>
 					<a
 						href="/api/auth/etc"
-						className="flex font-bold w-[150px] text-sm rounded-md border-2 border-red-500"
+						className="flex px-1 w-[150px] rounded-md border border-1 border-red-500"
 					>
 						<span className="font-inter mx-auto text-red-500">
 							Delete Account
