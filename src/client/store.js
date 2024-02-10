@@ -4,6 +4,7 @@ const initialState = {
 	dark: localStorage.theme === "dark" ? true : false,
 	user: {
 		isLoggedIn: false,
+		access: false,
 		info: {
 			username: "",
 			avatar: "",

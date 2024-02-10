@@ -4,45 +4,49 @@ import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useStore } from "../store.js";
-
+import Login from "./Login.jsx";
 const AccessCode = () => {
-  const [clicked, setClicked] = useState(false);
-  const [codeAccepted, setCodeAccepted] = useState(false);
-  const [code, setCode] = useState("");
-  const navigate = useNavigate();
-  const { dark } = useStore();
-  const access = async () => {
-    setClicked(false);
-    if (code.length < 5) {
-      return { status: 401 };
-    }
-    try {
-      const res = await axios.post("/api/auth/access-code", { code });
-      setCodeAccepted(true);
-      return res.data;
-    } catch (error) {
-      throw new Error("Invalid access code");
-    }
-  };
+	const [clicked, setClicked] = useState(false);
+	const [codeAccepted, setCodeAccepted] = useState(false);
+	const [code, setCode] = useState("");
+	const navigate = useNavigate();
+	const { dark, user, setUserInfo } = useStore();
 
-  const changeHandler = (e) => {
-    setCode(e.target.value);
-  };
+	const access = async () => {
+		setClicked(false);
+		if (code.length < 5) {
+			return { status: 401 };
+		}
+		try {
+			const res = await axios.post("/api/auth/access-code", { code });
+			setCodeAccepted(true);
+			setUserInfo({ access: true });
+			return res.data;
+		} catch (error) {
+			throw new Error("Invalid access code");
+		}
+	};
 
-  const { data, error, isFetching } = useQuery({
-    queryKey: ["confirmed"],
-    queryFn: access,
-    enabled: clicked,
-  });
+	const changeHandler = (e) => {
+		setCode(e.target.value);
+	};
 
-  if (data && data.status === 200 && codeAccepted) {
-    setCodeAccepted(false);
-    navigate("/login");
-  }
+	const { data, error, isFetching } = useQuery({
+		queryKey: ["confirmed"],
+		queryFn: access,
+		enabled: clicked,
+	});
 
+	if (data && data.status === 200 && codeAccepted) {
+		setCodeAccepted(false);
+		navigate("/login");
+	}
+	if (user.access) {
+		return <Login />;
+	}
 	return (
 		<>
-			<div className="mx-auto block h-[455px] my-10 shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-2/5 bg-white dark:bg-[#202530] dark:border-[#373D47] dark:border-2">
+			<div className="mx-2 lg:mx-auto block h-[455px] shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-2/5 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 				<div className="flex items-center flex-col h-full w-full">
 					<h1 className="font-inter mb-[20px] text-3xl font-bold text-center dark:text-[#DDDCDC]">
 						SOLARIS
