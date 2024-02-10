@@ -16,7 +16,7 @@ const Layout = () => {
 
 			{/* bottom */}
 			<div className="bottom-[7%] lg:bottom-[14%] absolute w-[100vw] h-[1px] opacity-50 bg-[#DDDCDC] dark:bg-[#373D47]"></div>
-			<div className="bottom-[6%] lg:bottom-[11.5%] absolute w-[100vw] h-[1px] opacity-30 bg-[#DDDCDC] dark:bg-[#373D47]"></div>
+			<div className="bottom-[4%] lg:bottom-[11.5%] absolute hidden lg:block w-[100vw] h-[1px] opacity-30 bg-[#DDDCDC] dark:bg-[#373D47]"></div>
 
 			{/* left */}
 			<div className="left-[2%] lg:left-[17%] absolute top-0 bottom-0  h-[100vh] w-[1px] opacity-50 bg-[#DDDCDC] dark:bg-[#373D47]"></div>
