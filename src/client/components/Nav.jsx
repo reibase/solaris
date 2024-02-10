@@ -21,7 +21,7 @@ const Nav = () => {
 	};
 	return (
 		<>
-			<div className="mx-auto flex items-center p-4 lg:items-end lg:py-[30px] lg:w-2/3 justify-between dark:text-white">
+			<div className="mx-auto flex items-center p-4 lg:items-end lg:py-[50px] lg:px-[0px] lg:w-2/3 justify-between dark:text-white">
 				<div className="flex items-start lg:items-center flex-col lg:flex-row lg:gap-[30px]">
 					<span>
 						<Link to="/">
