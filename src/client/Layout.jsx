@@ -1,9 +1,11 @@
 import Nav from "./components/Nav";
 import { Outlet } from "react-router-dom";
-
+import bgdark from "../client/assets/bgdark.png";
 const Layout = () => {
 	return (
-		<div className="dark:bg-[#131723] bg-[#f9f9f9] min-h-[100vh] items-center">
+		<div
+			className={`dark:bg-[#131723] bg-[#f9f9f9] min-h-[100vh] items-center bg-top bg-bglight dark:bg-bgdark bg-opacity-30`}
+		>
 			<Nav />
 			<Outlet />
 			{/* top */}

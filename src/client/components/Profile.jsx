@@ -21,7 +21,7 @@ const Profile = () => {
 
 	return (
 		<>
-			<div className="mx-auto w-[375px] shadow-lg rounded-lg flex flex-col items-center py-[40px] bg-white dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+			<div className="mx-auto w-[375px] shadow-lg rounded-lg backdrop-blur-lg flex flex-col items-center py-[40px] bg-white/75 dark:bg-[#202530]/75 border border-transparent border-1 dark:border-[#373D47]">
 				<h1
 					className="font-inter mb-[50px] w-4/5 text-xl text-left
             dark:text-[#DDDCDC]"

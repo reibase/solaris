@@ -22,6 +22,7 @@ export default {
 			xl: ["24px", "32px"],
 			"3xl": ["28px", "32px"],
 		},
+
 		// colors: {
 		// white: "#FFFFF",
 		// l1: "#1fb6ff",
@@ -38,7 +39,12 @@ export default {
 		// green: "green-400",
 		// primary: "indigo-400",
 		// },
-		extend: {},
+		extend: {
+			backgroundImage: {
+				bgdark: "url('/src/client/assets/bgdark.png')",
+				bglight: "url('/src/client/assets/bglight.png')",
+			},
+		},
 	},
 	plugins: [],
 };

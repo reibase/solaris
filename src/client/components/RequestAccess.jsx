@@ -36,7 +36,7 @@ const RequestAccess = () => {
 
 	return (
 		<>
-			<div className="mx-2 lg:mx-auto  block h-[455px] my-10 shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-2/5 bg-white border border-1 border-transparent dark:bg-[#202530] dark:border-[#373D47]">
+			<div className="mx-2 lg:mx-auto  block h-[455px] my-10 shadow-lg rounded-lg text-sm backdrop-blur-lg flex flex-col items-center p-[40px] lg:w-2/5 bg-white/75 border border-1 border-transparent dark:bg-[#202530]/75 dark:border-[#373D47]">
 				<h1 className="mb-[20px] font-inter text-3xl font-bold text-center dark:text-[#DDDCDC]">
 					SOLARIS
 				</h1>
