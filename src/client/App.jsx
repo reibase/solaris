@@ -10,6 +10,9 @@ import axios from "axios";
 import { useStore } from "./store";
 import { React, useEffect } from "react";
 
+import Projects from "./components/Projects.jsx";
+import Create from "./components/Create.jsx";
+
 function App() {
 	const { user, setUserInfo } = useStore();
 
@@ -44,16 +47,18 @@ function App() {
 			children: !user.isLoggedIn
 				? [
 						{ index: true, element: <AccessCode /> },
+						{ path: "/Profile", element: <Profile /> },
 						{ path: "/requestaccess", element: <RequestAccess /> },
 						{ path: "/login", element: <Login /> },
 						{ path: "/access", element: <AccessCode /> },
 				  ]
 				: [
-						{ index: true, element: <Profile /> },
+						{ index: true, element: <Projects /> },
 						{ path: "/profile", element: <Profile /> },
 						{ path: "/requestaccess", element: <Profile /> },
 						{ path: "/login", element: <Profile /> },
 						{ path: "/access", element: <Profile /> },
+						{ path: "/projects", element: <Projects /> },
 						{ path: "/create", element: <Create /> },
 				  ],
 		},
