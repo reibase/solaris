@@ -6,6 +6,7 @@ const initialState = {
 		isLoggedIn: false,
 		access: false,
 		info: {
+			id: null,
 			username: "",
 			avatar: "",
 			verifiedThru: "",

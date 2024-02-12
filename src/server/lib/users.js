@@ -33,14 +33,17 @@ router.put("/:id", async (_req, res) => {
 // create codehost app installation id
 router.post("/:id/installations", async (_req, res) => {
 	try {
-		const [installation, created] = await Installation.findOrCreate({
-			where: {
-				provider: _req.body.provider,
-				installationID: _req.body.installationID,
-			},
-		});
+		if (_req.body.installationID) {
+			const [installation, created] = await Installation.findOrCreate({
+				where: {
+					provider: _req.body.provider,
+					installationID: _req.body.installationID,
+				},
+			});
 
-		await installation.setUser(_req.params.id);
+			await installation.setUser(_req.params.id);
+		}
+
 		const user = await User.findOne({ where: { id: _req.params.id } });
 		const installationsData = await user.getInstallations();
 
@@ -54,6 +57,32 @@ router.post("/:id/installations", async (_req, res) => {
 				}
 			})
 		);
+		return res.send(installationRepos);
+	} catch (error) {
+		return res.send({ status: 500, error: error.message });
+	}
+});
+
+router.get("/:id/installations/repos", async (_req, res) => {
+	try {
+		const user = await User.findOne({ where: { id: _req.params.id } });
+		const installationsData = await user.getInstallations();
+
+		const json = JSON.stringify(installationsData);
+		const obj = JSON.parse(json, null, 2);
+
+		if (obj.length === 0) {
+			return res.send({ status: 404 });
+		}
+		console.log(obj);
+		const installationRepos = await Promise.all(
+			obj.map(async (installation) => {
+				if (installation.provider === "github") {
+					return await getInstallationRepos(installation.installationID);
+				}
+			})
+		);
+
 		return res.send(installationRepos);
 	} catch (error) {
 		return res.send({ status: 500, error: error.message });
