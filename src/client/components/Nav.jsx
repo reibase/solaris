@@ -6,6 +6,7 @@ import darkmodeLock from "../assets/darkmodelock.png";
 import { useStore } from "../store";
 import logo from "../assets/logo.png";
 import darkmodelogo from "../assets/darkmodelogo.png";
+import DropDown from "./DropDown.jsx";
 
 const Nav = () => {
 	const { dark, toggleDark, user } = useStore();
@@ -52,12 +53,9 @@ const Nav = () => {
 							src={dark ? darkmode : lightmode}
 						/>
 					</span>
-					<span>
+					<span className="flex">
 						{user.isLoggedIn ? (
-							<img
-								class="w-6 h-6 me-1 rounded-full object-cover"
-								src={user.info.avatar}
-							/>
+							<DropDown />
 						) : (
 							<Link to="/login">
 								<button
