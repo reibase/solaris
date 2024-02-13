@@ -22,6 +22,7 @@ export default function ConnectRepo({
 			const { data } = await axios
 				.get(`/api/users/${user.id}/installations/repos`)
 				.then((res) => {
+					console.log("res", res);
 					const firstRepo = res.data[0].repositories[0];
 					setProject({
 						...project,
@@ -42,7 +43,6 @@ export default function ConnectRepo({
 		queryFn: getInstallationRepos,
 		enabled: project.host === "github",
 	});
-
 	const [text, setText] = useState("");
 
 	useEffect(() => {
@@ -57,6 +57,9 @@ export default function ConnectRepo({
 		}
 	}, [data]);
 
+	if (!status) {
+		return "loading";
+	}
 	return (
 		<div className="flex flex-col h-full divide-y lg:divide-x lg:divide-y-0 lg:flex-row gap-4 w-full mb-4">
 			<div className="w-full lg:w-1/3 dark:text-[#8B929F]">

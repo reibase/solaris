@@ -13,7 +13,7 @@ import ConnectRepo from "./ConnectRepo.jsx";
 const Create = (props) => {
 	const { user, setUserInfo, dark } = useStore();
 	const navigate = useNavigate();
-
+	console.log("user", user);
 	const [step, setStep] = useState("Connect");
 
 	const [project, setProject] = useState({
@@ -39,6 +39,9 @@ const Create = (props) => {
 		false;
 
 	const createInstallation = async () => {
+		if (!user.info.id) {
+			return;
+		}
 		try {
 			const { data } = await axios
 				.post(`/api/users/${user.info.id}/installations`, {
@@ -99,6 +102,10 @@ const Create = (props) => {
 				);
 		}
 	};
+
+	if (!user.info.id) {
+		return "loading";
+	}
 
 	return (
 		<div className="mx-2 p-4 block h-[455px] shadow-lg rounded-lg text-sm flex flex-col lg:items-center lg:p-[40px] lg:mx-auto lg:w-2/5 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
