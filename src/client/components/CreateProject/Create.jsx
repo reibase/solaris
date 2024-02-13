@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Nav from "../Nav.jsx";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -13,13 +13,12 @@ import ConnectRepo from "./ConnectRepo.jsx";
 const Create = (props) => {
 	const { user, setUserInfo, dark } = useStore();
 	const navigate = useNavigate();
-	console.log("user", user);
 	const [step, setStep] = useState("Connect");
-
+	const [clicked, setClicked] = useState(false);
 	const [project, setProject] = useState({
 		title: "",
 		identifier: "",
-		installationID: "",
+		installationID: null,
 		owner: "",
 		hostID: null,
 		url: "",
@@ -29,19 +28,10 @@ const Create = (props) => {
 		headless: true,
 	});
 
-	const installed = window.location.href.includes("installation_id=")
-		? true
-		: false;
-
-	const installationID =
-		(window.location.href.includes("installation_id=") &&
-			parseInt(window.location.href.split("=")[1].split("&")[0])) ||
-		false;
-
 	const createInstallation = async () => {
-		if (!user.info.id) {
-			return;
-		}
+		const installationID = parseInt(
+			window.location.href.split("=")[1].split("&")[0]
+		);
 		try {
 			const { data } = await axios
 				.post(`/api/users/${user.info.id}/installations`, {
@@ -49,7 +39,7 @@ const Create = (props) => {
 					installationID: installationID,
 				})
 				.then((res) => {
-					console.log("createres", res);
+					window.location.href = window.location.href.split("?")[0];
 					return res;
 				});
 			return data;
@@ -58,10 +48,12 @@ const Create = (props) => {
 		}
 	};
 
-	const { status, data } = useQuery({
+	const { status, data, isFetching } = useQuery({
 		queryKey: ["repos"],
 		queryFn: createInstallation,
-		enabled: installed,
+		enabled:
+			window.location.href.includes("installation_id=") &&
+			user.info.id !== null,
 	});
 
 	const componentHandler = () => {
@@ -74,6 +66,8 @@ const Create = (props) => {
 						setStep={setStep}
 						dark={dark}
 						user={user.info}
+						clicked={clicked}
+						setClicked={setClicked}
 					/>
 				);
 
@@ -103,7 +97,7 @@ const Create = (props) => {
 		}
 	};
 
-	if (!user.info.id) {
+	if (isFetching) {
 		return "loading";
 	}
 
