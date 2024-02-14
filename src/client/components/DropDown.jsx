@@ -25,7 +25,7 @@ export default function DropDown() {
 					aria-labelledby="menu-button"
 					tabindex="-1"
 				>
-					<div class="py-1" role="none">
+					<div class="py-1" onClick={() => setVisible(false)} role="none">
 						<Link
 							to="/projects"
 							class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
@@ -45,7 +45,7 @@ export default function DropDown() {
 							Create New Project
 						</Link>
 					</div>
-					<div class="py-1" role="none">
+					<div class="py-1" onClick={() => setVisible(false)} role="none">
 						<Link
 							to="/profile"
 							class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
@@ -56,7 +56,7 @@ export default function DropDown() {
 							Profile
 						</Link>
 					</div>
-					<div class="py-1" role="none">
+					<div class="py-1" onClick={() => setVisible(false)} role="none">
 						<a
 							href="/api/auth/logout"
 							class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
