@@ -10,6 +10,7 @@ import { useStore } from "./store";
 import { React, useEffect } from "react";
 import Projects from "./components/Projects.jsx";
 import Create from "./components/Create.jsx";
+import Issues from "./components/Issues.jsx";
 
 function App() {
   const { user, setUserInfo } = useStore();
@@ -44,7 +45,7 @@ function App() {
       element: <Layout />,
       children: !user.isLoggedIn
         ? [
-            { index: true, element: <Projects /> },
+            { index: true, element: <Issues /> },
             { path: "/Profile", element: <Profile /> },
             { path: "/requestaccess", element: <RequestAccess /> },
             { path: "/login", element: <Login /> },

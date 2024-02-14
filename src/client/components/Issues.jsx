@@ -14,6 +14,7 @@ export default function Projects() {
         <h3 className="dark:text-white">My Projects</h3>
         <h3 className="text-[#55555] dark:text-white">Create New Project</h3>
       </div>
+
       {data.map((item, index) => (
         <div className="flex flex-row w-full justify-between border border-[#D4D4D4] border-t-0 border-b-1 border-l-0 border-r-0 p-4">
           <div className="flex flex-row">
