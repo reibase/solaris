@@ -6,11 +6,18 @@ export default function RepoItem({
 	hostID,
 	title,
 	visible,
+	installationID,
 	setVisible,
 }) {
 	const clickHandler = (e) => {
 		setVisible(false);
-		setProject({ ...project, title: title, hostID: hostID });
+		setProject({
+			...project,
+			title: title,
+			hostID: hostID,
+			installationID: installationID,
+			identifier: title,
+		});
 	};
 
 	return (

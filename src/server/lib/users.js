@@ -45,7 +45,7 @@ router.post("/:id/installations", async (_req, res) => {
 		});
 
 		await installation.setUser(_req.params.id);
-		console.log("repo created:", created, installation);
+
 		return res.send({
 			status: created ? 201 : 200,
 			message: `installation ${created ? "created" : "found"} successfully.`,
@@ -74,7 +74,7 @@ router.get("/:id/installations/repos", async (_req, res) => {
 				}
 			})
 		);
-		console.log(installationRepos);
+
 		return res.send({ status: 200, installations: installationRepos });
 	} catch (error) {
 		return res.send({ status: 500, error: error.message });

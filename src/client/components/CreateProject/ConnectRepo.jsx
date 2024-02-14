@@ -59,7 +59,7 @@ export default function ConnectRepo({
 		setClicked(true);
 		setProject({ ...project, host: e.target.value });
 	};
-	console.log("projetto", project);
+
 	return (
 		<div className="flex flex-col h-full divide-y gap-4 w-full mb-4 lg:divide-x lg:divide-y-0 lg:flex-row dark:divide-[#373D47]">
 			<div className="w-full lg:w-1/3 dark:text-[#8B929F]">
@@ -96,7 +96,7 @@ export default function ConnectRepo({
 					<div>
 						<button
 							type="button"
-							className="inline-flex w-full justify-center gap-x-1.5 rounded-md px-3 py-2 text-sm text-gray-900 hover:bg-gray-50 border border-1 rounded-md border-gray-300 hover:bg-[#E7F0FF] dark:border-[#8B929F] dark:hover:bg-[#18181B]/75 dark:text-white"
+							className="mt-6 inline-flex w-full justify-between gap-x-1.5 rounded-md px-3 py-1 text-sm text-gray-900 hover:bg-gray-50 border border-1 rounded-md border-gray-300 hover:bg-[#E7F0FF] dark:border-[#8B929F] dark:hover:bg-[#18181B]/75 dark:text-white"
 							id="menu-button"
 							aria-expanded="true"
 							aria-haspopup="true"
@@ -134,6 +134,7 @@ export default function ConnectRepo({
 													project={project}
 													setProject={setProject}
 													hostID={repo.id}
+													installationID={repo.installationID}
 													title={repo.full_name}
 													visible={visible}
 													setVisible={setVisible}

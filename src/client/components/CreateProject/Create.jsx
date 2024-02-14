@@ -97,10 +97,6 @@ const Create = (props) => {
 		}
 	};
 
-	if (isFetching) {
-		return "loading";
-	}
-
 	return (
 		<div className="mx-2 p-4 block h-[455px] shadow-lg rounded-lg text-sm flex flex-col lg:items-center lg:p-[40px] lg:mx-auto lg:w-2/5 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 			<div className="flex flex-row gap-4 h-1/6 w-full mb-4">
@@ -110,12 +106,13 @@ const Create = (props) => {
 				<span className="text-[10px] text-gray-400">Step 2: Settings</span>
 				<span className="text-[10px] text-gray-400">Step 3: Review</span>
 			</div>
-			{componentHandler()}
+			{isFetching ? "Loading" : componentHandler()}
 			<div className="flex items-end justify-end w-full h-1/6">
 				<span>
 					<button
 						className="mt-2 py-1.5 w-24 px-3 rounded-md bg-[#313131] text-white border border-transparent dark:bg-[#18181B] dark:border-[#373D47]"
 						onClick={() => setStep("Settings")}
+						disabled={project.identifier === ""}
 					>
 						Continue
 					</button>
