@@ -39,7 +39,7 @@ const getGitLabInstallationRepos = async (code) => {
 		)
 	);
 
-	return { status: 200, repositories: projects };
+	return [{ status: 200, repositories: projects }];
 };
 
 export default getGitLabInstallationRepos;

@@ -26,8 +26,6 @@ const httpClient = async (refreshToken) => {
 		});
 
 	const access_token = data.access_token;
-	console.log(data);
-	console.log("New refresh token:", data.refresh_token);
 
 	// Update refresh token in db for future reference
 	try {

@@ -31,7 +31,9 @@ const Create = (props) => {
 	const createInstallation = async () => {
 		let provider;
 		let installationID;
-
+		if (!user.info.id) {
+			return;
+		}
 		if (window.location.href.includes("installation_id=")) {
 			provider = "github";
 			installationID = parseInt(
@@ -45,7 +47,7 @@ const Create = (props) => {
 
 		try {
 			const { data } = await axios
-				.post(`/api/users/1/installations`, {
+				.post(`/api/users/${user.info.id}/installations`, {
 					provider: provider,
 					installationID: installationID,
 				})
@@ -62,10 +64,7 @@ const Create = (props) => {
 	const { status, data, isFetching } = useQuery({
 		queryKey: ["repos"],
 		queryFn: createInstallation,
-		enabled:
-			(user.info.id !== null &&
-				window.location.href.includes("installation_id=")) ||
-			window.location.href.includes("code="),
+		enabled: window.location.href.includes("?"),
 	});
 
 	const componentHandler = () => {
@@ -108,7 +107,9 @@ const Create = (props) => {
 				);
 		}
 	};
-
+	if (!user.info.id) {
+		return "Loading";
+	}
 	return (
 		<div className="mx-2 p-4 block h-[455px] shadow-lg rounded-lg text-sm flex flex-col lg:items-center lg:p-[40px] lg:mx-auto lg:w-2/5 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 			<div className="flex flex-row gap-4 h-1/6 w-full mb-4">

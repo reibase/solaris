@@ -38,10 +38,8 @@ router.put("/:id", async (_req, res) => {
 
 // create codehost app installation id
 router.post("/:id/installations", async (_req, res) => {
-	console.log(_req.body);
-	console.log("req.params.id", _req.params.id);
 	try {
-		if (!_req.body.installationID || !_req.body.provider) {
+		if (!_req.body.installationID || !_req.body.provider || !_req.params.id) {
 			return res.send({ status: 401, message: "invalid input data" });
 		}
 		let installation;
@@ -69,12 +67,13 @@ router.post("/:id/installations", async (_req, res) => {
 
 			const refreshToken = data.refresh_token;
 			const [dbInstallation, dbCreated] = await Installation.findOrCreate({
-				where: { UserId: _req.params.id },
+				where: { UserId: _req.params.id, provider: "gitlab" },
 				defaults: {
 					provider: _req.body.provider,
 					refreshToken: refreshToken,
 				},
 			});
+			console.log(dbCreated, _req.body.provider, dbInstallation.refreshToken);
 			installation = dbInstallation;
 			created = dbCreated;
 		} else if (_req.body.provider === "github") {
@@ -86,15 +85,17 @@ router.post("/:id/installations", async (_req, res) => {
 					installationID: _req.body.installationID,
 				},
 			});
+			console.log(dbCreated, _req.body.provider, dbInstallation.installationID);
 			installation = dbInstallation;
 			created = dbCreated;
 		}
 
 		await installation.setUser(_req.params.id);
-		return res.send({
+		const response = {
 			status: created ? 201 : 200,
 			message: `installation ${created ? "created" : "found"} successfully.`,
-		});
+		};
+		return res.send(response);
 	} catch (error) {
 		console.log(error);
 		return res.send({ status: 500, error: error.message });
@@ -104,7 +105,9 @@ router.post("/:id/installations", async (_req, res) => {
 router.get("/:id/github/installations/repos", async (_req, res) => {
 	try {
 		const user = await User.findOne({ where: { id: _req.params.id } });
-		const installationsData = await user.getInstallations();
+		const installationsData = await user.getInstallations({
+			where: { provider: "github" },
+		});
 
 		const json = JSON.stringify(installationsData);
 		const obj = JSON.parse(json, null, 2);
@@ -129,25 +132,21 @@ router.get("/:id/github/installations/repos", async (_req, res) => {
 
 router.get("/:id/gitlab/installations/repos", async (_req, res) => {
 	try {
-		const user = await User.findOne({ where: { id: _req.params.id } });
-		const installationsData = await user.getInstallations();
+		const data = await Installation.findOne({
+			where: { provider: "gitlab", UserId: _req.params.id },
+		});
+		const json = JSON.stringify(data);
+		const installation = JSON.parse(json, null, 2);
 
-		const json = JSON.stringify(installationsData);
-		const obj = JSON.parse(json, null, 2);
-
-		if (obj.length === 0) {
+		if (!installation) {
 			return res.send({ status: 404 });
 		}
 
-		const installationRepos = await Promise.all(
-			obj.map(async (installation) => {
-				if (installation.provider === "gitlab") {
-					return await getGitLabInstallationRepos(installation.refreshToken);
-				}
-			})
+		const responseData = await getGitLabInstallationRepos(
+			installation.refreshToken
 		);
-		console.log("====>", installationRepos);
-		return res.send({ status: 200, installations: installationRepos });
+
+		return res.send({ status: 200, installations: responseData });
 	} catch (error) {
 		return res.send({ status: 500, error: error.message });
 	}

@@ -103,6 +103,7 @@ export default function ConnectRepo({
 							aria-expanded="true"
 							aria-haspopup="true"
 							onClick={() => setVisible(!visible)}
+							disabled={!data?.installations}
 						>
 							{project.title === "" ? "Select a Repository" : project.title}
 							<svg
