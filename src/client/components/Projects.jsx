@@ -3,6 +3,7 @@ import githubLogo from "../assets/github.svg";
 import githubDarkmode from "../assets/github-darkmode.svg";
 import { useStore } from "../store.js";
 import ExternalLink from "../assets/ExternalLink.svg";
+import darkExternalLink from "../assets/darkExternalLink.svg";
 
 export default function Projects() {
   const { dark } = useStore();
@@ -19,7 +20,7 @@ export default function Projects() {
           <div className="flex flex-row">
             <div className="flex flex-col gap-[15px]">
               <div className="flex flex-col">
-                <div className="flex gap-[5px]">
+                <div className="flex gap-[10px]">
                   <h2 className="font-semibold dark:text-white">OWNER</h2>
                   <h2 className="font-semibold dark:text-white">/</h2>
                   <h2 className="font-semibold dark:text-white">REPO-NAME</h2>
@@ -31,7 +32,7 @@ export default function Projects() {
                   Added on January 24
                 </span>
               </div>
-              <button className="flex border border-[#D4D4D4] rounded-md text-[10px] px-[12px] w-[180px] md:w-[220px] justify-between items-center">
+              <button className="flex border border-[#8B929F] dark:border-[#8B929F] rounded-md text-[10px] px-[12px] w-[180px] md:w-[220px] justify-between items-center">
                 <div className="flex gap-[10px]">
                   <img
                     className="w-[14px]"
@@ -41,7 +42,7 @@ export default function Projects() {
                     repo-name on GitHub
                   </span>
                 </div>
-                <img src={ExternalLink} />
+                <img src={dark ? darkExternalLink : ExternalLink} />
               </button>
             </div>
           </div>
@@ -49,7 +50,7 @@ export default function Projects() {
             <p className="text-[10px] font-medium dark:text-[#8B929F]">
               50000 Credits
             </p>
-            <button className="border border-[#D4D4D4] rounded-md  px-[10px] py-[3px] w-[125px] dark:text-white">
+            <button className="border border-[#8B929F] dark:border-[#8B929F] rounded-md  px-[10px] py-[3px] w-[125px] dark:text-white">
               View Project
             </button>
           </div>

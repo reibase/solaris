@@ -9,6 +9,7 @@ import darkSettings from "../assets/darkSettings.svg";
 import darkExternalLink from "../assets/darkExternalLink.svg";
 import Group from "../assets/Group.svg";
 import ProgressBar from "./ProgressBar.jsx";
+import { Button } from "@mui/material";
 
 export default function Projects() {
   const { dark } = useStore();
@@ -76,41 +77,47 @@ export default function Projects() {
       </div>
 
       <div className="mx-2 lg:mx-auto block max-h-[50vh] w-{{WIDTH}} shadow-lg rounded-lg text-sm flex flex-col items-center md:px-[40px] lg:w-3/5 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between overflow-auto">
-        {data.map((item, index) => (
-          <div className="flex flex-row w-full justify-between border border-[#D4D4D4] border-t-0 border-b-1 border-l-0 border-r-0 p-4 hover:bg-[#161f2d]">
-            <div className="flex flex-row">
-              <div className="flex flex-col gap-[25px]">
-                <div className="flex flex-col">
-                  <div className="flex gap-[5px]">
-                    <h2 className="font-semibold dark:text-white">
-                      PULL REQUEST TITLE
-                    </h2>
-                  </div>
-                  <span className="font-light text-[#313131] dark:text-[#8B929F]">
-                    #1 opened on May 23 by ramirc5
+        <div className="flex flex-row w-full justify-between p-4">
+          <div className="flex flex-row">
+            <div className="flex flex-col gap-[25px]">
+              <div className="flex flex-col">
+                <div className="flex gap-[5px]">
+                  <h2 className="font-semibold dark:text-white">
+                    PULL REQUEST TITLE
+                  </h2>
+                </div>
+                <span className="font-light text-[#313131] dark:text-[#8B929F]">
+                  #1 opened on May 23 by ramirc5
+                </span>
+              </div>
+              <button className="flex border border-[#919190] dark:border-[#8B929F] rounded-md text-[10px] px-[12px] w-[180px] md:w-[220px] justify-between items-center gap-[5px]">
+                <div className="flex gap-[10px]">
+                  <img
+                    className="w-[14px]"
+                    src={dark ? githubDarkmode : githubLogo}
+                  />
+                  <span className="font-semibold max-w-[125px] text-ellipsis overflow-hidden text-nowrap dark:text-white">
+                    (chore) refactor: uncrustify par...
                   </span>
                 </div>
-                <button className="flex border border-[#919190] dark:border-[#8B929F] rounded-md text-[10px] px-[12px] w-[180px] md:w-[220px] justify-between items-center gap-[5px]">
-                  <div className="flex gap-[10px]">
-                    <img
-                      className="w-[14px]"
-                      src={dark ? githubDarkmode : githubLogo}
-                    />
-                    <span className="font-semibold max-w-[125px] text-ellipsis overflow-hidden text-nowrap dark:text-white">
-                      (chore) refactor: uncrustify par...
-                    </span>
-                  </div>
-                  <img src={dark ? darkExternalLink : ExternalLink} />
-                </button>
-              </div>
-            </div>
-            <div className="flex flex-col justify-end gap-[10px] md:gap-0 items-end md:justify-between ">
-              <button className="border border-[#D4D4D4] dark:border-[#8B929F] rounded-md  px-[10px] py-[3px] w-[125px] dark:text-white">
-                View Project
+                <img src={dark ? darkExternalLink : ExternalLink} />
               </button>
             </div>
           </div>
-        ))}
+        </div>
+        <div className="flex flex-col gap-[15px]">
+          <p className="font-medium text-[10px] text-black dark:text-white">
+            Vote yes to merge or vote No to close this pull request.
+          </p>
+          <div className="flex flex-row justify-between gap-[15px]">
+            <button className="bg-[#20B176] font-semibold text-[16px] px-[25px] py-[10px] rounded-md text-white">
+              VOTE YES
+            </button>
+            <button className="bg-[#DC2626] font-semibold text-[16px] px-[25px] py-[10px] rounded-md text-white">
+              VOTE NO
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

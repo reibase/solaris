@@ -11,6 +11,7 @@ import { React, useEffect } from "react";
 import Projects from "./components/Projects.jsx";
 import Create from "./components/Create.jsx";
 import Issues from "./components/Issues.jsx";
+import Votes from "./components/Votes.jsx";
 
 function App() {
   const { user, setUserInfo } = useStore();
