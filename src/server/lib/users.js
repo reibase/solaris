@@ -1,6 +1,12 @@
 import express from "express";
 import { User, Installation, Project } from "../../db/models/index.js";
-import getInstallationRepos from "../codehost/github/getInstallationRepos.js";
+import getGitHubInstallationRepos from "../codehost/github/getGitHubInstallationRepos.js";
+import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallationRepos.js";
+
+import "dotenv/config";
+import axios from "axios";
+const { GITLAB_APP_CLIENT_ID, GITLAB_APP_CLIENT_SECRET } = process.env;
+import url from "url";
 
 const router = express.Router();
 //endpoint: /users
@@ -32,30 +38,70 @@ router.put("/:id", async (_req, res) => {
 
 // create codehost app installation id
 router.post("/:id/installations", async (_req, res) => {
+	console.log(_req.body);
+	console.log("req.params.id", _req.params.id);
 	try {
 		if (!_req.body.installationID || !_req.body.provider) {
 			return res.send({ status: 401, message: "invalid input data" });
 		}
+		let installation;
+		let created;
+		if (_req.body.provider === "gitlab") {
+			const body = {
+				grant_type: "authorization_code",
+				client_id: GITLAB_APP_CLIENT_ID,
+				client_secret: GITLAB_APP_CLIENT_SECRET,
+				code: _req.body.installationID,
+				redirect_uri: "http://localhost:3001/create",
+			};
 
-		const [installation, created] = await Installation.findOrCreate({
-			where: {
-				provider: _req.body.provider,
-				installationID: parseInt(_req.body.installationID),
-			},
-		});
+			const params = new url.URLSearchParams(body);
+
+			const { data } = await axios
+				.post(`https://gitlab.com/oauth/token`, params.toString())
+				.then((res) => {
+					return res;
+				})
+				.catch((err) => {
+					console.log(err);
+					return err;
+				});
+
+			const refreshToken = data.refresh_token;
+			const [dbInstallation, dbCreated] = await Installation.findOrCreate({
+				where: { UserId: _req.params.id },
+				defaults: {
+					provider: _req.body.provider,
+					refreshToken: refreshToken,
+				},
+			});
+			installation = dbInstallation;
+			created = dbCreated;
+		} else if (_req.body.provider === "github") {
+			_req.body.installationID = parseInt(_req.body.installationID);
+
+			const [dbInstallation, dbCreated] = await Installation.findOrCreate({
+				where: {
+					provider: _req.body.provider,
+					installationID: _req.body.installationID,
+				},
+			});
+			installation = dbInstallation;
+			created = dbCreated;
+		}
 
 		await installation.setUser(_req.params.id);
-
 		return res.send({
 			status: created ? 201 : 200,
 			message: `installation ${created ? "created" : "found"} successfully.`,
 		});
 	} catch (error) {
+		console.log(error);
 		return res.send({ status: 500, error: error.message });
 	}
 });
 
-router.get("/:id/installations/repos", async (_req, res) => {
+router.get("/:id/github/installations/repos", async (_req, res) => {
 	try {
 		const user = await User.findOne({ where: { id: _req.params.id } });
 		const installationsData = await user.getInstallations();
@@ -70,11 +116,37 @@ router.get("/:id/installations/repos", async (_req, res) => {
 		const installationRepos = await Promise.all(
 			obj.map(async (installation) => {
 				if (installation.provider === "github") {
-					return await getInstallationRepos(installation.installationID);
+					return await getGitHubInstallationRepos(installation.installationID);
 				}
 			})
 		);
 
+		return res.send({ status: 200, installations: installationRepos });
+	} catch (error) {
+		return res.send({ status: 500, error: error.message });
+	}
+});
+
+router.get("/:id/gitlab/installations/repos", async (_req, res) => {
+	try {
+		const user = await User.findOne({ where: { id: _req.params.id } });
+		const installationsData = await user.getInstallations();
+
+		const json = JSON.stringify(installationsData);
+		const obj = JSON.parse(json, null, 2);
+
+		if (obj.length === 0) {
+			return res.send({ status: 404 });
+		}
+
+		const installationRepos = await Promise.all(
+			obj.map(async (installation) => {
+				if (installation.provider === "gitlab") {
+					return await getGitLabInstallationRepos(installation.refreshToken);
+				}
+			})
+		);
+		console.log("====>", installationRepos);
 		return res.send({ status: 200, installations: installationRepos });
 	} catch (error) {
 		return res.send({ status: 500, error: error.message });

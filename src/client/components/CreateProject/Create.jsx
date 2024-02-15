@@ -29,13 +29,24 @@ const Create = (props) => {
 	});
 
 	const createInstallation = async () => {
-		const installationID = parseInt(
-			window.location.href.split("=")[1].split("&")[0]
-		);
+		let provider;
+		let installationID;
+
+		if (window.location.href.includes("installation_id=")) {
+			provider = "github";
+			installationID = parseInt(
+				window.location.href.split("=")[1].split("&")[0]
+			);
+		}
+		if (window.location.href.includes("code=")) {
+			provider = "gitlab";
+			installationID = window.location.href.split("=")[1];
+		}
+
 		try {
 			const { data } = await axios
-				.post(`/api/users/${user.info.id}/installations`, {
-					provider: "github",
+				.post(`/api/users/1/installations`, {
+					provider: provider,
 					installationID: installationID,
 				})
 				.then((res) => {
@@ -52,8 +63,9 @@ const Create = (props) => {
 		queryKey: ["repos"],
 		queryFn: createInstallation,
 		enabled:
-			window.location.href.includes("installation_id=") &&
-			user.info.id !== null,
+			(user.info.id !== null &&
+				window.location.href.includes("installation_id=")) ||
+			window.location.href.includes("code="),
 	});
 
 	const componentHandler = () => {

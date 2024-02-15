@@ -9,6 +9,10 @@ const Installation = db.define("Installation", {
 		type: DataTypes.BIGINT,
 		unique: true,
 	},
+	refreshToken: {
+		type: DataTypes.STRING,
+		unique: true,
+	},
 });
 
 export default Installation;

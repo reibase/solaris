@@ -20,12 +20,15 @@ export default function ConnectRepo({
 	clicked,
 	setClicked,
 }) {
+	console.log("project.host:", project.host);
+
 	const [visible, setVisible] = useState(false);
 	const getInstallationRepos = async () => {
 		try {
 			const { data } = await axios
-				.get(`/api/users/${user.id}/installations/repos`)
+				.get(`/api/users/${user.id}/${project.host}/installations/repos`)
 				.then((res) => {
+					console.log(res);
 					return res;
 				});
 			setClicked(false);
@@ -38,7 +41,7 @@ export default function ConnectRepo({
 	const { status, data, isFetching } = useQuery({
 		queryKey: ["repos"],
 		queryFn: getInstallationRepos,
-		enabled: clicked,
+		enabled: user.id !== null && clicked,
 	});
 
 	const [text, setText] = useState("");
@@ -59,7 +62,6 @@ export default function ConnectRepo({
 		setClicked(true);
 		setProject({ ...project, host: e.target.value });
 	};
-
 	return (
 		<div className="flex flex-col h-full divide-y gap-4 w-full mb-4 lg:divide-x lg:divide-y-0 lg:flex-row dark:divide-[#373D47]">
 			<div className="w-full lg:w-1/3 dark:text-[#8B929F]">
@@ -81,7 +83,7 @@ export default function ConnectRepo({
 						project.host === "gitlab" && "bg-[#E7F0FF] dark:bg-[#18181B]"
 					} flex flex-row gap-8 items-center mt-6 px-4 w-30 py-1 border border-1 rounded-md border-[#8B929F] hover:bg-[#E7F0FF] dark:border-[#8B929F] dark:hover:bg-[#18181B]/75 dark:text-white`}
 					value="gitlab"
-					onClick={(e) => setProject({ ...project, host: e.target.value })}
+					onClick={(e) => clickHandler(e)}
 				>
 					<span className="">GitLab</span>
 					<span>
@@ -148,11 +150,19 @@ export default function ConnectRepo({
 				</div>
 				<div className="flex flex-col gap-4 mt-3 text-gray-500">
 					{text}
-					<a href="https://github.com/organizations/reibase/settings/apps/solaris-local/installations">
-						<button className="mt-1 py-1.5 px-3 rounded-md bg-[#313131] text-white border border-transparent dark:bg-[#18181B] dark:border-[#373D47]">
-							Manage Access
-						</button>
-					</a>
+					{project.host === "gitlab" ? (
+						<a href="https://gitlab.com/oauth/authorize?client_id=66859395df9b0ec65ba6f8add687fceffba6d17b39cde677fd0933336227b2b1&redirect_uri=http://localhost:3001/create&response_type=code&scope=api">
+							<button className="mt-1 py-1.5 px-3 rounded-md bg-[#313131] text-white border border-transparent dark:bg-[#18181B] dark:border-[#373D47]">
+								Manage Access
+							</button>
+						</a>
+					) : (
+						<a href="https://github.com/organizations/reibase/settings/apps/solaris-local/installations">
+							<button className="mt-1 py-1.5 px-3 rounded-md bg-[#313131] text-white border border-transparent dark:bg-[#18181B] dark:border-[#373D47]">
+								Manage Access
+							</button>
+						</a>
+					)}
 				</div>
 			</div>
 		</div>
