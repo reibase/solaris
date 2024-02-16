@@ -12,6 +12,7 @@ import Installation from "./installation.js";
  *    BlogPost.belongsTo(User)
  */
 User.hasMany(Project);
+Project.belongsTo(User);
 User.hasMany(Installation);
 Installation.belongsTo(User);
 Project.hasMany(User);

@@ -178,8 +178,10 @@ router.post("/:id/projects", async (_req, res) => {
 			live,
 			clawBack,
 		});
+		await project.setUser(_req.params.id);
 		res.status(200).json({ project });
 	} catch (error) {
+		console.log(error.message);
 		res.status(500).json(error.message);
 	}
 });

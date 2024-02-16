@@ -45,6 +45,10 @@ const Project = db.define("Project", {
 	public: {
 		type: DataTypes.BOOLEAN,
 	},
+	creditAmount: {
+		type: DataTypes.INTEGER,
+		defaultValue: 100,
+	},
 });
 
 export default Project;
