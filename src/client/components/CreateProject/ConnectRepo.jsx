@@ -20,8 +20,6 @@ export default function ConnectRepo({
 	clicked,
 	setClicked,
 }) {
-	console.log("project.host:", project.host);
-
 	const [visible, setVisible] = useState(false);
 	const getInstallationRepos = async () => {
 		try {
@@ -98,7 +96,7 @@ export default function ConnectRepo({
 					<div>
 						<button
 							type="button"
-							className="mt-6 inline-flex w-full justify-between gap-x-1.5 rounded-md px-3 py-1 text-sm text-gray-900 hover:bg-gray-50 border border-1 rounded-md border-gray-300 hover:bg-[#E7F0FF] dark:border-[#8B929F] dark:hover:bg-[#18181B]/75 dark:text-white"
+							className="mt-6 inline-flex w-full justify-between gap-x-1.5 rounded-md px-3 py-1 text-sm text-gray-900 hover:bg-gray-50 border border-1 rounded-md border-gray-300 hover:bg-[#E7F0FF] dark:border-[#8B929F] dark:hover:bg-[#18181B]/75 dark:text-white disabled:cursor-default"
 							id="menu-button"
 							aria-expanded="true"
 							aria-haspopup="true"
@@ -138,7 +136,11 @@ export default function ConnectRepo({
 													setProject={setProject}
 													hostID={repo.id}
 													installationID={repo.installationID}
-													title={repo.full_name}
+													title={
+														project.host === "github"
+															? repo.full_name
+															: repo.name_with_namespace
+													}
 													visible={visible}
 													setVisible={setVisible}
 												/>
