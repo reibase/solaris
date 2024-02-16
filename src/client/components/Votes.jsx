@@ -17,7 +17,7 @@ export default function Projects() {
 
   return (
     <div className="flex flex-col gap-[10px]">
-      <div className="mx-2 lg:mx-auto block  w-{{WIDTH}} shadow-lg rounded-lg text-sm flex flex-col items-center md:px-[40px] lg:w-3/5 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between gap-[10px]">
+      <div className="mx-2 lg:mx-auto block  w-{{WIDTH}} shadow-lg rounded-lg text-sm flex flex-col items-center md:px-[40px] lg:w-[65%] bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between gap-[10px]">
         <div className="flex flex-row w-full justify-between p-4">
           <div className="flex flex-row">
             <div className="flex flex-col gap-[15px]">
@@ -76,7 +76,7 @@ export default function Projects() {
         </div>
       </div>
 
-      <div className="mx-2 lg:mx-auto block max-h-[50vh] w-{{WIDTH}} shadow-lg rounded-lg text-sm flex flex-col items-center md:px-[40px] lg:w-3/5 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between overflow-auto">
+      <div className="mx-2 lg:mx-auto block max-h-[50vh] w-{{WIDTH}} shadow-lg rounded-lg text-sm flex flex-col items-center md:px-[40px] lg:w-[65%] bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between overflow-auto">
         <div className="flex flex-row w-full justify-between p-4">
           <div className="flex flex-row">
             <div className="flex flex-col gap-[25px]">
@@ -110,12 +110,40 @@ export default function Projects() {
             Vote yes to merge or vote No to close this pull request.
           </p>
           <div className="flex flex-row justify-between gap-[15px]">
-            <button className="bg-[#20B176] font-semibold text-[16px] px-[25px] py-[10px] rounded-md text-white">
+            <button className="bg-[#20B176] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white">
               VOTE YES
             </button>
-            <button className="bg-[#DC2626] font-semibold text-[16px] px-[25px] py-[10px] rounded-md text-white">
+            <button className="bg-[#DC2626] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white">
               VOTE NO
             </button>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-[5px] font-semibold text-[#8B929F] text-[12px] w-[85%] mt-[20px]">
+          <p>Voting Activity</p>
+          <ProgressBar
+            yesPercent={0.35}
+            yesVotes={123}
+            noPercent={0.1}
+            noVotes={87}
+            totalPercent={0.45}
+            quorum={0.5}
+          />
+        </div>
+        <div>
+          <div class="flex justify-center">
+            <div class="basis-[25%] text-center ">
+              <p className="dark:text-white">User</p>
+            </div>
+            <div class="basis-[30%] text-center ">
+              <p className="dark:text-white">Side</p>
+            </div>
+            <div class="basis-[20%] text-center">
+              <p className="dark:text-white">Amount</p>
+            </div>
+            <div class="basis-[25%] text-center  ">
+              <p className="dark:text-white">Age</p>
+            </div>
           </div>
         </div>
       </div>

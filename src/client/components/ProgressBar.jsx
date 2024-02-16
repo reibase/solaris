@@ -8,76 +8,53 @@ const ProgressBar = ({
   totalPercent,
   quorum,
 }) => {
-  let difference = 1 / quorum;
-  yesPercent = yesPercent * 100 * difference;
-  noPercent = noPercent * 100 * difference;
-  let remainingVotesPercent = (quorum - totalPercent) * 100 * difference;
+  const difference = 1 / quorum;
+  const yesPercentFull = yesPercent * 100;
+  const noPercentFull = noPercent * 100;
+
+  const yesPercentCalc = yesPercentFull * difference;
+  const noPercentCalc = noPercentFull * difference;
+  const remainingVotesPercent = (quorum - totalPercent) * 100 * difference;
 
   return (
-    <>
-      <div className="flex h-17 w-full mb-4 px-10">
-        {yesPercent >= noPercent ? (
+    <div className="flex flex-col">
+      <div className="flex flex-start items-center w-full rounded-md gap-[15px]">
+        {yesVotes >= noVotes ? (
           <>
-            <div
-              className="h-10 bg-white text-green-600 text-right mb-2 font-light flex-grow"
-              style={{ flexBasis: `${yesPercent}%` }}
-            >
-              {yesVotes >= 1 && yesVotes}
+            <div className="text-right text-[#DC2626]">
+              {noVotes >= 1 && noPercentFull}%
             </div>
-            <div
-              className="h-10 bg-white text-red-600 text-right mb-2 font-light flex-grow"
-              style={{ flexBasis: `${noPercent}%` }}
-            >
-              {noVotes >= 1 && noVotes}
+            <div className="text-right text-[#20B176]">
+              {yesVotes >= 1 && yesPercentFull}%
             </div>
           </>
         ) : (
           <>
-            <div
-              className="h-10 bg-white text-green-600 text-right mb-2 font-light flex-grow"
-              style={{ flexBasis: `${yesPercent}%` }}
-            >
-              {yesVotes >= 1 && yesVotes}
+            <div className="text-right text-[#20B176]">
+              {yesVotes >= 1 && yesPercentFull}%
             </div>
-            <div
-              className="h-10 bg-white text-red-600 text-right mb-2 font-light flex-grow"
-              style={{ flexBasis: `${noPercent}%` }}
-            >
-              {noVotes >= 1 && noVotes}
+            <div className="text-right text-[#DC2626]">
+              {noVotes >= 1 && noPercentFull}%
             </div>
           </>
         )}
       </div>
-      <div className="flex h-17 w-full mb-4 px-10">
-        {yesPercent >= noPercent ? (
-          <>
-            <div
-              className="h-5 bg-red-500 flex-grow"
-              style={{ flexBasis: `${noPercent}%` }}
-            ></div>
-            <div
-              className="h-5 bg-green-500 flex-grow"
-              style={{ flexBasis: `${yesPercent}%` }}
-            ></div>
-          </>
-        ) : (
-          <>
-            <div
-              className="h-5 bg-green-500 flex-grow"
-              style={{ flexBasis: `${yesPercent}%` }}
-            ></div>
-            <div
-              className="h-5 bg-red-500 flex-grow"
-              style={{ flexBasis: `${noPercent}%` }}
-            ></div>
-          </>
-        )}
+      {/* Colored bars representing votes */}
+      <div className="flex items-center justify-between h-5 w-full rounded-md">
         <div
-          className="h-5 bg-gray-300 flex-grow"
+          style={{ flexBasis: `${noPercentCalc}%` }}
+          className="bg-[#DC2626] h-[4px] rounded-tl-md rounded-bl-md"
+        ></div>
+        <div
+          style={{ flexBasis: `${yesPercentCalc}%` }}
+          className="bg-[#20B176] h-[4px]"
+        ></div>
+        <div
           style={{ flexBasis: `${remainingVotesPercent}%` }}
+          className="bg-gray-400 h-[4px] rounded-tr-md rounded-br-md"
         ></div>
       </div>
-    </>
+    </div>
   );
 };
 

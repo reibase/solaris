@@ -16,7 +16,7 @@ export default function Projects() {
 
   return (
     <div className="flex flex-col gap-[10px]">
-      <div className="mx-2 lg:mx-auto block  w-{{WIDTH}} shadow-lg rounded-lg text-sm flex flex-col items-center md:px-[40px] lg:w-3/5 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between gap-[10px]">
+      <div className="mx-2 lg:mx-auto block  w-{{WIDTH}} shadow-lg rounded-lg text-sm flex flex-col items-center md:px-[40px] lg:w-[65%] bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between gap-[10px]">
         <div className="flex flex-row w-full justify-between p-4">
           <div className="flex flex-row">
             <div className="flex flex-col gap-[15px]">
@@ -75,7 +75,7 @@ export default function Projects() {
         </div>
       </div>
 
-      <div className="mx-2 lg:mx-auto block max-h-[50vh] w-{{WIDTH}} shadow-lg rounded-lg text-sm flex flex-col items-center md:px-[40px] lg:w-3/5 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between overflow-auto">
+      <div className="mx-2 lg:mx-auto block max-h-[50vh] w-{{WIDTH}} shadow-lg rounded-lg text-sm flex flex-col items-center md:px-[40px] lg:w-[65%] bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between overflow-auto">
         {data.map((item, index) => (
           <div className="flex flex-row w-full justify-between border border-[#D4D4D4] border-t-0 border-b-1 border-l-0 border-r-0 p-4 hover:bg-[#161f2d]">
             <div className="flex flex-row">
