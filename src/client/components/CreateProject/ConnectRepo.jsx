@@ -67,8 +67,7 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 	};
 
 	const manageAccess = {
-		github:
-			"https://github.com/organizations/reibase/settings/apps/solaris-local/installations",
+		github: "https://github.com/apps/solaris-local/installations/select_target",
 		gitlab:
 			"https://gitlab.com/oauth/authorize?client_id=66859395df9b0ec65ba6f8add687fceffba6d17b39cde677fd0933336227b2b1&redirect_uri=http://localhost:3001/create&response_type=code&scope=api",
 	};
