@@ -10,7 +10,7 @@ const httpClient = async (refreshToken) => {
 		client_id: GITLAB_APP_CLIENT_ID,
 		client_secret: GITLAB_APP_CLIENT_SECRET,
 		refresh_token: refreshToken,
-		redirect_uri: "http://localhost:3001/create",
+		redirect_uri: GITLAB_APP_REDIRECT_URI || "http://localhost:3001/create",
 	};
 
 	const params = new url.URLSearchParams(body);
