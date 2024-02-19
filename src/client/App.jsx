@@ -20,7 +20,7 @@ function App() {
 		return data;
 	};
 
-	const { data } = useQuery({
+	const { data, isFetching } = useQuery({
 		queryKey: ["userinfo"],
 		queryFn: getUser,
 	});
@@ -64,6 +64,9 @@ function App() {
 		},
 	]);
 
+	if (isFetching) {
+		return "loading";
+	}
 	return <RouterProvider router={router} />;
 }
 
