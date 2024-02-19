@@ -3,13 +3,10 @@ import { App, Octokit } from "octokit";
 import jwt from "jsonwebtoken";
 import fs from "fs";
 
-const {
-	GITHUB_APP_PRIVATE_KEY_PATH,
-	GITHUB_APP_ID,
-	GITHUB_APP_WEBHOOK_SECRET,
-} = process.env;
+const { GITHUB_APP_PRIVATE_KEY, GITHUB_APP_ID, GITHUB_APP_WEBHOOK_SECRET } =
+	process.env;
 
-const privateKey = fs.readFileSync(GITHUB_APP_PRIVATE_KEY_PATH, "utf8");
+const privateKey = GITHUB_APP_PRIVATE_KEY;
 
 // Create a authenticated as a GitHub App
 const gitHubApp = new App({
@@ -33,7 +30,6 @@ const httpClient = async (repoName) => {
 		exp: Math.floor(Date.now() / 1000) + 10 * 60,
 		iss: GITHUB_APP_ID,
 	};
-
 	const jwtToken = jwt.sign(payload, privateKey, { algorithm: "RS256" });
 
 	const { data } = await gitHubApp.octokit.request(
@@ -45,10 +41,11 @@ const httpClient = async (repoName) => {
 			},
 		}
 	);
-	const installationId = data.id;
+	const installationID = data.id;
 
 	// Returns an authenticated client instance for this repository:
-	const client = await gitHubApp.getInstallationOctokit(installationId);
+	const client = await gitHubApp.getInstallationOctokit(installationID);
+
 	return { client, jwtToken };
 };
 export default httpClient;

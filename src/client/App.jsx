@@ -10,7 +10,7 @@ import { useStore } from "./store";
 import { React, useEffect } from "react";
 
 import Projects from "./components/Projects.jsx";
-import Create from "./components/Create.jsx";
+import Create from "./components/CreateProject/Create.jsx";
 
 function App() {
 	const { user, setUserInfo } = useStore();
@@ -30,6 +30,7 @@ function App() {
 			const updatedUserInfo = {
 				isLoggedIn: true,
 				info: {
+					id: data.id,
 					username: data.username,
 					avatar: data.avatar,
 					verifiedThru: data.verifiedThru,
@@ -54,6 +55,9 @@ function App() {
 				: [
 						{ index: true, element: <Projects /> },
 						{ path: "/profile", element: <Profile /> },
+						{ path: "/requestaccess", element: <Profile /> },
+						{ path: "/login", element: <Profile /> },
+						{ path: "/access", element: <Profile /> },
 						{ path: "/projects", element: <Projects /> },
 						{ path: "/create", element: <Create /> },
 				  ],

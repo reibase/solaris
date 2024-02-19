@@ -1,11 +1,11 @@
 import { Sequelize, DataTypes } from "sequelize";
-import db from '../index.js'
+import db from "../index.js";
 
 const Issue = db.define("Issue", {
 	title: {
 		type: DataTypes.STRING,
 	},
-    description: {
+	description: {
 		type: DataTypes.STRING,
 	},
 	url: {
@@ -13,6 +13,9 @@ const Issue = db.define("Issue", {
 	},
 	host: {
 		type: DataTypes.STRING,
+	},
+	hostID: {
+		type: DataTypes.BIGINT,
 	},
 	totalYesVotes: {
 		type: DataTypes.INTEGER,
