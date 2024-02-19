@@ -59,8 +59,9 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 			installationID: null,
 			owner: "",
 			hostID: null,
+			creditAmount: 100,
 			url: "",
-			quorum: 0.5,
+			quorum: 50,
 			clawBack: true,
 			headless: true,
 		});
@@ -108,7 +109,7 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 						<div>
 							<button
 								type="button"
-								className="mt-6 inline-flex w-full justify-between gap-x-1.5 rounded-md px-3 py-1 text-sm text-gray-900 hover:bg-gray-50 border border-1 rounded-md border-gray-300 hover:bg-[#E7F0FF] dark:border-[#8B929F] dark:hover:bg-[#18181B]/75 dark:text-white disabled:cursor-default"
+								className="mt-6 inline-flex w-full justify-between gap-x-1.5 rounded-md px-3 py-1 text-sm text-gray-900 hover:bg-gray-50 border border-1 rounded-md border-gray-300 hover:bg-[#E7F0FF] dark:border-[#8B929F] disabled:text-gray-300 disabled:border-gray-300 dark:hover:bg-[#18181B]/75 dark:text-white disabled:hover:bg-transparent disabled:cursor-default disabled:dark:hover:bg-transparent disabled:dark:text-[#373D47] disabled:dark:border-[#373D47]"
 								id="menu-button"
 								aria-expanded="true"
 								aria-haspopup="true"
@@ -164,7 +165,11 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 						) : null}
 					</div>
 				)}
-				<div className="flex flex-col gap-4 mt-3 text-gray-500">
+				<div
+					className={`flex flex-col gap-4 mt-3 text-gray-500 ${
+						data?.status === 404 && "text-red-500"
+					}`}
+				>
 					{text}
 					{project.host && (
 						<a href={manageAccess[project.host]}>

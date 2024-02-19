@@ -22,6 +22,7 @@ const Project = db.define("Project", {
 	},
 	hostID: {
 		type: DataTypes.BIGINT,
+		unique: true,
 	},
 	connected: {
 		type: DataTypes.BOOLEAN,

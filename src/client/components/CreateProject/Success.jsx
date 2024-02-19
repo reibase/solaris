@@ -7,6 +7,7 @@ import { useState } from "react";
 export default function Success({ project, user }) {
 	const navigate = useNavigate();
 	const [text, setText] = useState("");
+	const [incomplete, setIncomplete] = useState(true);
 
 	const createProject = async () => {
 		try {
@@ -29,7 +30,7 @@ export default function Success({ project, user }) {
 				});
 			status === 200 &&
 				setText("You have successfully created a project on Solaris.");
-			console.log("data:", data);
+			setIncomplete(false);
 			return data;
 		} catch (error) {
 			setText(`There was an error creating this project: ${error.message}`);
@@ -40,7 +41,7 @@ export default function Success({ project, user }) {
 	const { status, data, isFetching } = useQuery({
 		queryKey: ["project"],
 		queryFn: createProject,
-		enabled: user.id !== null,
+		enabled: user.id !== null && incomplete,
 	});
 	if (isFetching) {
 		<div className="flex flex-col justify-center items-center h-full gap-4 w-full mb-4  dark:divide-[#373D47] dark:text-white">

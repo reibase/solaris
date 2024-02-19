@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useStore } from "../../store.js";
-
+import { useEffect } from "react";
 import Review from "./Review.jsx";
 import ConnectRepo from "./ConnectRepo.jsx";
 import Settings from "./Settings.jsx";
@@ -25,6 +25,19 @@ const Create = (props) => {
 		clawBack: true,
 		headless: true,
 	});
+
+	const [canContinue, setCanContinue] = useState(false);
+	const [canGoBack, setCanGoBack] = useState(false);
+
+	useEffect(() => {
+		console.log(project);
+		if (project.host !== "" && project.hostID !== null) {
+			setCanContinue(true);
+		}
+		if (index > 0 && index < 3) {
+			setCanGoBack(true);
+		}
+	}, [project, index]);
 
 	const createInstallation = async () => {
 		let provider;
@@ -147,7 +160,12 @@ const Create = (props) => {
 				componentHandler()
 			)}
 
-			<ContinueButtons index={index} setIndex={setIndex} />
+			<ContinueButtons
+				index={index}
+				setIndex={setIndex}
+				canContinue={canContinue}
+				canGoBack={canGoBack}
+			/>
 		</div>
 	);
 };
