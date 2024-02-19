@@ -51,7 +51,6 @@ function App() {
 						{ path: "/requestaccess", element: <RequestAccess /> },
 						{ path: "/login", element: <Login /> },
 						{ path: "/access", element: <AccessCode /> },
-						{ path: "/create", element: <Create /> },
 				  ]
 				: [
 						{ index: true, element: <Projects /> },
