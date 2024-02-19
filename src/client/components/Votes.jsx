@@ -130,21 +130,48 @@ export default function Projects() {
             quorum={0.5}
           />
         </div>
-        <div>
-          <div class="flex justify-center">
-            <div class="basis-[25%] text-center ">
-              <p className="dark:text-white">User</p>
+        <div className="w-[93%]">
+          <div class=" grid grid-cols-4">
+            <div class="text-center ">
+              <p className="dark:text-[#8B929F] text-[10px]">User</p>
             </div>
-            <div class="basis-[30%] text-center ">
-              <p className="dark:text-white">Side</p>
+            <div class=" text-center ">
+              <p className="dark:text-[#8B929F] text-[10px]">Side</p>
             </div>
-            <div class="basis-[20%] text-center">
-              <p className="dark:text-white">Amount</p>
+            <div class="text-center">
+              <p className="dark:text-[#8B929F] text-[10px]">Amount</p>
             </div>
-            <div class="basis-[25%] text-center  ">
-              <p className="dark:text-white">Age</p>
+            <div class="text-center  ">
+              <p className="dark:text-[#8B929F] text-[10px]">Age</p>
             </div>
           </div>
+          {data.map((item, index) => (
+            <div
+              key={index}
+              class={` p-[3px] grid grid-cols-4 ${
+                item % 2 == 1 ? "bg-[#171D2B]" : null
+              } `}
+            >
+              <div class="text-center ">
+                <p className="dark:text-white text-[10px]">jex123</p>
+              </div>
+              <div class=" text-center ">
+                <p
+                  className={`${
+                    item % 2 == 1 ? "text-[#038800]" : "text-[#DC2626]"
+                  } text-[10px]`}
+                >
+                  {item % 2 == 1 ? "YES" : "NO"}
+                </p>
+              </div>
+              <div class="text-center">
+                <p className="dark:text-white text-[10px]">50,000</p>
+              </div>
+              <div class="text-center  ">
+                <p className="dark:text-white text-[10px]">2 HR</p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
