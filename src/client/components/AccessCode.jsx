@@ -83,7 +83,7 @@ const AccessCode = () => {
 						</span>
 						<span className="lg:w-2/5 w-full">
 							<button
-								className="font-inter bg-[#313131] p-2 w-full text-white rounded-md dark:bg-[#18181B] dark:border-[#373D47] dark:border-2"
+								className="font-inter bg-[#313131] p-2 w-full text-white rounded-md dark:bg-[#18181B] dark:border-[#373D47] dark:border-1"
 								onClick={() => setClicked(true)}
 							>
 								Continue

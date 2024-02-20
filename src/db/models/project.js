@@ -2,7 +2,13 @@ import { Sequelize, DataTypes } from "sequelize";
 import db from "../index.js";
 
 const Project = db.define("Project", {
+	owner: {
+		type: DataTypes.INTEGER,
+	},
 	title: {
+		type: DataTypes.STRING,
+	},
+	installationID: {
 		type: DataTypes.STRING,
 	},
 	description: {
@@ -16,6 +22,7 @@ const Project = db.define("Project", {
 	},
 	hostID: {
 		type: DataTypes.BIGINT,
+		unique: true,
 	},
 	connected: {
 		type: DataTypes.BOOLEAN,
@@ -36,8 +43,12 @@ const Project = db.define("Project", {
 	url: {
 		type: DataTypes.STRING,
 	},
-	private: {
+	public: {
 		type: DataTypes.BOOLEAN,
+	},
+	creditAmount: {
+		type: DataTypes.INTEGER,
+		defaultValue: 100,
 	},
 });
 
