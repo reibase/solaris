@@ -117,9 +117,16 @@ router.get("/:id/github/installations/repos", async (_req, res) => {
 		}
 
 		const installationRepos = await Promise.all(
-			obj.map(async (installation) => {
-				if (installation.provider === "github") {
-					return await getGitHubInstallationRepos(installation.installationID);
+			obj.forEach(async (installation) => {
+				const installationRepos = await getGitHubInstallationRepos(
+					installation.installationID
+				);
+				if (installationRepos.status === 200) {
+					return installationRepos;
+				} else {
+					await Installation.destroy({
+						where: { installationID: installation.installationID },
+					});
 				}
 			})
 		);
