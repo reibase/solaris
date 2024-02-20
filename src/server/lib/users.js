@@ -35,6 +35,24 @@ router.get("/:id", async (_req, res) => {
 	}
 });
 
+//get user projects
+router.get("/:id/projects", async (_req, res) => {
+	try {
+		const data = await User.findOne({
+			where: { id: _req.params.id },
+			include: Project,
+		});
+		const json = JSON.stringify(data);
+		const user = JSON.parse(json, null, 2);
+
+		const projects = user.Projects;
+
+		return res.send({ status: 200, data: projects });
+	} catch (error) {
+		return res.send({ status: 500, message: error.message });
+	}
+});
+
 // update user, profile etc
 router.put("/:id", async (_req, res) => {
 	res.status(200).json({ message: "Hello World!" });
