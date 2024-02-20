@@ -37,7 +37,6 @@ router.get("/:id", async (_req, res) => {
 
 //get user projects
 router.get("/:id/projects", async (_req, res) => {
-	console.log("hit endpoint:", _req.params.id);
 	try {
 		const data = await User.findOne({
 			where: { id: _req.params.id },
