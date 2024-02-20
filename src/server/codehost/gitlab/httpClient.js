@@ -1,6 +1,10 @@
 import "dotenv/config";
 import axios from "axios";
-const { GITLAB_APP_CLIENT_ID, GITLAB_APP_CLIENT_SECRET } = process.env;
+const {
+	GITLAB_APP_CLIENT_ID,
+	GITLAB_APP_CLIENT_SECRET,
+	GITLAB_APP_REDIRECT_URI,
+} = process.env;
 import url from "url";
 import { Installation } from "../../../db/models/index.js";
 
@@ -10,7 +14,7 @@ const httpClient = async (refreshToken) => {
 		client_id: GITLAB_APP_CLIENT_ID,
 		client_secret: GITLAB_APP_CLIENT_SECRET,
 		refresh_token: refreshToken,
-		redirect_uri: GITLAB_APP_REDIRECT_URI || "http://localhost:3001/create",
+		redirect_uri: GITLAB_APP_REDIRECT_URI,
 	};
 
 	const params = new url.URLSearchParams(body);
