@@ -2,17 +2,19 @@ import { create } from "zustand";
 
 const initialState = {
 	dark: localStorage.theme === "dark" ? true : false,
-	user: {
-		isLoggedIn: false,
-		access: false,
-		info: {
-			id: null,
-			username: "",
-			avatar: "",
-			verifiedThru: "",
-			email: "",
-		},
-	},
+	user: localStorage.user
+		? JSON.parse(localStorage.user)
+		: {
+				isLoggedIn: false,
+				access: false,
+				info: {
+					id: null,
+					username: "",
+					avatar: "",
+					verifiedThru: "",
+					email: "",
+				},
+		  },
 };
 
 export const useStore = create((set) => ({

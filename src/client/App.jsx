@@ -23,6 +23,7 @@ function App() {
 	const { data, isFetching } = useQuery({
 		queryKey: ["userinfo"],
 		queryFn: getUser,
+		enabled: !user.info.id,
 	});
 
 	useEffect(() => {
@@ -37,9 +38,11 @@ function App() {
 					email: data.email,
 				},
 			};
+			localStorage.setItem("user", JSON.stringify(updatedUserInfo));
 			setUserInfo(updatedUserInfo);
 		}
 	}, [data]);
+
 	const router = createBrowserRouter([
 		{
 			path: "/",

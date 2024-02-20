@@ -6,6 +6,12 @@ import { Link } from "react-router-dom";
 export default function DropDown() {
 	const { dark, toggleDark, user } = useStore();
 	const [visible, setVisible] = useState(false);
+
+	const logoutHandler = () => {
+		localStorage.removeItem("user");
+		setVisible(false);
+	};
+
 	return (
 		<div class="relative inline-block text-left">
 			<img
@@ -56,7 +62,7 @@ export default function DropDown() {
 							Profile
 						</Link>
 					</div>
-					<div class="py-1" onClick={() => setVisible(false)} role="none">
+					<div class="py-1" onClick={(e) => logoutHandler(e)} role="none">
 						<a
 							href="/api/auth/logout"
 							class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
