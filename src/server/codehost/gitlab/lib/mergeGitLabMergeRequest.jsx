@@ -1,4 +1,5 @@
 import httpClient from "../httpClient";
+import axios from "axios";
 
 export default async function mergeGitHubPullRequest(
 	projectID,
@@ -8,8 +9,8 @@ export default async function mergeGitHubPullRequest(
 ) {
 	const access_token = await httpClient(refreshToken);
 
-	const { status, data } = await client.request(
-		`PUT /projects/${projectID}/merge_requests/${mergeRequestIID}/merge`,
+	const { status, data } = await axios.put(
+		`/projects/${projectID}/merge_requests/${mergeRequestIID}/merge`,
 		{
 			merge_commit_message: mergeCommitMessage,
 			headers: { Authorization: `Bearer ${access_token}` },
