@@ -117,21 +117,19 @@ router.get("/:id/github/installations/repos", async (_req, res) => {
 		}
 
 		const installationRepos = await Promise.all(
-			obj.forEach(async (installation) => {
-				const installationRepos = await getGitHubInstallationRepos(
-					installation.installationID
-				);
-				if (installationRepos.status === 200) {
-					return installationRepos;
-				} else {
-					await Installation.destroy({
-						where: { installationID: installation.installationID },
-					});
-				}
+			obj.map(async (installation) => {
+				return await getGitHubInstallationRepos(installation.installationID);
 			})
 		);
 
-		return res.send({ status: 200, installations: installationRepos });
+		const responseData = installationRepos.filter(
+			(installation) => installation.status === 200
+		);
+
+		console.log("installation repos:", installationRepos);
+		console.log("response data:", responseData);
+
+		return res.send({ status: 200, installations: responseData });
 	} catch (error) {
 		return res.send({ status: 500, error: error.message });
 	}
