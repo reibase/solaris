@@ -7,7 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import axios from "axios";
 import { useStore } from "./store";
-import { React, useEffect } from "react";
+import { React } from "react";
 
 import Projects from "./components/Projects.jsx";
 import Create from "./components/CreateProject/Create.jsx";
@@ -16,8 +16,27 @@ function App() {
 	const { user, setUserInfo } = useStore();
 
 	const getUser = async () => {
-		const { data } = await axios.get("/api/auth/me").then((res) => res);
-		return data;
+		try {
+			await axios.get("/api/auth/me").then(({ data }) => {
+				const updatedUserInfo = data?.isLoggedIn
+					? {
+							isLoggedIn: true,
+							info: {
+								id: data.id,
+								username: data.username,
+								avatar: data.avatar,
+								verifiedThru: data.verifiedThru,
+								email: data.email,
+							},
+					  }
+					: false;
+				setUserInfo(updatedUserInfo);
+				data?.isLoggedIn &&
+					localStorage.setItem("user", JSON.stringify(updatedUserInfo));
+			});
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	const { data, isFetching } = useQuery({
@@ -25,23 +44,6 @@ function App() {
 		queryFn: getUser,
 		enabled: !user.info.id,
 	});
-
-	useEffect(() => {
-		if (data && data.isLoggedIn == true) {
-			const updatedUserInfo = {
-				isLoggedIn: true,
-				info: {
-					id: data.id,
-					username: data.username,
-					avatar: data.avatar,
-					verifiedThru: data.verifiedThru,
-					email: data.email,
-				},
-			};
-			localStorage.setItem("user", JSON.stringify(updatedUserInfo));
-			setUserInfo(updatedUserInfo);
-		}
-	}, [data]);
 
 	const router = createBrowserRouter([
 		{
