@@ -5,7 +5,11 @@ import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallation
 
 import "dotenv/config";
 import axios from "axios";
-const { GITLAB_APP_CLIENT_ID, GITLAB_APP_CLIENT_SECRET } = process.env;
+const {
+	GITLAB_APP_CLIENT_ID,
+	GITLAB_APP_CLIENT_SECRET,
+	GITLAB_APP_REDIRECT_URI,
+} = process.env;
 import url from "url";
 
 const router = express.Router();
@@ -50,7 +54,7 @@ router.post("/:id/installations", async (_req, res) => {
 				client_id: GITLAB_APP_CLIENT_ID,
 				client_secret: GITLAB_APP_CLIENT_SECRET,
 				code: _req.body.installationID,
-				redirect_uri: "http://localhost:3001/create",
+				redirect_uri: GITLAB_APP_REDIRECT_URI,
 			};
 
 			const params = new url.URLSearchParams(body);
