@@ -46,7 +46,7 @@ function App() {
       element: <Layout />,
       children: !user.isLoggedIn
         ? [
-            { index: true, element: <Votes /> },
+            { index: true, element: <Projects /> },
             { path: "/Profile", element: <Profile /> },
             { path: "/requestaccess", element: <RequestAccess /> },
             { path: "/login", element: <Login /> },
