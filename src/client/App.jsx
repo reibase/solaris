@@ -10,7 +10,7 @@ import Login from "./components/Login.jsx";
 import AccessCode from "./components/AccessCode.jsx";
 import Layout from "./Layout.jsx";
 import Projects from "./components/Projects.jsx";
-import Create from "./components/Create.jsx";
+import Create from "./components/CreateProject/Create.jsx";
 import Issues from "./components/Issues.jsx";
 import Votes from "./components/Votes.jsx";
 
