@@ -15,68 +15,68 @@ import Issues from "./components/Issues.jsx";
 import Votes from "./components/Votes.jsx";
 
 function App() {
-	const { user, setUserInfo } = useStore();
+  const { user, setUserInfo } = useStore();
 
-	const getUser = async () => {
-		try {
-			await axios.get("/api/auth/me").then(({ data }) => {
-				const updatedUserInfo = data?.isLoggedIn
-					? {
-							isLoggedIn: true,
-							info: {
-								id: data.id,
-								username: data.username,
-								avatar: data.avatar,
-								verifiedThru: data.verifiedThru,
-								email: data.email,
-							},
-					  }
-					: false;
-				setUserInfo(updatedUserInfo);
-				data?.isLoggedIn &&
-					localStorage.setItem("user", JSON.stringify(updatedUserInfo));
-			});
-		} catch (error) {
-			console.log(error);
-		}
-	};
+  const getUser = async () => {
+    try {
+      await axios.get("/api/auth/me").then(({ data }) => {
+        const updatedUserInfo = data?.isLoggedIn
+          ? {
+              isLoggedIn: true,
+              info: {
+                id: data.id,
+                username: data.username,
+                avatar: data.avatar,
+                verifiedThru: data.verifiedThru,
+                email: data.email,
+              },
+            }
+          : false;
+        setUserInfo(updatedUserInfo);
+        data?.isLoggedIn &&
+          localStorage.setItem("user", JSON.stringify(updatedUserInfo));
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-	const { data, isFetching } = useQuery({
-		queryKey: ["userinfo"],
-		queryFn: getUser,
-		enabled: !user.info.id,
-	});
+  const { data, isFetching } = useQuery({
+    queryKey: ["userinfo"],
+    queryFn: getUser,
+    enabled: !user.info.id,
+  });
 
-	const router = createBrowserRouter([
-		{
-			path: "/",
-			element: <Layout />,
-			children: !user.isLoggedIn
-				? [
-						{ index: true, element: <AccessCode /> },
-						{ path: "/Profile", element: <Profile /> },
-						{ path: "/requestaccess", element: <RequestAccess /> },
-						{ path: "/login", element: <Login /> },
-						{ path: "/access", element: <AccessCode /> },
-				  ]
-				: [
-						{ index: true, element: <Projects /> },
-						{ path: "/profile", element: <Profile /> },
-						{ path: "/requestaccess", element: <Profile /> },
-						{ path: "/login", element: <Profile /> },
-						{ path: "/access", element: <Profile /> },
-						{ path: "/projects", element: <Projects /> },
-						{ path: "/create", element: <Create /> },
-						{ path: "/votes", element: <Votes /> },
-						{ path: "/issues", element: <Issues /> },
-				  ],
-		},
-	]);
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Layout />,
+      children: !user.isLoggedIn
+        ? [
+            { index: true, element: <Votes /> },
+            { path: "/Profile", element: <Profile /> },
+            { path: "/requestaccess", element: <RequestAccess /> },
+            { path: "/login", element: <Login /> },
+            { path: "/access", element: <AccessCode /> },
+          ]
+        : [
+            { index: true, element: <Votes /> },
+            { path: "/profile", element: <Profile /> },
+            { path: "/requestaccess", element: <Profile /> },
+            { path: "/login", element: <Profile /> },
+            { path: "/access", element: <Profile /> },
+            { path: "/projects", element: <Projects /> },
+            { path: "/create", element: <Create /> },
+            { path: "/votes", element: <Votes /> },
+            { path: "/issues", element: <Issues /> },
+          ],
+    },
+  ]);
 
-	if (isFetching) {
-		return "loading";
-	}
-	return <RouterProvider router={router} />;
+  if (isFetching) {
+    return "loading";
+  }
+  return <RouterProvider router={router} />;
 }
 
 export default App;

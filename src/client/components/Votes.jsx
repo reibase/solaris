@@ -120,7 +120,7 @@ export default function Projects() {
               </button>
             </div>
           </div>
-          <div className="hidden md:flex md:flex-col rounded-lg dark:bg-[#171D2B] border border-transparent border-1 dark:border-[#373D47] w-[260px] ">
+          <div className="px-[3px] py-[5px] hidden md:flex md:flex-col rounded-lg dark:bg-[#171D2B] border border-transparent border-1 border-[#D9D9D9] dark:border-[#373D47] w-[260px] ">
             <p className="text-[#919190] text-[8px]">
               Your amount of credits will be applied to the side you select.
               When that side reaches a majority the pull request will be either
@@ -131,7 +131,7 @@ export default function Projects() {
             </p>
           </div>
         </div>
-        <div>
+        <div className="w-[60%]">
           <div className="flex flex-col gap-[5px] font-semibold text-[#8B929F] text-[12px] w-[85%] mt-[20px]">
             <p>Voting Activity</p>
             <ProgressBar
@@ -163,7 +163,7 @@ export default function Projects() {
               <div
                 key={index}
                 class={` p-[1px] grid grid-cols-4 ${
-                  item % 2 == 1 ? "bg-[#171D2B]" : null
+                  item % 2 == 1 ? "bg-[#F9F9F9] dark:bg-[#171D2B]" : null
                 } `}
               >
                 <div class="text-center ">
