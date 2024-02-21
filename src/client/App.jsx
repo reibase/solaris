@@ -20,24 +20,23 @@ function App() {
 	const getUser = async () => {
 		try {
 			console.log("get user called");
-			await axios.get("/api/auth/me").then(({ data }) => {
-				if (!data?.isLoggedIn) {
-					throw new Error();
-				}
-				const updatedUserInfo = data?.isLoggedIn && {
-					isLoggedIn: true,
-					info: {
-						id: data.id,
-						username: data.username,
-						avatar: data.avatar,
-						verifiedThru: data.verifiedThru,
-						email: data.email,
-					},
-				};
-				data?.isLoggedIn && setUserInfo(updatedUserInfo);
-				data?.isLoggedIn &&
-					localStorage.setItem("user", JSON.stringify(updatedUserInfo));
-			});
+			setTimeout(async () => {
+				await axios.get("/api/auth/me").then(({ data }) => {
+					const updatedUserInfo = data?.isLoggedIn && {
+						isLoggedIn: true,
+						info: {
+							id: data.id,
+							username: data.username,
+							avatar: data.avatar,
+							verifiedThru: data.verifiedThru,
+							email: data.email,
+						},
+					};
+					data?.isLoggedIn && setUserInfo(updatedUserInfo);
+					data?.isLoggedIn &&
+						localStorage.setItem("user", JSON.stringify(updatedUserInfo));
+				});
+			}, [1000]);
 		} catch (error) {
 			console.log(error);
 		}
@@ -49,7 +48,6 @@ function App() {
 		enabled: !user.isLoggedIn,
 		retry: 6,
 		retryDelay: 1000,
-		refetchOnMount: true,
 	});
 
 	const router = createBrowserRouter([
