@@ -210,6 +210,7 @@ app.get("/api/auth/logout", function (req, res) {
 });
 
 app.get("/api/auth/me", function (req, res) {
+	console.log(req.user);
 	if (!req.user) {
 		return res.send({ isLoggedIn: false });
 	}
