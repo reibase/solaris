@@ -46,7 +46,7 @@ const AccessCode = () => {
 	}
 	return (
 		<>
-			<div className="mx-2 lg:mx-auto block h-[455px] shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-2/5 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+			<div className="mx-2 lg:mx-auto block h-[455px] shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-1/2 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 				<div className="flex items-center flex-col h-full w-full">
 					<h1 className="font-inter mb-[20px] text-3xl font-bold text-center dark:text-[#DDDCDC]">
 						SOLARIS

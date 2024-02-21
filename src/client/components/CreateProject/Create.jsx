@@ -24,13 +24,13 @@ const Create = (props) => {
 		creditAmount: 100,
 		clawBack: true,
 		headless: true,
+		isPrivate: false,
 	});
 
 	const [canContinue, setCanContinue] = useState(false);
 	const [canGoBack, setCanGoBack] = useState(false);
 
 	useEffect(() => {
-		console.log(project);
 		if (project.host !== "" && project.hostID !== null) {
 			setCanContinue(true);
 		}
@@ -127,7 +127,7 @@ const Create = (props) => {
 	// 	return "Loading";
 	// }
 	return (
-		<div className="mx-2 p-4 block h-[455px] shadow-lg text-sm rounded-lg flex flex-col lg:items-center lg:p-[40px] lg:mx-auto lg:w-2/5 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+		<div className="w-full p-4 block h-[455px] shadow-lg text-sm rounded-lg flex flex-col lg:items-center lg:p-[40px] lg:mx-auto lg:w-2/3 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 			<div className="flex flex-row gap-4 h-1/6 w-full mb-4">
 				<span
 					className={`text-[10px] lg:text-md h-4/6 dark:text-[#8B929F] ${

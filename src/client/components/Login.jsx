@@ -12,7 +12,7 @@ const Login = () => {
 	}
 	return (
 		<>
-			<div className="mx-2 lg:mx-auto  block h-[455px] my-10 shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-2/5 bg-white border border-1 border-transparent dark:bg-[#202530] dark:border-[#373D47]">
+			<div className="mx-2 lg:mx-auto  block h-[455px] my-10 shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-1/2 bg-white border border-1 border-transparent dark:bg-[#202530] dark:border-[#373D47]">
 				<h1 className="font-inter mb-[25px] text-3xl font-bold text-center dark:text-white">
 					SOLARIS
 				</h1>

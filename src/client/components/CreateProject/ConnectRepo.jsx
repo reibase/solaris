@@ -64,6 +64,7 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 			quorum: 50,
 			clawBack: true,
 			headless: true,
+			isPrivate: false,
 		});
 	};
 
@@ -147,11 +148,23 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 														project={project}
 														setProject={setProject}
 														hostID={repo.id}
-														installationID={repo.installationID}
+														isPrivate={
+															project.host === "github"
+																? repo?.private
+																: repo?.visibility === "private"
+																? true
+																: false
+														}
+														url={
+															project.host === "github"
+																? repo?.html_url
+																: repo?.web_url
+														}
+														installationID={repo?.installationID}
 														title={
 															project.host === "github"
-																? repo.full_name
-																: repo.name_with_namespace
+																? repo?.full_name
+																: repo?.name_with_namespace
 														}
 														visible={visible}
 														setVisible={setVisible}
