@@ -24,6 +24,7 @@ const Create = (props) => {
 		creditAmount: 100,
 		clawBack: true,
 		headless: true,
+		isPrivate: false,
 	});
 
 	const [canContinue, setCanContinue] = useState(false);

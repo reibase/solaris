@@ -26,25 +26,29 @@ const Project = db.define("Project", {
 	},
 	connected: {
 		type: DataTypes.BOOLEAN,
+		defaultValue: true,
 	},
 	live: {
 		type: DataTypes.BOOLEAN,
+		defaultValue: true,
 	},
 	quorum: {
 		type: DataTypes.FLOAT,
 	},
 	clawback: {
 		type: DataTypes.BOOLEAN,
-		defaultValue: false,
+		defaultValue: true,
 	},
 	disabled: {
 		type: DataTypes.BOOLEAN,
+		defaultValue: false,
 	},
 	url: {
 		type: DataTypes.STRING,
 	},
-	public: {
+	isPrivate: {
 		type: DataTypes.BOOLEAN,
+		defaultValue: false,
 	},
 	creditAmount: {
 		type: DataTypes.INTEGER,

@@ -191,6 +191,7 @@ router.post("/:id/projects", async (_req, res) => {
 		live,
 		quorum,
 		clawBack,
+		isPrivate,
 	} = _req.body;
 	try {
 		const project = await Project.create({
@@ -202,8 +203,7 @@ router.post("/:id/projects", async (_req, res) => {
 			quorum,
 			host,
 			hostID,
-			live,
-			clawBack,
+			isPrivate,
 		});
 		await project.setUser(_req.params.id);
 		res.status(200).json({ project });

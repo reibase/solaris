@@ -16,13 +16,14 @@ export default function Success({ project, user }) {
 					title: project.title,
 					identifier: project.identifier,
 					installationID: project.installationID,
-					owner: "",
+					owner: user.id,
 					hostID: project.hostID,
-					url: "",
+					url: project.url,
 					host: project.host,
 					quorum: project.quorum,
 					creditAmount: project.creditAmount,
 					clawBack: project.clawBack,
+					isPrivate: project.isPrivate,
 					headless: project.headless,
 				})
 				.then((res) => {
