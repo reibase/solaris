@@ -39,10 +39,11 @@ function App() {
 		}
 	};
 
-	const { data, isFetching, isFetched } = useQuery({
+	const { isFetching } = useQuery({
 		queryKey: ["userinfo"],
 		queryFn: getUser,
 		enabled: !user.isLoggedIn,
+		retry: 6,
 	});
 
 	const router = createBrowserRouter([
