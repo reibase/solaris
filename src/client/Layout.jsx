@@ -5,7 +5,9 @@ const Layout = () => {
 	return (
 		<div className="dark:bg-[#131723] bg-[#f9f9f9] min-h-[100vh] items-center">
 			<Nav />
-			<Outlet />
+			<div className="flex items-center justify-center absolute top-[13.5%] lg:top-[13.5%] left-[2%] lg:left-[17%] bottom-[4%] lg:bottom-[14%] right-[2%] lg:right-[17%]">
+				<Outlet />
+			</div>
 			{/* top */}
 			<div className="top-[12%] lg:top-[11%] left-0 right-0 absolute w-[100vw] h-[1px] opacity-50 bg-[#DDDCDC] dark:bg-[#373D47]"></div>
 			<div className="top-[13.5%] lg:top-[13.5%] left-0 right-0 absolute w-[100vw] h-[1px] opacity-30 bg-[#DDDCDC] dark:bg-[#373D47]"></div>
