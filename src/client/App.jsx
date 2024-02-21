@@ -20,19 +20,17 @@ function App() {
 	const getUser = async () => {
 		try {
 			await axios.get("/api/auth/me").then(({ data }) => {
-				const updatedUserInfo = data?.isLoggedIn
-					? {
-							isLoggedIn: true,
-							info: {
-								id: data.id,
-								username: data.username,
-								avatar: data.avatar,
-								verifiedThru: data.verifiedThru,
-								email: data.email,
-							},
-					  }
-					: false;
-				setUserInfo(updatedUserInfo);
+				const updatedUserInfo = data?.isLoggedIn && {
+					isLoggedIn: true,
+					info: {
+						id: data.id,
+						username: data.username,
+						avatar: data.avatar,
+						verifiedThru: data.verifiedThru,
+						email: data.email,
+					},
+				};
+				data?.isLoggedIn && setUserInfo(updatedUserInfo);
 				data?.isLoggedIn &&
 					localStorage.setItem("user", JSON.stringify(updatedUserInfo));
 			});
@@ -41,10 +39,10 @@ function App() {
 		}
 	};
 
-	const { data, isFetching } = useQuery({
+	const { data, isFetching, isFetched } = useQuery({
 		queryKey: ["userinfo"],
 		queryFn: getUser,
-		enabled: !user.info.id,
+		enabled: !user.isLoggedIn,
 	});
 
 	const router = createBrowserRouter([
@@ -74,9 +72,10 @@ function App() {
 	]);
 
 	if (isFetching) {
-		return "loading";
+		return "Loading";
+	} else if (isFetched) {
+		return <RouterProvider router={router} />;
 	}
-	return <RouterProvider router={router} />;
 }
 
 export default App;
