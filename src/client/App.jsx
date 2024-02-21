@@ -21,6 +21,9 @@ function App() {
 		try {
 			console.log("get user called");
 			await axios.get("/api/auth/me").then(({ data }) => {
+				if (!data?.isLoggedIn) {
+					throw new Error();
+				}
 				const updatedUserInfo = data?.isLoggedIn && {
 					isLoggedIn: true,
 					info: {
