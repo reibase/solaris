@@ -210,13 +210,10 @@ app.get("/api/auth/logout", function (req, res) {
 });
 
 app.get("/api/auth/me", function (req, res) {
-	setTimeout(() => {
-		console.log(req.user);
-		if (!req.user) {
-			return res.send({ isLoggedIn: false });
-		}
-		return res.send({ ...req.user, isLoggedIn: true });
-	}, 1500);
+	if (!req.user) {
+		return res.send({ isLoggedIn: false });
+	}
+	return res.send({ ...req.user, isLoggedIn: true });
 });
 
 // Route for when user clicks submit access code:
