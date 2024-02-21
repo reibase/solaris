@@ -73,9 +73,8 @@ function App() {
 
 	if (isFetching) {
 		return "Loading";
-	} else if (isFetched) {
-		return <RouterProvider router={router} />;
 	}
+	return <RouterProvider router={router} />;
 }
 
 export default App;
