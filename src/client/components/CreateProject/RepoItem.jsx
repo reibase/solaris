@@ -8,6 +8,8 @@ export default function RepoItem({
 	visible,
 	installationID,
 	setVisible,
+	isPrivate,
+	url,
 }) {
 	const clickHandler = (e) => {
 		setVisible(false);
@@ -17,6 +19,8 @@ export default function RepoItem({
 			hostID: hostID,
 			installationID: installationID,
 			identifier: title,
+			url: url,
+			isPrivate: isPrivate,
 		});
 	};
 

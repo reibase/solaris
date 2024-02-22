@@ -1,7 +1,19 @@
 import express from "express";
-import { User, Installation, Project } from "../../db/models/index.js";
+import { Op } from "sequelize";
+
+import {
+	User,
+	Installation,
+	Project,
+	Issue,
+	Transfer,
+	Vote,
+} from "../../db/models/index.js";
 import getGitHubInstallationRepos from "../codehost/github/getGitHubInstallationRepos.js";
 import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallationRepos.js";
+import getGitHubPullRequests from "../codehost/github/lib/getGitHubPullRequests.js";
+import getGitLabMergeRequests from "../codehost/gitlab/lib/getGitLabMergeRequests.js";
+import getUserBalance from "./utils/getUserBalance.js";
 
 import "dotenv/config";
 import axios from "axios";
@@ -47,8 +59,16 @@ router.get("/:id/projects", async (_req, res) => {
 
 		const projects = user.Projects;
 
+		await Promise.all(
+			projects.map(async (project) => {
+				const bal = await getUserBalance(user.id, project.id);
+				project.user = { balance: bal };
+			})
+		);
+
 		return res.send({ status: 200, data: projects });
 	} catch (error) {
+		console.log(error);
 		return res.send({ status: 500, message: error.message });
 	}
 });
@@ -187,10 +207,12 @@ router.post("/:id/projects", async (_req, res) => {
 		identifier,
 		hostID,
 		installationID,
+		creditAmount,
 		url,
 		live,
 		quorum,
 		clawBack,
+		isPrivate,
 	} = _req.body;
 	try {
 		const project = await Project.create({
@@ -202,14 +224,287 @@ router.post("/:id/projects", async (_req, res) => {
 			quorum,
 			host,
 			hostID,
-			live,
-			clawBack,
+			isPrivate,
+			creditAmount,
 		});
 		await project.setUser(_req.params.id);
+
+		const initial = await Transfer.create({
+			sender: _req.params.id,
+			recipient: _req.params.id,
+			amount: project.creditAmount,
+		});
+
+		await initial.setProject(project.id);
+
+		if (host === "github") {
+			const pulls = await getGitHubPullRequests(identifier, "open");
+
+			await Promise.all(
+				pulls.data.map(async (pull) => {
+					const pullRequest = await Issue.create({
+						number: pull.number,
+						url: pull.html_url,
+						title: pull.title,
+						host: host,
+						author: pull.user.login,
+						createdAt: pull.created_at,
+					});
+					await pullRequest.setProject(project.id);
+				})
+			);
+		} else if (host === "gitlab") {
+			const pulls = await getGitLabMergeRequests(
+				hostID,
+				parseInt(_req.params.id)
+			);
+
+			await Promise.all(
+				pulls.data.map(async (pull) => {
+					const pullRequest = await Issue.create({
+						number: pull.iid,
+						url: pull.web_url,
+						title: pull.title,
+						host: host,
+						author: pull.author.username,
+						createdAt: pull.created_at,
+					});
+					await pullRequest.setProject(project.id);
+				})
+			);
+		}
+
 		res.status(200).json({ project });
 	} catch (error) {
-		console.log(error.message);
+		console.log(error);
 		res.status(500).json(error.message);
+	}
+});
+
+router.get("/:id/projects/:projectID", async (_req, res) => {
+	try {
+		const data = await Project.findOne({
+			where: { id: _req.params.projectID },
+			include: Issue,
+		});
+		const json = JSON.stringify(data);
+		const project = JSON.parse(json, null, 2);
+
+		const transfersData = await data.getTransfers({
+			where: {
+				[Op.or]: [{ recipient: _req.params.id }, { sender: _req.params.id }],
+			},
+		});
+		const transfersJson = JSON.stringify(transfersData);
+		const transfers = JSON.parse(transfersJson);
+
+		const userID = parseInt(_req.params.id);
+
+		let balance = transfers.reduce((accum, cur) => {
+			if (cur.recipient === userID) {
+				accum = accum + cur.amount;
+			} else if (cur.sender === userID) {
+				accum = accum - cur.amount;
+			}
+			return accum;
+		}, 0);
+
+		project.user = { balance: balance };
+
+		return res.send({ status: 200, data: project });
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
+	try {
+		const data = await Project.findOne({
+			where: { id: _req.params.projectID },
+			include: Issue,
+		});
+
+		const issueData = await data.getIssues({
+			where: { number: _req.params.issueID },
+			include: Vote,
+		});
+
+		const issueJson = JSON.stringify(issueData);
+		let issue = JSON.parse(issueJson, null, 2);
+
+		const json = JSON.stringify(data);
+		const project = JSON.parse(json, null, 2);
+
+		const transfersData = await data.getTransfers({
+			where: {
+				[Op.or]: [{ recipient: _req.params.id }, { sender: _req.params.id }],
+			},
+		});
+		const transfersJson = JSON.stringify(transfersData);
+		const transfers = JSON.parse(transfersJson);
+
+		const userID = parseInt(_req.params.id);
+
+		let balance = transfers.reduce((accum, cur) => {
+			if (cur.recipient === userID) {
+				accum = accum + cur.amount;
+			} else if (cur.sender === userID) {
+				accum = accum - cur.amount;
+			}
+			return accum;
+		}, 0);
+
+		project.user = { balance: balance };
+
+		project.issue = issue[0];
+		project.issue.voteData = {
+			votes: [
+				{
+					id: 1,
+					side: true,
+					amount: 300,
+					UserId: 1,
+					createdAt: "2024 - 02 - 01",
+				},
+				{
+					id: 2,
+					side: true,
+					amount: 250,
+					UserId: 2,
+					createdAt: "2024 - 02 - 02",
+				},
+				{
+					id: 3,
+					side: true,
+					amount: 400,
+					UserId: 3,
+					createdAt: "2024 - 02 - 03",
+				},
+				{
+					id: 4,
+					side: true,
+					amount: 350,
+					UserId: 1,
+					createdAt: "2024 - 02 - 04",
+				},
+				{
+					id: 5,
+					side: true,
+					amount: 200,
+					UserId: 4,
+					createdAt: "2024 - 02 - 05",
+				},
+				{
+					id: 6,
+					side: true,
+					amount: 275,
+					UserId: 5,
+					createdAt: "2024 - 02 - 06",
+				},
+				{
+					id: 7,
+					side: true,
+					amount: 325,
+					UserId: 7,
+					createdAt: "2024 - 02 - 07",
+				},
+				{
+					id: 8,
+					side: true,
+					amount: 275,
+					UserId: 8,
+					createdAt: "2024 - 02 - 08",
+				},
+				{
+					id: 9,
+					side: true,
+					amount: 300,
+					UserId: 99,
+					createdAt: "2024 - 02 - 09",
+				},
+				{
+					id: 10,
+					side: true,
+					amount: 350,
+					UserId: 12,
+					createdAt: "2024 - 02 - 10",
+				},
+				{
+					id: 11,
+					side: true,
+					amount: 400,
+					UserId: 3131,
+					createdAt: "2024 - 02 - 11",
+				},
+				{
+					id: 12,
+					side: true,
+					amount: 225,
+					UserId: 212,
+					createdAt: "2024 - 02 - 12",
+				},
+				{
+					id: 13,
+					side: true,
+					amount: 275,
+					UserId: 132,
+					createdAt: "2024 - 02 - 13",
+				},
+				{
+					id: 14,
+					side: true,
+					amount: 325,
+					UserId: 42525,
+					createdAt: "2024 - 02 - 14",
+				},
+				{
+					id: 15,
+					side: false,
+					amount: 375,
+					UserId: 6343,
+					createdAt: "2024 - 02 - 15",
+				},
+				{
+					id: 16,
+					side: false,
+					amount: 250,
+					UserId: 3155,
+					createdAt: "2024 - 02 - 16",
+				},
+				{
+					id: 17,
+					side: false,
+					amount: 275,
+					UserId: 5353,
+					createdAt: "2024 - 02 - 17",
+				},
+				{
+					id: 18,
+					side: false,
+					amount: 325,
+					UserId: 64565,
+					createdAt: "2024 - 02 - 18",
+				},
+				{
+					id: 19,
+					side: false,
+					amount: 400,
+					UserId: 64636,
+					createdAt: "2024 - 02 - 19",
+				},
+				{
+					id: 20,
+					side: false,
+					amount: 300,
+					UserId: 643,
+					createdAt: "2024 - 02 - 20",
+				},
+			],
+		};
+
+		return res.send({ status: 200, data: project });
+	} catch (error) {
+		console.log(error);
 	}
 });
 

@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes } from "sequelize";
-import db from '../index.js'
+import db from "../index.js";
 
 const Transfer = db.define("Transfer", {
 	sender: {
@@ -9,6 +9,9 @@ const Transfer = db.define("Transfer", {
 		type: DataTypes.INTEGER,
 	},
 	amount: {
+		type: DataTypes.INTEGER,
+	},
+	projectID: {
 		type: DataTypes.INTEGER,
 	},
 	status: {
