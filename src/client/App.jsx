@@ -13,6 +13,7 @@ import Projects from "./components/Projects.jsx";
 import Create from "./components/CreateProject/Create.jsx";
 import Issues from "./components/Issues.jsx";
 import Votes from "./components/Votes.jsx";
+import Settings from "./components/Settings.jsx";
 
 function App() {
   const { user, setUserInfo } = useStore();
@@ -53,14 +54,14 @@ function App() {
       element: <Layout />,
       children: !user.isLoggedIn
         ? [
-            { index: true, element: <Votes /> },
+            { index: true, element: <Settings /> },
             { path: "/Profile", element: <Profile /> },
             { path: "/requestaccess", element: <RequestAccess /> },
             { path: "/login", element: <Login /> },
             { path: "/access", element: <AccessCode /> },
           ]
         : [
-            { index: true, element: <Votes /> },
+            { index: true, element: <Settings /> },
             { path: "/profile", element: <Profile /> },
             { path: "/requestaccess", element: <Profile /> },
             { path: "/login", element: <Profile /> },

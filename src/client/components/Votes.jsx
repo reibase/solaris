@@ -131,18 +131,20 @@ export default function Projects() {
             </p>
           </div>
         </div>
-        <div className="w-[60%]">
-          <div className="flex flex-col gap-[5px] font-semibold text-[#8B929F] text-[12px] w-[85%] mt-[20px]">
+        <div className="w-[95%] md:w-[60%]">
+          <div className="flex flex-col gap-[5px] font-semibold text-[#8B929F] text-[12px] md:w-[85%] mt-[20px]">
             <p>Voting Activity</p>
-            <ProgressBar
-              yesPercent={0.35}
-              yesVotes={123}
-              noPercent={0.1}
-              noVotes={87}
-              totalPercent={0.45}
-              quorum={0.5}
-              votesView={true}
-            />
+            <div className="w-[80%] md:w-full">
+              <ProgressBar
+                yesPercent={0.35}
+                yesVotes={123}
+                noPercent={0.1}
+                noVotes={87}
+                totalPercent={0.45}
+                quorum={0.5}
+                votesView={true}
+              />
+            </div>
           </div>
           <div className="w-[93%] max-h-[120px] overflow-auto ">
             <div class=" grid grid-cols-4">
