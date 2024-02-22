@@ -9,11 +9,11 @@ import Profile from "./components/Profile.jsx";
 import Login from "./components/Login.jsx";
 import AccessCode from "./components/AccessCode.jsx";
 import Layout from "./Layout.jsx";
-import Projects from "./components/Projects.jsx";
+import Projects from "./components/Projects/Projects.jsx";
 import Create from "./components/CreateProject/Create.jsx";
-import Issues from "./components/Issues.jsx";
-import Votes from "./components/Votes.jsx";
-import Settings from "./components/Settings.jsx";
+import Issues from "./components/Projects/Issues.jsx";
+import Votes from "./components/Projects/Votes.jsx";
+import Settings from "./components/Projects/Settings.jsx";
 
 function App() {
   const { user, setUserInfo } = useStore();
@@ -54,14 +54,14 @@ function App() {
       element: <Layout />,
       children: !user.isLoggedIn
         ? [
-            { index: true, element: <Settings /> },
+            { index: true, element: <Votes /> },
             { path: "/Profile", element: <Profile /> },
             { path: "/requestaccess", element: <RequestAccess /> },
             { path: "/login", element: <Login /> },
             { path: "/access", element: <AccessCode /> },
           ]
         : [
-            { index: true, element: <Settings /> },
+            { index: true, element: <Votes /> },
             { path: "/profile", element: <Profile /> },
             { path: "/requestaccess", element: <Profile /> },
             { path: "/login", element: <Profile /> },
