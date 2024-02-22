@@ -11,6 +11,7 @@ import {
 import getGitHubInstallationRepos from "../codehost/github/getGitHubInstallationRepos.js";
 import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallationRepos.js";
 import getGitHubPullRequests from "../codehost/github/lib/getGitHubPullRequests.js";
+import getGitLabMergeRequests from "../codehost/gitlab/lib/getGitLabMergeRequests.js";
 import getUserBalance from "./utils/getUserBalance.js";
 
 import "dotenv/config";
@@ -235,19 +236,42 @@ router.post("/:id/projects", async (_req, res) => {
 
 		await initial.setProject(project.id);
 
-		const pulls = await getGitHubPullRequests(identifier, "open");
+		if (host === "github") {
+			const pulls = await getGitHubPullRequests(identifier, "open");
 
-		await Promise.all(
-			pulls.data.map(async (pull) => {
-				const pullRequest = await Issue.create({
-					number: pull.number,
-					url: pull.html_url,
-					title: pull.title,
-					host: host,
-				});
-				await pullRequest.setProject(project.id);
-			})
-		);
+			await Promise.all(
+				pulls.data.map(async (pull) => {
+					const pullRequest = await Issue.create({
+						number: pull.number,
+						url: pull.html_url,
+						title: pull.title,
+						host: host,
+						author: pull.user.login,
+						createdAt: pull.created_at,
+					});
+					await pullRequest.setProject(project.id);
+				})
+			);
+		} else if (host === "gitlab") {
+			const pulls = await getGitLabMergeRequests(
+				hostID,
+				parseInt(_req.params.id)
+			);
+
+			await Promise.all(
+				pulls.data.map(async (pull) => {
+					const pullRequest = await Issue.create({
+						number: pull.iid,
+						url: pull.web_url,
+						title: pull.title,
+						host: host,
+						author: pull.author.username,
+						createdAt: pull.created_at,
+					});
+					await pullRequest.setProject(project.id);
+				})
+			);
+		}
 
 		res.status(200).json({ project });
 	} catch (error) {

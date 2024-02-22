@@ -40,7 +40,7 @@ export default function Projects() {
 	if (isFetching) {
 		return "Loading";
 	}
-
+	console.log(data);
 	return (
 		// wrapper
 		<div className="w-full h-full flex flex-col gap-[10px]">
@@ -117,7 +117,9 @@ export default function Projects() {
 											</h2>
 										</div>
 										<span className="text-gray-400 mt-1 dark:text-[#8B929F]">
-											#{pullRequest.number} opened on May 23 by ramirc5
+											#{pullRequest.number} opened on{" "}
+											{pullRequest.createdAt.slice(0, 10)} by{" "}
+											{pullRequest.author}
 										</span>
 									</div>
 

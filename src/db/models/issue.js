@@ -5,6 +5,12 @@ const Issue = db.define("Issue", {
 	title: {
 		type: DataTypes.STRING,
 	},
+	author: {
+		type: DataTypes.STRING,
+	},
+	createdAt: {
+		type: DataTypes.STRING,
+	},
 	number: {
 		type: DataTypes.INTEGER,
 	},
