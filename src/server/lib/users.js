@@ -1,8 +1,17 @@
 import express from "express";
-import { User, Installation, Project, Issue } from "../../db/models/index.js";
+import { Op } from "sequelize";
+
+import {
+	User,
+	Installation,
+	Project,
+	Issue,
+	Transfer,
+} from "../../db/models/index.js";
 import getGitHubInstallationRepos from "../codehost/github/getGitHubInstallationRepos.js";
 import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallationRepos.js";
 import getGitHubPullRequests from "../codehost/github/lib/getGitHubPullRequests.js";
+import getUserBalance from "./utils/getUserBalance.js";
 
 import "dotenv/config";
 import axios from "axios";
@@ -48,8 +57,16 @@ router.get("/:id/projects", async (_req, res) => {
 
 		const projects = user.Projects;
 
+		await Promise.all(
+			projects.map(async (project) => {
+				const bal = await getUserBalance(user.id, project.id);
+				project.user = { balance: bal };
+			})
+		);
+
 		return res.send({ status: 200, data: projects });
 	} catch (error) {
+		console.log(error);
 		return res.send({ status: 500, message: error.message });
 	}
 });
@@ -188,6 +205,7 @@ router.post("/:id/projects", async (_req, res) => {
 		identifier,
 		hostID,
 		installationID,
+		creditAmount,
 		url,
 		live,
 		quorum,
@@ -205,8 +223,17 @@ router.post("/:id/projects", async (_req, res) => {
 			host,
 			hostID,
 			isPrivate,
+			creditAmount,
 		});
 		await project.setUser(_req.params.id);
+
+		const initial = await Transfer.create({
+			sender: _req.params.id,
+			recipient: _req.params.id,
+			amount: project.creditAmount,
+		});
+
+		await initial.setProject(project.id);
 
 		const pulls = await getGitHubPullRequests(identifier, "open");
 
@@ -224,8 +251,44 @@ router.post("/:id/projects", async (_req, res) => {
 
 		res.status(200).json({ project });
 	} catch (error) {
-		console.log(error.message);
+		console.log(error);
 		res.status(500).json(error.message);
+	}
+});
+
+router.get("/:id/projects/:projectID", async (_req, res) => {
+	try {
+		const data = await Project.findOne({
+			where: { id: _req.params.projectID },
+			include: Issue,
+		});
+		const json = JSON.stringify(data);
+		const project = JSON.parse(json, null, 2);
+
+		const transfersData = await data.getTransfers({
+			where: {
+				[Op.or]: [{ recipient: _req.params.id }, { sender: _req.params.id }],
+			},
+		});
+		const transfersJson = JSON.stringify(transfersData);
+		const transfers = JSON.parse(transfersJson);
+
+		const userID = parseInt(_req.params.id);
+
+		let balance = transfers.reduce((accum, cur) => {
+			if (cur.recipient === userID) {
+				accum = accum + cur.amount;
+			} else if (cur.sender === userID) {
+				accum = accum - cur.amount;
+			}
+			return accum;
+		}, 0);
+
+		project.user = { balance: balance };
+
+		return res.send({ status: 200, data: project });
+	} catch (error) {
+		console.log(error);
 	}
 });
 

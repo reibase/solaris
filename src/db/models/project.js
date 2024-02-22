@@ -1,4 +1,6 @@
 import { Sequelize, DataTypes } from "sequelize";
+import { Transfer } from "../models/index.js";
+
 import db from "../index.js";
 
 const Project = db.define("Project", {
