@@ -112,11 +112,11 @@ export default function Projects() {
 								<div className="flex flex-col gap-[25px]">
 									<div className="flex flex-col">
 										<div className="flex gap-[5px]">
-											<h2 className="font-semibold dark:text-white">
+											<h2 className="font-semibold text-[14px] tracking-wide dark:text-white">
 												{pullRequest.title}
 											</h2>
 										</div>
-										<span className="text-gray-400 mt-1 dark:text-[#8B929F]">
+										<span className="text-slate-500 mt-2 dark:text-[#8B929F]">
 											#{pullRequest.number} opened on{" "}
 											{pullRequest.createdAt.slice(0, 10)} by{" "}
 											{pullRequest.author}
