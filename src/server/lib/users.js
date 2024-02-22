@@ -1,7 +1,8 @@
 import express from "express";
-import { User, Installation, Project } from "../../db/models/index.js";
+import { User, Installation, Project, Issue } from "../../db/models/index.js";
 import getGitHubInstallationRepos from "../codehost/github/getGitHubInstallationRepos.js";
 import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallationRepos.js";
+import getGitHubPullRequests from "../codehost/github/lib/getGitHubPullRequests.js";
 
 import "dotenv/config";
 import axios from "axios";
@@ -206,6 +207,21 @@ router.post("/:id/projects", async (_req, res) => {
 			isPrivate,
 		});
 		await project.setUser(_req.params.id);
+
+		const pulls = await getGitHubPullRequests(identifier, "open");
+
+		await Promise.all(
+			pulls.data.map(async (pull) => {
+				const pullRequest = await Issue.create({
+					number: pull.number,
+					url: pull.html_url,
+					title: pull.title,
+					host: host,
+				});
+				await pullRequest.setProject(project.id);
+			})
+		);
+
 		res.status(200).json({ project });
 	} catch (error) {
 		console.log(error.message);

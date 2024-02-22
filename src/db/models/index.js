@@ -17,6 +17,7 @@ User.hasMany(Installation);
 Installation.belongsTo(User);
 Project.hasMany(Transfer);
 Project.hasMany(Issue);
+Issue.belongsTo(Project);
 Issue.hasMany(Vote);
 
 /**

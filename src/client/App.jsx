@@ -69,6 +69,7 @@ function App() {
 						{ path: "/login", element: <Profile /> },
 						{ path: "/access", element: <Profile /> },
 						{ path: "/projects", element: <Projects /> },
+						{ path: "/projects/:id", element: <Issues /> },
 						{ path: "/create", element: <Create /> },
 						{ path: "/votes", element: <Votes /> },
 						{ path: "/issues", element: <Issues /> },
