@@ -5,6 +5,15 @@ const Issue = db.define("Issue", {
 	title: {
 		type: DataTypes.STRING,
 	},
+	author: {
+		type: DataTypes.STRING,
+	},
+	createdAt: {
+		type: DataTypes.STRING,
+	},
+	number: {
+		type: DataTypes.INTEGER,
+	},
 	description: {
 		type: DataTypes.STRING,
 	},
@@ -22,9 +31,6 @@ const Issue = db.define("Issue", {
 	},
 	totalNoVotes: {
 		type: DataTypes.INTEGER,
-	},
-	title: {
-		type: DataTypes.STRING,
 	},
 	parentHead: {
 		type: DataTypes.STRING,

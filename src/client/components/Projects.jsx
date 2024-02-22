@@ -49,7 +49,7 @@ export default function Projects() {
 					Create New Project
 				</h3>
 			</div>
-			<div className="h-5/6 pr-4 w-full overflow-auto">
+			<div className="h-5/6 pr-4 w-full">
 				{data?.length ? (
 					data?.map((project, index) => (
 						<div className="flex flex-row h-30 w-full justify-between border-b border-[#D4D4D4] dark:border-[#8B929F] pb-4 mb-2">
