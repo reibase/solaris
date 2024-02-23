@@ -19,7 +19,6 @@ function App() {
 
 	const getUser = async () => {
 		try {
-			console.log("get user called");
 			setTimeout(async () => {
 				await axios.get("/api/auth/me").then(({ data }) => {
 					const updatedUserInfo = data?.isLoggedIn && {

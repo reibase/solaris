@@ -34,7 +34,7 @@ export default function Projects() {
 		queryKey: ["userprojects"],
 		queryFn: getUserProjects,
 	});
-
+	console.log(data);
 	if (isFetching) {
 		return "Loading";
 	}
