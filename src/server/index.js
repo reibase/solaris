@@ -41,6 +41,7 @@ const {
 	GITLAB_OAUTH_APP_CLIENT_ID,
 	GITLAB_OAUTH_APP_CALLBACK_URL,
 	GITLAB_OAUTH_APP_CLIENT_SECRET,
+	NODE_ENV,
 } = process.env;
 
 // Create http server
@@ -56,9 +57,9 @@ app.use(
 	session({ secret: "keyboard cat", resave: false, saveUninitialized: false })
 );
 
-const events = smee.start();
+const events = NODE_ENV === "development" && smee.start();
 app.use("/api/webhooks/github", githubWebhook);
-events.close();
+NODE_ENV === "development" && events.close();
 
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
@@ -268,7 +269,7 @@ app.use("*", (req, res) => {
 
 // Connect to database
 const syncDB = async () => {
-	await db.sync();
+	await db.sync({ force: true });
 	console.log("All models were synchronized successfully.");
 };
 
