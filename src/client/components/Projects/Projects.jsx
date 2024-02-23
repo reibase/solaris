@@ -3,12 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-import { useStore } from "../store.js";
-import ExternalLink from "../assets/ExternalLink.svg";
-import darkExternalLink from "../assets/darkExternalLink.svg";
-import githubLogo from "../assets/github.svg";
-import githubLogoDarkMode from "../assets/github-darkmode.svg";
-import gitlabLogo from "../assets/gitlab.svg";
+import { useStore } from "../../store.js";
+import ExternalLink from "../../assets/ExternalLink.svg";
+import darkExternalLink from "../../assets/darkExternalLink.svg";
+import githubLogo from "../../assets/github.svg";
+import githubLogoDarkMode from "../../assets/github-darkmode.svg";
+import gitlabLogo from "../../assets/gitlab.svg";
 
 export default function Projects() {
 	const { dark, user } = useStore();
@@ -34,7 +34,7 @@ export default function Projects() {
 		queryKey: ["userprojects"],
 		queryFn: getUserProjects,
 	});
-
+	console.log(data);
 	if (isFetching) {
 		return "Loading";
 	}

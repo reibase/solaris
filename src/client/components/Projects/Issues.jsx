@@ -3,16 +3,16 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-import githubLogo from "../assets/github.svg";
-import githubLogoDarkMode from "../assets/github-darkmode.svg";
-import gitlabLogo from "../assets/gitlab.svg";
-import { useStore } from "../store.js";
-import ExternalLink from "../assets/ExternalLink.svg";
-import darkDataTransfer from "../assets/darkDataTransfer.svg";
-import darkGroup from "../assets/darkGroup.svg";
-import darkSettings from "../assets/darkSettings.svg";
-import darkExternalLink from "../assets/darkExternalLink.svg";
-import Group from "../assets/Group.svg";
+import githubLogo from "../../assets/github.svg";
+import githubLogoDarkMode from "../../assets/github-darkmode.svg";
+import gitlabLogo from "../../assets/gitlab.svg";
+import { useStore } from "../../store.js";
+import ExternalLink from "../../assets/ExternalLink.svg";
+import darkDataTransfer from "../../assets/darkDataTransfer.svg";
+import darkGroup from "../../assets/darkGroup.svg";
+import darkSettings from "../../assets/darkSettings.svg";
+import darkExternalLink from "../../assets/darkExternalLink.svg";
+import Group from "../../assets/Group.svg";
 import ProgressBar from "./ProgressBar.jsx";
 
 export default function Projects() {

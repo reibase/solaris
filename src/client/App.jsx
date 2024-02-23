@@ -9,17 +9,16 @@ import Profile from "./components/Profile.jsx";
 import Login from "./components/Login.jsx";
 import AccessCode from "./components/AccessCode.jsx";
 import Layout from "./Layout.jsx";
-import Projects from "./components/Projects.jsx";
+import Projects from "./components/Projects/Projects.jsx";
 import Create from "./components/CreateProject/Create.jsx";
-import Issues from "./components/Issues.jsx";
-import Votes from "./components/Votes.jsx";
+import Issues from "./components/Projects/Issues.jsx";
+import Votes from "./components/Projects/Votes.jsx";
 
 function App() {
 	const { user, setUserInfo } = useStore();
 
 	const getUser = async () => {
 		try {
-			console.log("get user called");
 			setTimeout(async () => {
 				await axios.get("/api/auth/me").then(({ data }) => {
 					const updatedUserInfo = data?.isLoggedIn && {
