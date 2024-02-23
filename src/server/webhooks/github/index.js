@@ -4,12 +4,7 @@ const router = express.Router();
 import { Issue, Project } from "../../../db/models/index.js";
 
 //endpoint: api/webhooks/github/projects
-// need route to update a pr's head if it changes and enact functionality to close voting or not
-// need route to change a pr's status from open to closed, merged
-// need route to update a pr's status to conflict, checks passed
 router.post("/", async (_req, res) => {
-	console.log(_req.body);
-
 	if (_req.body.action === "closed") {
 		await Issue.update(
 			{
