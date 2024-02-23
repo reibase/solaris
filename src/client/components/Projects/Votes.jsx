@@ -16,35 +16,58 @@ import ProgressBar from "../Projects/ProgressBar.jsx";
 import gitlabLogo from "../../assets/gitlab.svg";
 import { Button } from "@mui/material";
 
+function getDurationSince(timestamp) {
+  const now = new Date();
+  const createdAt = new Date(timestamp);
+  const diffInMs = now - createdAt;
+  const diffInSeconds = Math.round(diffInMs / 1000);
+
+  if (diffInSeconds < 60) {
+    return (
+      <>
+        {diffInSeconds} <span>S</span>
+      </>
+    );
+  } else if (diffInSeconds < 3600) {
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    return (
+      <>
+        {diffInMinutes} <span>MIN</span>
+      </>
+    );
+  } else if (diffInSeconds < 86400) {
+    const diffInHours = Math.floor(diffInSeconds / 3600);
+    return (
+      <>
+        {diffInHours} <span>HR</span>
+      </>
+    );
+  } else {
+    const diffInDays = Math.floor(diffInSeconds / 86400);
+    return (
+      <>
+        {diffInDays} <span>D</span>
+      </>
+    );
+  }
+}
+
+function formatDate(dateString) {
+  // Create a Date object from the input string
+  const date = new Date(dateString);
+
+  // Get month name, day, and year components
+  const month = date.toLocaleString("en-US", { month: "long" });
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  // Format the date string
+  return `${month} ${day}, ${year}`;
+}
+
 export default function Votes() {
   const { dark, user } = useStore();
   let { id, issueID } = useParams();
-
-  const icon = {
-    github: dark ? githubDarkmode : githubLogo,
-    gitlab: gitlabLogo,
-  };
-
-  // const project = {
-  // 	userID: 1,
-  // 	createdAt: "january 1 2024",
-  // 	creditAmount: 10000,
-  // 	url: "https://github.com/ramirc5/demo",
-  // 	id: 3,
-  // 	identifier: "ramirc5/demo",
-  // 	live: true,
-  // 	quorum: 501,
-  // 	updatedAt: "february 2 2024",
-  // 	user: {
-  // 		balance: 100,
-  // 	},
-  // 	host: "github",
-  // 	title: "ramirc5/demo",
-  // 	isPrivate: false,
-  // 	installationID: "1231234",
-  // 	description: "its just a demo",
-  // 	issues: data,
-  // };
 
   const getProject = async () => {
     try {
@@ -61,6 +84,11 @@ export default function Votes() {
     queryFn: getProject,
   });
 
+  const icon = {
+    github: dark ? githubDarkmode : githubLogo,
+    gitlab: gitlabLogo,
+  };
+
   if (isFetching) {
     return "Loading";
   }
@@ -70,7 +98,7 @@ export default function Votes() {
   return (
     <div className="flex w-full h-full flex-col gap-[10px]">
       {/* header */}
-      <div className="w-full h-50 items-start justify-start p-4 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+      <div className="w-full h-50 items-start justify-start p-4 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] gap-[10px]">
         {/* top row of header */}
         <div className="flex flex-row w-full justify-between">
           {/* top left of header */}
@@ -84,12 +112,12 @@ export default function Votes() {
           </div>
           {/* top right of header */}
           <span className="text-[12px] font-semibold text-slate-500 dark:text-[#DDDCDC] whitespace-nowrap">
-            {data?.user?.balance} Credits
+            {data?.user.balance} Credits
           </span>
         </div>
 
         <span className="mt-2 text-[#313131] dark:text-[#8B929F]">
-          Added on {data?.createdAt.slice(0, 10)}
+          Added on {formatDate(data?.createdAt.slice(0, 10))}
         </span>
 
         {/* bottom row of header  */}
@@ -129,7 +157,7 @@ export default function Votes() {
         </div>
       </div>
 
-      <div className="mx-2 pb-[20px] lg:mx-auto block h-[50vh] w-{{WIDTH}} shadow-lg rounded-lg text-sm flex flex-col md:flex-row items-center md:px-[20px] lg:w-full bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between overflow-auto">
+      <div className="mx-2 pb-[20px] lg:mx-auto block h-[52vh] w-{{WIDTH}} shadow-lg rounded-lg text-sm flex flex-col md:flex-row items-center md:px-[20px] lg:w-full bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between overflow-auto">
         <div className="flex flex-col gap-[15px]">
           <div className="flex flex-row w-full justify-between p-4">
             <div className="flex flex-row">
@@ -137,29 +165,28 @@ export default function Votes() {
                 <div className="flex flex-col">
                   <div className="flex gap-[5px]">
                     <h2 className="font-semibold dark:text-white">
-                      PULL REQUEST TITLE
+                      {data?.title}
                     </h2>
                   </div>
                   <span className="font-light text-[#313131] dark:text-[#8B929F]">
-                    #1 opened on May 23 by ramirc5
+                    {data?.issue.title}
                   </span>
                 </div>
                 <button className="flex border border-[#919190] dark:border-[#8B929F] rounded-md text-[10px] px-[12px] w-[180px] md:w-[220px] justify-between items-center gap-[5px]">
                   <div className="flex gap-[10px]">
-                    <img
-                      className="w-[14px]"
-                      src={dark ? githubDarkmode : githubLogo}
-                    />
+                    <img className="w-[14px]" src={icon[data?.host]} />
                     <span className="font-semibold max-w-[125px] text-ellipsis overflow-hidden text-nowrap dark:text-white">
-                      (chore) refactor: uncrustify par...
+                      {data?.issue.title}
                     </span>
                   </div>
-                  <img src={dark ? darkExternalLink : ExternalLink} />
+                  <a href={data?.issue.url}>
+                    <img src={dark ? darkExternalLink : ExternalLink} />
+                  </a>
                 </button>
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-[15px] md:gap-[25px]">
+          <div className="flex flex-col gap-[15px] md:gap-[25px] md:w-[80%] items-center">
             <p className="font-medium text-[10px] text-black dark:text-white">
               Vote yes to merge or vote No to close this pull request.
             </p>
@@ -183,7 +210,7 @@ export default function Votes() {
             </p>
           </div>
         </div>
-        <div className="w-[95%] md:w-[60%]">
+        <div className="w-[95%] md:w-[60%] md:h-[90%]">
           <div className="flex flex-col gap-[5px] font-semibold text-[#8B929F] text-[12px] md:w-[85%] mt-[20px]">
             <p>Voting Activity</p>
             <div className="w-[80%] md:w-full">
@@ -198,7 +225,7 @@ export default function Votes() {
               />
             </div>
           </div>
-          <div className="w-[93%] max-h-[120px] overflow-auto ">
+          <div className="w-[93%] max-h-[120px] md:max-h-[190px] overflow-auto ">
             <div class=" grid grid-cols-4">
               <div class="text-center ">
                 <p className="dark:text-[#8B929F] text-[10px]">User</p>
@@ -213,31 +240,33 @@ export default function Votes() {
                 <p className="dark:text-[#8B929F] text-[10px]">Age</p>
               </div>
             </div>
-            {data?.voteData?.votes.length &&
-              data.map((item, index) => (
+            {data?.Issues.length > 0 &&
+              data?.Issues.map((item, index) => (
                 <div
                   key={index}
                   class={` p-[1px] grid grid-cols-4 ${
-                    item % 2 == 1 ? "bg-[#F9F9F9] dark:bg-[#171D2B]" : null
+                    index % 2 == 0 ? "bg-[#F9F9F9] dark:bg-[#171D2B]" : null
                   } `}
                 >
                   <div class="text-center ">
-                    <p className="dark:text-white text-[10px]">jex123</p>
+                    <p className="dark:text-white text-[10px]">
+                      {item?.author}
+                    </p>
                   </div>
                   <div class=" text-center ">
                     <p
                       className={`${
-                        item % 2 == 1 ? "text-[#038800]" : "text-[#DC2626]"
+                        index % 2 == 1 ? "text-[#038800]" : "text-[#DC2626]"
                       } text-[10px]`}
-                    >
-                      {item % 2 == 1 ? "YES" : "NO"}
-                    </p>
+                    ></p>
                   </div>
                   <div class="text-center">
-                    <p className="dark:text-white text-[10px]">50,000</p>
+                    <p className="dark:text-white text-[10px]"></p>
                   </div>
                   <div class="text-center  ">
-                    <p className="dark:text-white text-[10px]">2 HR</p>
+                    <p className="dark:text-white text-[10px]">
+                      {getDurationSince(item?.updatedAt)}
+                    </p>
                   </div>
                 </div>
               ))}
