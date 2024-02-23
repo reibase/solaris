@@ -18,8 +18,8 @@ const ProgressBar = ({
   const remainingVotesPercent = (quorum - totalPercent) * 100 * difference;
 
   return (
-    <div className="flex flex-col p-[5px]">
-      <div className="flex flex-start items-center w-full rounded-md gap-[15px]">
+    <div className={`flex flex-col p-[5px] ${!votesView ? "w-[90%]" : null}`}>
+      <div className="flex flex-start items-center md:flex-col md:items-start w-full rounded-md gap-[15px] md:gap-[5px]">
         {yesVotes >= noVotes ? (
           <>
             <div className="text-right text-[#DC2626]">
