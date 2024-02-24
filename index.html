@@ -21,14 +21,33 @@
 			if (!localStorage.theme) {
 				if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
 					localStorage.theme = "dark";
+					const el = document.getElementsByTagName("head")[0];
+
+					el.insertAdjacentHTML(
+						"afterbegin",
+						'<meta name="color-scheme" content="dark">'
+					);
 				} else {
 					localStorage.theme = "light";
+					const el = document.getElementsByTagName("head")[0];
+
+					el.insertAdjacentHTML(
+						"afterbegin",
+						'<meta name="color-scheme" content="light">'
+					);
 				}
 			}
 			if (localStorage.theme === "dark") {
 				document.documentElement.classList.add("dark");
+				// <meta name="color-scheme" content="dark">
+				const el = document.getElementsByName("color-scheme")[0];
+
+				el.setAttribute("content", "dark");
 			} else {
 				document.documentElement.classList.remove("dark");
+				const el = document.getElementsByName("color-scheme")[0];
+				console.log(el);
+				el.setAttribute("content", "light");
 			}
 		</script>
 	</body>
