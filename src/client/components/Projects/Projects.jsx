@@ -2,14 +2,12 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
 import { useStore } from "../../store.js";
 import ExternalLink from "../../assets/ExternalLink.svg";
 import darkExternalLink from "../../assets/darkExternalLink.svg";
 import githubLogo from "../../assets/github.svg";
 import githubLogoDarkMode from "../../assets/github-darkmode.svg";
 import gitlabLogo from "../../assets/gitlab.svg";
-import ProgressBar from "./ProgressBar.jsx";
 
 export default function Projects() {
   const { dark, user } = useStore();
@@ -53,7 +51,10 @@ export default function Projects() {
       <div className="h-5/6 pr-4 w-full">
         {data?.length ? (
           data?.map((project, index) => (
-            <div className="flex flex-row h-30 w-full justify-between border-b border-[#D4D4D4] dark:border-[#8B929F] pb-4 mb-2">
+            <div
+              key={index}
+              className="flex flex-row h-30 w-full justify-between border-b border-[#D4D4D4] dark:border-[#8B929F] pb-4 mb-2"
+            >
               <div className="flex flex-row">
                 <div className="flex flex-col gap-[15px]">
                   <div className="flex flex-col">

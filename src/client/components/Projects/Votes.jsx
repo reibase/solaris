@@ -14,54 +14,36 @@ import darkExternalLink from "../../assets/darkExternalLink.svg";
 import Group from "../../assets/Group.svg";
 import ProgressBar from "../Projects/ProgressBar.jsx";
 import gitlabLogo from "../../assets/gitlab.svg";
-import { Button } from "@mui/material";
 
-function getDurationSince(timestamp) {
+function getDurationSince(timestampString) {
+  const cleanTimestampString = timestampString.replace(/\s/g, "");
+  if (!Date.parse(cleanTimestampString)) {
+    return "Invalid date format";
+  }
+  const createdAt = new Date(cleanTimestampString);
   const now = new Date();
-  const createdAt = new Date(timestamp);
   const diffInMs = now - createdAt;
   const diffInSeconds = Math.round(diffInMs / 1000);
 
   if (diffInSeconds < 60) {
-    return (
-      <>
-        {diffInSeconds} <span>S</span>
-      </>
-    );
+    return `${diffInSeconds} S`;
   } else if (diffInSeconds < 3600) {
     const diffInMinutes = Math.floor(diffInSeconds / 60);
-    return (
-      <>
-        {diffInMinutes} <span>MIN</span>
-      </>
-    );
+    return `${diffInMinutes} MIN`;
   } else if (diffInSeconds < 86400) {
     const diffInHours = Math.floor(diffInSeconds / 3600);
-    return (
-      <>
-        {diffInHours} <span>HR</span>
-      </>
-    );
+    return `${diffInHours} HR`;
   } else {
     const diffInDays = Math.floor(diffInSeconds / 86400);
-    return (
-      <>
-        {diffInDays} <span>D</span>
-      </>
-    );
+    return `${diffInDays} D`;
   }
 }
 
 function formatDate(dateString) {
-  // Create a Date object from the input string
   const date = new Date(dateString);
-
-  // Get month name, day, and year components
   const month = date.toLocaleString("en-US", { month: "long" });
   const day = date.getDate();
   const year = date.getFullYear();
-
-  // Format the date string
   return `${month} ${day}, ${year}`;
 }
 
@@ -79,6 +61,23 @@ export default function Votes() {
       console.log(error);
     }
   };
+
+  const postVote = async (chosenSide) => {
+    try {
+      const { data } = await axios
+        .post(
+          `/api/users/${user.info.id}/projects/${id}/issues/${issueID}/vote`,
+          {
+            side: chosenSide,
+          }
+        )
+        .then(({ data }) => data);
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const { data, isFetching } = useQuery({
     queryKey: ["projects"],
     queryFn: getProject,
@@ -94,7 +93,8 @@ export default function Votes() {
   }
 
   console.log(data);
-
+  const duration = getDurationSince("2024 - 02 - 01");
+  console.log(duration);
   return (
     <div className="flex w-full h-full flex-col gap-[10px]">
       {/* header */}
@@ -191,10 +191,16 @@ export default function Votes() {
               Vote yes to merge or vote No to close this pull request.
             </p>
             <div className="flex flex-row justify-between gap-[15px]">
-              <button className="bg-[#20B176] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white">
+              <button
+                onClick={() => postVote(true)}
+                className="bg-[#20B176] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white"
+              >
                 VOTE YES
               </button>
-              <button className="bg-[#DC2626] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white">
+              <button
+                onClick={() => postVote(false)}
+                className="bg-[#DC2626] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white"
+              >
                 VOTE NO
               </button>
             </div>
@@ -214,15 +220,17 @@ export default function Votes() {
           <div className="flex flex-col gap-[5px] font-semibold text-[#8B929F] text-[12px] md:w-[85%] mt-[20px]">
             <p>Voting Activity</p>
             <div className="w-[80%] md:w-full">
-              <ProgressBar
-                yesPercent={0.35}
-                yesVotes={123}
-                noPercent={0.1}
-                noVotes={87}
-                totalPercent={0.45}
-                quorum={0.5}
-                votesView={true}
-              />
+              {data?.Issues.length > 0 && (
+                <ProgressBar
+                  yesPercent={0}
+                  yesVotes={0}
+                  noPercent={0}
+                  noVotes={0}
+                  totalPercent={0}
+                  quorum={0}
+                  votesView={true}
+                />
+              )}
             </div>
           </div>
           <div className="w-[93%] max-h-[120px] md:max-h-[190px] overflow-auto ">
@@ -241,7 +249,7 @@ export default function Votes() {
               </div>
             </div>
             {data?.Issues.length > 0 &&
-              data?.Issues.map((item, index) => (
+              data?.issue.voteData.votes.map((item, index) => (
                 <div
                   key={index}
                   class={` p-[1px] grid grid-cols-4 ${
@@ -250,22 +258,26 @@ export default function Votes() {
                 >
                   <div class="text-center ">
                     <p className="dark:text-white text-[10px]">
-                      {item?.author}
+                      {item?.userId}
                     </p>
                   </div>
                   <div class=" text-center ">
                     <p
                       className={`${
-                        index % 2 == 1 ? "text-[#038800]" : "text-[#DC2626]"
+                        item.side ? "text-[#038800]" : "text-[#DC2626]"
                       } text-[10px]`}
-                    ></p>
+                    >
+                      {item.side ? "YES" : "NO"}
+                    </p>
                   </div>
                   <div class="text-center">
-                    <p className="dark:text-white text-[10px]"></p>
+                    <p className="dark:text-white text-[10px]">
+                      {item?.amount}
+                    </p>
                   </div>
                   <div class="text-center  ">
                     <p className="dark:text-white text-[10px]">
-                      {getDurationSince(item?.updatedAt)}
+                      {getDurationSince(item?.createdAt)}
                     </p>
                   </div>
                 </div>
