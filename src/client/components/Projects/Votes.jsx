@@ -2,7 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 import githubLogo from "../../assets/github.svg";
 import githubDarkmode from "../../assets/github-darkmode.svg";
 import { useStore } from "../../store.js";
@@ -14,42 +14,12 @@ import darkExternalLink from "../../assets/darkExternalLink.svg";
 import Group from "../../assets/Group.svg";
 import ProgressBar from "../Projects/ProgressBar.jsx";
 import gitlabLogo from "../../assets/gitlab.svg";
-
-function getDurationSince(timestampString) {
-  const cleanTimestampString = timestampString.replace(/\s/g, "");
-  if (!Date.parse(cleanTimestampString)) {
-    return "Invalid date format";
-  }
-  const createdAt = new Date(cleanTimestampString);
-  const now = new Date();
-  const diffInMs = now - createdAt;
-  const diffInSeconds = Math.round(diffInMs / 1000);
-
-  if (diffInSeconds < 60) {
-    return `${diffInSeconds} S`;
-  } else if (diffInSeconds < 3600) {
-    const diffInMinutes = Math.floor(diffInSeconds / 60);
-    return `${diffInMinutes} MIN`;
-  } else if (diffInSeconds < 86400) {
-    const diffInHours = Math.floor(diffInSeconds / 3600);
-    return `${diffInHours} HR`;
-  } else {
-    const diffInDays = Math.floor(diffInSeconds / 86400);
-    return `${diffInDays} D`;
-  }
-}
-
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const month = date.toLocaleString("en-US", { month: "long" });
-  const day = date.getDate();
-  const year = date.getFullYear();
-  return `${month} ${day}, ${year}`;
-}
+import { getDurationSince, formatDate } from "./formatting.js";
 
 export default function Votes() {
   const { dark, user } = useStore();
   let { id, issueID } = useParams();
+  const navigate = useNavigate();
 
   const getProject = async () => {
     try {
@@ -93,8 +63,7 @@ export default function Votes() {
   }
 
   console.log(data);
-  const duration = getDurationSince("2024 - 02 - 01");
-  console.log(duration);
+
   return (
     <div className="flex w-full h-full flex-col gap-[10px]">
       {/* header */}
@@ -112,11 +81,11 @@ export default function Votes() {
           </div>
           {/* top right of header */}
           <span className="text-[12px] font-semibold text-slate-500 dark:text-[#DDDCDC] whitespace-nowrap">
-            {data?.user.balance} Credits
+            {data?.user?.balance} Credits
           </span>
         </div>
 
-        <span className="mt-2 text-[#313131] dark:text-[#8B929F]">
+        <span className="mt-1 mb-3 text-[#313131] dark:text-[#8B929F]">
           Added on {formatDate(data?.createdAt.slice(0, 10))}
         </span>
 
@@ -147,7 +116,10 @@ export default function Votes() {
                 Transfer
               </p>
             </div>
-            <div className="flex gap-[7px]">
+            <div
+              className="flex gap-[7px] cursor-pointer"
+              onClick={() => navigate(`/projects/${data?.id}/settings`)}
+            >
               <img src={darkSettings} />
               <p className="text-[#313131] dark:text-[#D9D9D9] text-[12px] font-medium">
                 Settings

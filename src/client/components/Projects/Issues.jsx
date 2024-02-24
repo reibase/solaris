@@ -2,7 +2,6 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-
 import axios from "axios";
 import githubLogo from "../../assets/github.svg";
 import githubLogoDarkMode from "../../assets/github-darkmode.svg";
@@ -16,8 +15,9 @@ import darkExternalLink from "../../assets/darkExternalLink.svg";
 import Group from "../../assets/Group.svg";
 import Forward from "../../assets/Forward.svg";
 import ProgressBar from "./ProgressBar.jsx";
+import { formatDate } from "./formatting.js";
 
-export default function Projects() {
+export default function Issues() {
   const { dark, user } = useStore();
   let { id } = useParams();
   const icon = {
@@ -46,9 +46,9 @@ export default function Projects() {
   console.log(data);
   return (
     // wrapper
-    <div className="w-full h-full flex flex-col gap-[10px]">
+    <div className="flex w-full h-full flex-col gap-[10px]">
       {/* header */}
-      <div className="w-full h-50 items-start justify-start px-4 py-2 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+      <div className="w-full h-50 items-start justify-start p-4 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] gap-[10px]">
         {/* top row of header */}
         <div className="flex flex-row w-full justify-between">
           {/* top left of header */}
@@ -67,7 +67,7 @@ export default function Projects() {
         </div>
 
         <span className="mt-1 mb-3 text-[#313131] dark:text-[#8B929F]">
-          Added on {data?.createdAt.slice(0, 10)}
+          Added on {formatDate(data?.createdAt.slice(0, 10))}
         </span>
 
         {/* bottom row of header  */}
@@ -97,7 +97,10 @@ export default function Projects() {
                 Transfer
               </p>
             </div>
-            <div className="flex gap-[7px]">
+            <div
+              className="flex gap-[7px] cursor-pointer"
+              onClick={() => navigate(`/projects/${data?.id}/settings`)}
+            >
               <img src={darkSettings} />
               <p className="text-[#313131] dark:text-[#D9D9D9] text-[12px] font-medium">
                 Settings
