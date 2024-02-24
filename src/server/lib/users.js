@@ -12,6 +12,7 @@ import getGitHubInstallationRepos from "../codehost/github/getGitHubInstallation
 import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallationRepos.js";
 import getGitHubPullRequests from "../codehost/github/lib/getGitHubPullRequests.js";
 import getGitLabMergeRequests from "../codehost/gitlab/lib/getGitLabMergeRequests.js";
+import createGitLabWebhook from "../codehost/gitlab/lib/createGitLabWebhook.js";
 import getUserBalance from "./utils/getUserBalance.js";
 
 import "dotenv/config";
@@ -290,6 +291,9 @@ router.post("/:id/projects", async (_req, res) => {
 					await pullRequest.setProject(project.id);
 				})
 			);
+
+			//create webhook
+			await createGitLabWebhook(hostID, parseInt(_req.params.id));
 		}
 
 		res.status(200).json({ project });

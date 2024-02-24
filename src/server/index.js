@@ -26,6 +26,7 @@ import users from "./lib/users.js";
 import issues from "./lib/issues.js";
 import installation from "./lib/installation.js";
 import githubWebhook from "./webhooks/github/index.js";
+import gitlabWebhook from "./webhooks/gitlab/index.js";
 
 // Constants
 const port = process.env.PORT || 3001;
@@ -60,6 +61,7 @@ app.use(
 const events = NODE_ENV === "development" && smee.start();
 app.use("/api/webhooks/github", githubWebhook);
 NODE_ENV === "development" && events.close();
+app.use("/api/webhooks/gitlab", gitlabWebhook);
 
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
