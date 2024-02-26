@@ -1,4 +1,5 @@
 import React from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -39,10 +40,27 @@ export default function Issues() {
 		queryKey: ["projects"],
 		queryFn: getProject,
 	});
-
-	if (isFetching) {
-		return "Loading";
-	}
+	let issueCategory = {
+		closed: [
+			"Closed",
+			"text-[#dd2a2a] bg-[#fee2e0] dark:text-[#dd2a2a] dark:bg-[#fee2e0]",
+			data?.issues.closed,
+		],
+		merged: [
+			"Merged",
+			"text-[#7e3fec] bg-[#dbd3fb] dark:text-[#7e3fec] dark:bg-[#dbd3fb]",
+			data?.issues.merged,
+		],
+		open: [
+			"Open",
+			"text-[#1C7737] bg-[#EEFDF2] dark:bg-[#185B2E] dark:text-[#7FEDA2]",
+			data?.issues.open,
+		],
+	};
+	const handleCategoryClick = (category) => {
+		setCategory(category);
+	};
+	const [category, setCategory] = useState("open");
 	console.log(data);
 	return (
 		// wrapper
@@ -111,8 +129,41 @@ export default function Issues() {
 			</div>
 
 			<div className="w-full h-full px-4 shadow-lg rounded-lg text-sm flex flex-col items-center bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] overflow-auto">
+				<div className="flex w-full justify-start gap-[15px] py-[10px]">
+					<span
+						onClick={() => handleCategoryClick("open")}
+						className={` ${
+							category != "open" ? "opacity-50" : null
+						} cursor-pointer flex items-center justify-center font-semibold  text-[10px] px-[10px] h-[18px] rounded-md ${
+							issueCategory["open"][1]
+						}`}
+					>
+						Open
+					</span>
+					<span
+						onClick={() => handleCategoryClick("closed")}
+						className={` ${
+							category != "closed" ? "opacity-50" : null
+						} cursor-pointer  flex items-center justify-center font-semibold text-[10px] px-[10px] h-[18px] rounded-md text-[#dd2a2a] ${
+							issueCategory["closed"][1]
+						}`}
+					>
+						Closed
+					</span>
+					<span
+						onClick={() => handleCategoryClick("merged")}
+						className={` ${
+							category != "merged" ? "opacity-50" : null
+						} cursor-pointer flex items-center justify-center font-semibold text-[10px] px-[10px] h-[18px] rounded-md ${
+							issueCategory["merged"][1]
+						}`}
+					>
+						Merged
+					</span>
+				</div>
+
 				{data?.Issues.length ? (
-					data?.Issues.map((pullRequest, index) => (
+					data?.issues[category].map((pullRequest, index) => (
 						<div className="flex flex-row w-full justify-between border-b border-[#D4D4D4] py-3 px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]">
 							<div className="flex flex-row">
 								<div className="flex flex-col gap-[25px]">
@@ -121,6 +172,11 @@ export default function Issues() {
 											<h2 className="font-semibold text-[14px] tracking-wide dark:text-white">
 												{pullRequest.title}
 											</h2>
+											<span
+												className={`flex items-center justify-center font-semibold text-[10px] px-[10px] h-[18px] rounded-md ${issueCategory[category][1]}`}
+											>
+												{issueCategory[category][0]}
+											</span>
 										</div>
 										<span className="text-slate-500 mt-2 dark:text-[#8B929F]">
 											#{pullRequest.number} opened on{" "}

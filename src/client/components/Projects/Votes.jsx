@@ -72,10 +72,10 @@ export default function Votes() {
 					{/* top left of header */}
 					<div className="flex flex-row items-center gap-[20px]">
 						<span className="font-semibold text-lg tracking-wide dark:text-white">
-							{data?.title}
+							{data?.project.title}
 						</span>
 						<span className="flex items-center justify-center font-semibold bg-[#EEFDF2] text-[10px] px-[10px] h-[18px] rounded-md text-[#1C7737] dark:bg-[#185B2E] dark:text-[#7FEDA2]">
-							{data?.live ? `LIVE` : `TEST`}
+							{data?.project.live ? `LIVE` : `TEST`}
 						</span>
 					</div>
 					{/* top right of header */}
@@ -85,7 +85,7 @@ export default function Votes() {
 				</div>
 
 				<span className="mt-1 mb-3 text-[#313131] dark:text-[#8B929F]">
-					Added on {formatDate(data?.createdAt.slice(0, 10))}
+					Added on {formatDate(data?.project.createdAt.slice(0, 10))}
 				</span>
 
 				{/* bottom row of header  */}
@@ -95,7 +95,7 @@ export default function Votes() {
 							<div className="flex gap-[10px]">
 								<img className="w-[14px]" src={icon[data?.host]} />
 								<span className="dark:text-[#8B929F] text-[11px] w-[135px] text-left truncate overflow-hidden">
-									{data?.identifier} on {data?.host}
+									{data?.project.identifier} on {data?.project.host}
 								</span>
 							</div>
 							<img src={dark ? darkExternalLink : ExternalLink} />
@@ -128,29 +128,24 @@ export default function Votes() {
 				</div>
 			</div>
 
-			<div className="mx-2 pb-[20px] lg:mx-auto block h-[52vh] w-{{WIDTH}} shadow-lg rounded-lg text-sm flex flex-col md:flex-row items-center md:px-[20px] lg:w-full bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between overflow-auto">
+			<div className="p-4 block h-full shadow-lg rounded-lg text-sm flex flex-col md:flex-row items-start bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between overflow-auto">
 				<div className="flex flex-col gap-[15px]">
 					<div className="flex flex-row w-full justify-between p-4">
 						<div className="flex flex-row">
 							<div className="flex flex-col gap-[15px]">
 								<div className="flex flex-col">
-									<div className="flex gap-[5px]">
-										<h2 className="font-semibold dark:text-white">
-											{data?.title}
-										</h2>
-									</div>
 									<span className="font-light text-[#313131] dark:text-[#8B929F]">
-										{data?.issue.title}
+										#{data?.number} {data?.title}
 									</span>
 								</div>
 								<button className="flex border border-[#919190] dark:border-[#8B929F] rounded-md text-[10px] px-[12px] w-[180px] md:w-[220px] justify-between items-center gap-[5px]">
 									<div className="flex gap-[10px]">
 										<img className="w-[14px]" src={icon[data?.host]} />
 										<span className="font-semibold max-w-[125px] text-ellipsis overflow-hidden text-nowrap dark:text-white">
-											{data?.issue.title}
+											{data?.title}
 										</span>
 									</div>
-									<a href={data?.issue.url}>
+									<a href={data?.url}>
 										<img src={dark ? darkExternalLink : ExternalLink} />
 									</a>
 								</button>
@@ -191,17 +186,15 @@ export default function Votes() {
 					<div className="flex flex-col gap-[5px] font-semibold text-[#8B929F] text-[12px] md:w-[85%] mt-[20px]">
 						<p>Voting Activity</p>
 						<div className="w-[80%] md:w-full">
-							{data?.Issues.length > 0 && (
-								<ProgressBar
-									yesPercent={0}
-									yesVotes={0}
-									noPercent={0}
-									noVotes={0}
-									totalPercent={0}
-									quorum={0}
-									votesView={true}
-								/>
-							)}
+							<ProgressBar
+								yesPercent={0}
+								yesVotes={0}
+								noPercent={0}
+								noVotes={0}
+								totalPercent={0}
+								quorum={0}
+								votesView={true}
+							/>
 						</div>
 					</div>
 					<div className="w-[93%] max-h-[120px] md:max-h-[190px] overflow-auto ">
@@ -219,8 +212,8 @@ export default function Votes() {
 								<p className="dark:text-[#8B929F] text-[10px]">Age</p>
 							</div>
 						</div>
-						{data?.Issues.length > 0 &&
-							data?.issue.voteData.votes.map((item, index) => (
+						{data?.voteData?.votes.length > 0 &&
+							data?.voteData.votes.map((vote, index) => (
 								<div
 									key={index}
 									class={` p-[1px] grid grid-cols-4 ${
@@ -229,26 +222,26 @@ export default function Votes() {
 								>
 									<div class="text-center ">
 										<p className="dark:text-white text-[10px]">
-											{item?.userId}
+											{vote?.UserId}
 										</p>
 									</div>
 									<div class=" text-center ">
 										<p
 											className={`${
-												item.side ? "text-[#038800]" : "text-[#DC2626]"
+												vote.side ? "text-[#038800]" : "text-[#DC2626]"
 											} text-[10px]`}
 										>
-											{item.side ? "YES" : "NO"}
+											{vote.side ? "YES" : "NO"}
 										</p>
 									</div>
 									<div class="text-center">
 										<p className="dark:text-white text-[10px]">
-											{item?.amount}
+											{vote?.amount}
 										</p>
 									</div>
 									<div class="text-center  ">
 										<p className="dark:text-white text-[10px]">
-											{getDurationSince(item?.createdAt)}
+											{getDurationSince(vote?.createdAt)}
 										</p>
 									</div>
 								</div>

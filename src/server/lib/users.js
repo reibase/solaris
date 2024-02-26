@@ -333,6 +333,8 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 		project.issues = { open: [], merged: [], closed: [] };
 
 		issues.map((issue) => {
+			issue.totalYesPercent = issue.totalYesVotes / project.creditAmount;
+			issue.totalNoPercent = issue.totalNoVotes / project.creditAmount;
 			if (issue.state === "closed") {
 				if (issue.merged) {
 					project.issues.merged.push(issue);
@@ -352,12 +354,12 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 
 router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 	try {
-		const data = await Project.findOne({
+		const project = await Project.findOne({
 			where: { id: _req.params.projectID },
 			include: Issue,
 		});
 
-		const issueData = await data.getIssues({
+		const issueData = await project.getIssues({
 			where: { number: _req.params.issueID },
 			include: Vote,
 		});
@@ -365,10 +367,7 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 		const issueJson = JSON.stringify(issueData);
 		let issue = JSON.parse(issueJson, null, 2);
 
-		const json = JSON.stringify(data);
-		const project = JSON.parse(json, null, 2);
-
-		const transfersData = await data.getTransfers({
+		const transfersData = await project.getTransfers({
 			where: {
 				[Op.or]: [{ recipient: _req.params.id }, { sender: _req.params.id }],
 			},
@@ -387,155 +386,16 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 			return accum;
 		}, 0);
 
-		project.user = { balance: balance };
-
-		project.issue = issue[0];
-		project.issue.voteData = {
-			votes: [
-				{
-					id: 1,
-					side: true,
-					amount: 300,
-					UserId: 1,
-					createdAt: "2024 - 02 - 01",
-				},
-				{
-					id: 2,
-					side: true,
-					amount: 250,
-					UserId: 2,
-					createdAt: "2024 - 02 - 02",
-				},
-				{
-					id: 3,
-					side: true,
-					amount: 400,
-					UserId: 3,
-					createdAt: "2024 - 02 - 03",
-				},
-				{
-					id: 4,
-					side: true,
-					amount: 350,
-					UserId: 1,
-					createdAt: "2024 - 02 - 04",
-				},
-				{
-					id: 5,
-					side: true,
-					amount: 200,
-					UserId: 4,
-					createdAt: "2024 - 02 - 05",
-				},
-				{
-					id: 6,
-					side: true,
-					amount: 275,
-					UserId: 5,
-					createdAt: "2024 - 02 - 06",
-				},
-				{
-					id: 7,
-					side: true,
-					amount: 325,
-					UserId: 7,
-					createdAt: "2024 - 02 - 07",
-				},
-				{
-					id: 8,
-					side: true,
-					amount: 275,
-					UserId: 8,
-					createdAt: "2024 - 02 - 08",
-				},
-				{
-					id: 9,
-					side: true,
-					amount: 300,
-					UserId: 99,
-					createdAt: "2024 - 02 - 09",
-				},
-				{
-					id: 10,
-					side: true,
-					amount: 350,
-					UserId: 12,
-					createdAt: "2024 - 02 - 10",
-				},
-				{
-					id: 11,
-					side: true,
-					amount: 400,
-					UserId: 3131,
-					createdAt: "2024 - 02 - 11",
-				},
-				{
-					id: 12,
-					side: true,
-					amount: 225,
-					UserId: 212,
-					createdAt: "2024 - 02 - 12",
-				},
-				{
-					id: 13,
-					side: true,
-					amount: 275,
-					UserId: 132,
-					createdAt: "2024 - 02 - 13",
-				},
-				{
-					id: 14,
-					side: true,
-					amount: 325,
-					UserId: 42525,
-					createdAt: "2024 - 02 - 14",
-				},
-				{
-					id: 15,
-					side: false,
-					amount: 375,
-					UserId: 6343,
-					createdAt: "2024 - 02 - 15",
-				},
-				{
-					id: 16,
-					side: false,
-					amount: 250,
-					UserId: 3155,
-					createdAt: "2024 - 02 - 16",
-				},
-				{
-					id: 17,
-					side: false,
-					amount: 275,
-					UserId: 5353,
-					createdAt: "2024 - 02 - 17",
-				},
-				{
-					id: 18,
-					side: false,
-					amount: 325,
-					UserId: 64565,
-					createdAt: "2024 - 02 - 18",
-				},
-				{
-					id: 19,
-					side: false,
-					amount: 400,
-					UserId: 64636,
-					createdAt: "2024 - 02 - 19",
-				},
-				{
-					id: 20,
-					side: false,
-					amount: 300,
-					UserId: 643,
-					createdAt: "2024 - 02 - 20",
-				},
-			],
+		let response = issue[0];
+		response.project = project;
+		response.user = { balance: balance };
+		response.voteData = {
+			votes: issue[0].Votes,
+			totalYesPercent: response.totalYesVotes / project.creditAmount,
+			totalNoPercent: response.totalNoVotes / project.creditAmount,
 		};
 
-		return res.send({ status: 200, data: project });
+		return res.send({ status: 200, data: response });
 	} catch (error) {
 		console.log(error);
 	}
