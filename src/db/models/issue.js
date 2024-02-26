@@ -43,4 +43,17 @@ const Issue = db.define("Issue", {
 	},
 });
 
+const action = async (issue) => {
+	const project = await issue.getProject();
+	console.log("project:", project.id);
+
+	// if (issue.totalYesVotes > issue.quorum) {
+	// 	// await merge pr
+	// } else if (issue.totalNoVotes > issue.quorum) {
+	// 	// await close pr
+	// }
+};
+
+Issue.afterUpdate(action);
+
 export default Issue;

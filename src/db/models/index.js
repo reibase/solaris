@@ -15,10 +15,13 @@ User.hasMany(Project);
 Project.belongsTo(User);
 User.hasMany(Installation);
 Installation.belongsTo(User);
+
 Project.hasMany(Transfer);
 Transfer.belongsTo(Project);
-Project.hasMany(Issue);
+
 Issue.belongsTo(Project);
+Project.hasMany(Issue);
+
 Issue.hasMany(Vote);
 
 /**
