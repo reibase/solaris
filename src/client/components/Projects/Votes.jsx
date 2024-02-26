@@ -34,12 +34,13 @@ export default function Votes() {
 
 	const postVote = async (chosenSide) => {
 		try {
-			const { data } = await axios
+			const { data, status } = await axios
 				.post(`/api/projects/${id}/issues/${issueID}/vote`, {
 					user: user.info.id,
 					side: chosenSide,
 				})
-				.then(({ data }) => data);
+				.then((res) => res);
+			console.log(data, status);
 			return data;
 		} catch (error) {
 			console.log(error);
