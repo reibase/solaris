@@ -103,7 +103,7 @@ export default function Settings() {
         </div>
       </div>
 
-      <div className="mx-2 w-[50%] shadow-lg rounded-lg text-sm flex flex-col items-left md:px-[40px] py-[20px] lg:w-[45%] bg-white/90 dark:bg-[#202530] border border-1 dark:border-[#373D47] justify-between gap-[25px]">
+      <div className="w-[50%] shadow-lg rounded-lg text-sm flex flex-col items-left md:px-[40px] py-[20px] lg:w-[45%] bg-white/90 dark:bg-[#202530] border border-1 dark:border-[#373D47] justify-between gap-[25px]">
         <h2 className="text-[#313131] font-medium font-[12px] text-left dark:text-white">
           Project Settings
         </h2>
