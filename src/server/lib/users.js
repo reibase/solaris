@@ -242,13 +242,23 @@ router.post("/:id/projects", async (_req, res) => {
 
 			await Promise.all(
 				pulls.data.map(async (pull) => {
+					console.log(pull);
 					const pullRequest = await Issue.create({
 						number: pull.number,
+						hostID: pull.id,
 						url: pull.html_url,
 						title: pull.title,
+						state: pull.state,
 						host: host,
 						author: pull.user.login,
 						createdAt: pull.created_at,
+						mergeable: pull.mergeable,
+						conflict: pull.mergeable,
+						head: pull.head.sha,
+						ref: pull.head.ref,
+						base: pull.base.sha,
+						baseRef: pull.base.ref,
+						repoID: pull.base.repo.id,
 					});
 					await pullRequest.setProject(project.id);
 				})
@@ -264,10 +274,19 @@ router.post("/:id/projects", async (_req, res) => {
 					const pullRequest = await Issue.create({
 						number: pull.iid,
 						url: pull.web_url,
+						hostID: pull.id,
+						state: pull.state,
+						description: pull.description,
 						title: pull.title,
 						host: host,
+						mergeable: pull.merge_status === "cannot_be_merged" ? false : true,
 						author: pull.author.username,
 						createdAt: pull.created_at,
+						conflict: pull.has_conflicts,
+						head: pull.sha,
+						ref: pull.source_branch,
+						baseRef: pull.target_branch,
+						repoID: pull.target_project_id,
 					});
 					await pullRequest.setProject(project.id);
 				})
@@ -310,6 +329,20 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 		}, 0);
 
 		project.user = { balance: balance };
+		const issues = project.Issues;
+		project.issues = { open: [], merged: [], closed: [] };
+
+		issues.map((issue) => {
+			if (issue.state === "closed") {
+				if (issue.merged) {
+					project.issues.merged.push(issue);
+				} else {
+					project.issues.closed.push(issue);
+				}
+			} else if (issue.state === "open") {
+				project.issues.open.push(issue);
+			}
+		});
 
 		return res.send({ status: 200, data: project });
 	} catch (error) {

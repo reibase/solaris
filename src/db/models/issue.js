@@ -8,8 +8,11 @@ const Issue = db.define("Issue", {
 	author: {
 		type: DataTypes.STRING,
 	},
-	createdAt: {
+	state: {
 		type: DataTypes.STRING,
+	},
+	mergeable: {
+		type: DataTypes.BOOLEAN,
 	},
 	number: {
 		type: DataTypes.INTEGER,
@@ -40,6 +43,30 @@ const Issue = db.define("Issue", {
 	},
 	childHead: {
 		type: DataTypes.STRING,
+	},
+	ref: {
+		type: DataTypes.STRING,
+	},
+	baseRef: {
+		type: DataTypes.STRING,
+	},
+	conflict: {
+		type: DataTypes.BOOLEAN,
+	},
+	base: {
+		type: DataTypes.STRING,
+	},
+	repoID: {
+		type: DataTypes.BIGINT,
+	},
+	closedAt: {
+		type: DataTypes.STRING,
+	},
+	mergedAt: {
+		type: DataTypes.STRING,
+	},
+	merged: {
+		type: DataTypes.BOOLEAN,
 	},
 });
 

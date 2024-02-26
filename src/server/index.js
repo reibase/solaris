@@ -7,6 +7,7 @@ import GitLabStrategy from "passport-gitlab2";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import { Octokit } from "octokit";
+import SmeeClient from "smee-client";
 
 import path from "path";
 import "dotenv/config";
@@ -14,10 +15,17 @@ import "dotenv/config";
 import db from "../db/index.js";
 import { User } from "../db/models/index.js";
 
+const smee = new SmeeClient({
+	source: "https://smee.io/ZANskOOg1mKaAA0L",
+	target: "http://localhost:3001/api/webhooks/github",
+	logger: console,
+});
+
 import projects from "./lib/projects.js";
 import users from "./lib/users.js";
 import issues from "./lib/issues.js";
 import installation from "./lib/installation.js";
+import githubWebhook from "./webhooks/github/index.js";
 
 // Constants
 const port = process.env.PORT || 3001;
@@ -33,6 +41,7 @@ const {
 	GITLAB_OAUTH_APP_CLIENT_ID,
 	GITLAB_OAUTH_APP_CALLBACK_URL,
 	GITLAB_OAUTH_APP_CLIENT_SECRET,
+	NODE_ENV,
 } = process.env;
 
 // Create http server
@@ -47,6 +56,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
 	session({ secret: "keyboard cat", resave: false, saveUninitialized: false })
 );
+
+const events = NODE_ENV === "development" && smee.start();
+app.use("/api/webhooks/github", githubWebhook);
+NODE_ENV === "development" && events.close();
+
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).
 app.use(passport.initialize());

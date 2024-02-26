@@ -15,9 +15,12 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 		return res.send({ status: 401 });
 	} else {
 		const project = await Project.findOne({ where: { id: _req.params.id } });
-		const issue = await project.getIssues({
+		const issueData = await project.getIssues({
 			where: { number: _req.params.issueID },
 		});
+		const issueJSON = JSON.stringify(issueData);
+		const issue = JSON.parse(issueJSON, null, 2);
+
 		console.log("oplah");
 		console.log(issue);
 		console.log(issue.state, issue.mergeable);
