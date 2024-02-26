@@ -12,11 +12,10 @@ router.get("/", async (_req, res) => {
 });
 
 router.post("/:id/issues/:issueID/vote", async (_req, res) => {
-	console.log(_req.user.id);
 	try {
 		const bal = await getUserBalance(_req.user.id, _req.params.id);
 		if (bal < 1) {
-			return res.send({ status: 401 });
+			return res.send({ status: 401, data: "user is not authorized." });
 		} else {
 			const project = await Project.findOne({ where: { id: _req.params.id } });
 			const issueData = await Issue.findOne({
