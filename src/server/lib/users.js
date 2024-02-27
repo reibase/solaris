@@ -7,6 +7,7 @@ import {
 	Project,
 	Issue,
 	Transfer,
+	Vote,
 } from "../../db/models/index.js";
 import getGitHubInstallationRepos from "../codehost/github/getGitHubInstallationRepos.js";
 import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallationRepos.js";
@@ -31,18 +32,19 @@ router.get("/", async (_req, res) => {
 	res.status(200).json({ message: "Hello World!" });
 });
 
-// get a user
-router.get("/:id", async (_req, res) => {
+// find a user by a username
+router.get("/users", async (_req, res) => {
+	const { username } = _req.body;
 	try {
-		const user = await User.findOne({
-			where: { id: _req.params.id },
-			include: Projects,
+		const userData = await User.findOne({
+			where: { username: username },
 		});
-		const json = JSON.stringify(user);
-		const res = JSON.parse(json, null, 2);
-		return { status: 200, user: res, message: "User deleted successfully." };
+		const userJSON = JSON.stringify(userData);
+		const user = JSON.parse(userJSON, null, 2);
+
+		return res.send({ status: 200, data: user });
 	} catch (error) {
-		return { status: 500, message: error.message };
+		return res.send({ status: 500, message: error.message });
 	}
 });
 
@@ -51,12 +53,11 @@ router.get("/:id/projects", async (_req, res) => {
 	try {
 		const data = await User.findOne({
 			where: { id: _req.params.id },
-			include: Project,
+			include: { model: Project, as: "projects" },
 		});
 		const json = JSON.stringify(data);
 		const user = JSON.parse(json, null, 2);
-
-		const projects = user.Projects;
+		const projects = user.projects;
 
 		await Promise.all(
 			projects.map(async (project) => {
@@ -64,7 +65,6 @@ router.get("/:id/projects", async (_req, res) => {
 				project.user = { balance: bal };
 			})
 		);
-
 		return res.send({ status: 200, data: projects });
 	} catch (error) {
 		console.log(error);
@@ -114,7 +114,6 @@ router.post("/:id/installations", async (_req, res) => {
 					refreshToken: refreshToken,
 				},
 			});
-			console.log(dbCreated, _req.body.provider, dbInstallation.refreshToken);
 			installation = dbInstallation;
 			created = dbCreated;
 		} else if (_req.body.provider === "github") {
@@ -126,7 +125,6 @@ router.post("/:id/installations", async (_req, res) => {
 					installationID: _req.body.installationID,
 				},
 			});
-			console.log(dbCreated, _req.body.provider, dbInstallation.installationID);
 			installation = dbInstallation;
 			created = dbCreated;
 		}
@@ -166,9 +164,6 @@ router.get("/:id/github/installations/repos", async (_req, res) => {
 		const responseData = installationRepos.filter(
 			(installation) => installation.status === 200
 		);
-
-		console.log("installation repos:", installationRepos);
-		console.log("response data:", responseData);
 
 		return res.send({ status: 200, installations: responseData });
 	} catch (error) {
@@ -213,9 +208,11 @@ router.post("/:id/projects", async (_req, res) => {
 		clawBack,
 		isPrivate,
 	} = _req.body;
+	const owner = _req.params.id;
 	try {
 		const project = await Project.create({
 			title,
+			owner,
 			description,
 			identifier,
 			installationID,
@@ -226,11 +223,11 @@ router.post("/:id/projects", async (_req, res) => {
 			isPrivate,
 			creditAmount,
 		});
-		await project.setUser(_req.params.id);
+		await project.addMember(owner);
 
 		const initial = await Transfer.create({
-			sender: _req.params.id,
-			recipient: _req.params.id,
+			sender: owner,
+			recipient: owner,
 			amount: project.creditAmount,
 		});
 
@@ -241,7 +238,6 @@ router.post("/:id/projects", async (_req, res) => {
 
 			await Promise.all(
 				pulls.data.map(async (pull) => {
-					console.log(pull);
 					const pullRequest = await Issue.create({
 						number: pull.number,
 						hostID: pull.id,
@@ -332,6 +328,8 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 		project.issues = { open: [], merged: [], closed: [] };
 
 		issues.map((issue) => {
+			issue.totalYesPercent = issue.totalYesVotes / project.creditAmount;
+			issue.totalNoPercent = issue.totalNoVotes / project.creditAmount;
 			if (issue.state === "closed") {
 				if (issue.merged) {
 					project.issues.merged.push(issue);
@@ -344,6 +342,55 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 		});
 
 		return res.send({ status: 200, data: project });
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
+	try {
+		const project = await Project.findOne({
+			where: { id: _req.params.projectID },
+			include: Issue,
+		});
+
+		const issueData = await project.getIssues({
+			where: { number: _req.params.issueID },
+			include: Vote,
+		});
+
+		const issueJson = JSON.stringify(issueData);
+		let issue = JSON.parse(issueJson, null, 2);
+
+		const transfersData = await project.getTransfers({
+			where: {
+				[Op.or]: [{ recipient: _req.params.id }, { sender: _req.params.id }],
+			},
+		});
+		const transfersJson = JSON.stringify(transfersData);
+		const transfers = JSON.parse(transfersJson);
+
+		const userID = parseInt(_req.params.id);
+
+		let balance = transfers.reduce((accum, cur) => {
+			if (cur.recipient === userID) {
+				accum = accum + cur.amount;
+			} else if (cur.sender === userID) {
+				accum = accum - cur.amount;
+			}
+			return accum;
+		}, 0);
+
+		let response = issue[0];
+		response.project = project;
+		response.user = { balance: balance };
+		response.voteData = {
+			votes: issue[0].Votes,
+			totalYesPercent: response.totalYesVotes / project.creditAmount,
+			totalNoPercent: response.totalNoVotes / project.creditAmount,
+		};
+
+		return res.send({ status: 200, data: response });
 	} catch (error) {
 		console.log(error);
 	}

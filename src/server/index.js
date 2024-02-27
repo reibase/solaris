@@ -12,14 +12,14 @@ import SmeeClient from "smee-client";
 import path from "path";
 import "dotenv/config";
 
-import db from "../db/index.js";
-import { User } from "../db/models/index.js";
-
 const smee = new SmeeClient({
 	source: "https://smee.io/ZANskOOg1mKaAA0L",
 	target: "http://localhost:3001/api/webhooks/github",
 	logger: console,
 });
+
+import db from "../db/index.js";
+import { User } from "../db/models/index.js";
 
 import projects from "./lib/projects.js";
 import users from "./lib/users.js";
@@ -259,7 +259,9 @@ function ensureAuthenticated(req, res, next) {
 }
 
 app.use("/api/users", users);
-app.use("/api/projects", projects);
+app.use("/api/projects", async function (req, res) {
+	return projects(req, res);
+});
 app.use("/api/issues", issues);
 app.use("/api/installation", installation);
 
@@ -269,7 +271,7 @@ app.use("*", (req, res) => {
 
 // Connect to database
 const syncDB = async () => {
-	await db.sync({ force: true });
+	await db.sync();
 	console.log("All models were synchronized successfully.");
 };
 

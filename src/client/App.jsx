@@ -13,7 +13,12 @@ import Projects from "./components/Projects/Projects.jsx";
 import Create from "./components/CreateProject/Create.jsx";
 import Issues from "./components/Projects/Issues.jsx";
 import Votes from "./components/Projects/Votes.jsx";
+<<<<<<< HEAD
 import Transfer from "./components/Projects/Transfer/Transfer.jsx";
+=======
+import Settings from "./components/Projects/Settings.jsx";
+
+>>>>>>> feat/transfer-service
 function App() {
   const { user, setUserInfo } = useStore();
 

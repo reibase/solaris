@@ -2,7 +2,6 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
 import { useStore } from "../../store.js";
 import ExternalLink from "../../assets/ExternalLink.svg";
 import darkExternalLink from "../../assets/darkExternalLink.svg";

@@ -1,4 +1,8 @@
 import React from "react";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import githubLogo from "../../assets/github.svg";
 import githubDarkmode from "../../assets/github-darkmode.svg";
 import { useStore } from "../../store.js";
@@ -8,143 +12,181 @@ import darkGroup from "../../assets/darkGroup.svg";
 import darkSettings from "../../assets/darkSettings.svg";
 import darkExternalLink from "../../assets/darkExternalLink.svg";
 import Group from "../../assets/Group.svg";
-import ProgressBar from "./ProgressBar.jsx";
-import { Button } from "@mui/material";
+import ProgressBar from "../Projects/ProgressBar.jsx";
+import gitlabLogo from "../../assets/gitlab.svg";
+import { getDurationSince, formatDate } from "./formatting.js";
 
-export default function Projects() {
-	const { dark } = useStore();
-	const data = [1, 2, 3, 4, 5, 6, 7, 8]; // dummy map data
-	//const {data, status} = useQuery({})
+export default function Votes() {
+	const { dark, user } = useStore();
+	let { id, issueID } = useParams();
+	const navigate = useNavigate();
+
+	const getProject = async () => {
+		try {
+			const { data } = await axios
+				.get(`/api/users/${user.info.id}/projects/${id}/issues/${issueID}`)
+				.then(({ data }) => data);
+			return data;
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const postVote = async (chosenSide) => {
+		try {
+			const { data, status } = await axios
+				.post(`/api/projects/${id}/issues/${issueID}/vote`, {
+					user: user.info.id,
+					side: chosenSide,
+				})
+				.then((res) => res);
+			return data;
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const { data, isFetching } = useQuery({
+		queryKey: ["projects"],
+		queryFn: getProject,
+	});
+
+	const icon = {
+		github: dark ? githubDarkmode : githubLogo,
+		gitlab: gitlabLogo,
+	};
+
+	if (isFetching) {
+		return "Loading";
+	}
 
 	return (
-		<div className="flex flex-col gap-[10px]">
-			<div className="mx-2 lg:mx-auto block  w-{{WIDTH}} shadow-lg rounded-lg text-sm flex flex-col items-center md:px-[40px] lg:w-[65%] bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between gap-[10px]">
-				<div className="flex flex-row w-full justify-between p-4">
-					<div className="flex flex-row">
-						<div className="flex flex-col gap-[15px]">
-							<div className="flex flex-col">
-								<div className="flex gap-[10px]">
-									<h2 className="font-semibold dark:text-white">OWNER</h2>
-									<h2 className="font-semibold dark:text-white">/</h2>
-									<h2 className="font-semibold dark:text-white">REPO-NAME</h2>
-									<span className="font-semibold bg-[#EEFDF2] px-[15px] rounded-md text-[#1C7737] dark:bg-[#185B2E] dark:text-[#7FEDA2]">
-										LIVE
-									</span>
-								</div>
-								<span className="font-light text-[#313131] dark:text-[#8B929F]">
-									Added on January 24
+		<div className="flex w-full h-full flex-col gap-[10px]">
+			{/* header */}
+			<div className="w-full h-50 items-start justify-start p-4 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] gap-[10px]">
+				{/* top row of header */}
+				<div className="flex flex-row w-full justify-between">
+					{/* top left of header */}
+					<div className="flex flex-row items-center gap-[20px]">
+						<span className="font-semibold text-lg tracking-wide dark:text-white">
+							{data?.project.title}
+						</span>
+						<span className="flex items-center justify-center font-semibold bg-[#EEFDF2] text-[10px] px-[10px] h-[18px] rounded-md text-[#1C7737] dark:bg-[#185B2E] dark:text-[#7FEDA2]">
+							{data?.project.live ? `LIVE` : `TEST`}
+						</span>
+					</div>
+					{/* top right of header */}
+					<span className="text-[12px] font-semibold text-slate-500 dark:text-[#DDDCDC] whitespace-nowrap">
+						{data?.user?.balance} Credits
+					</span>
+				</div>
+
+				<span className="mt-1 mb-3 text-[#313131] dark:text-[#8B929F]">
+					Added on {formatDate(data?.project.createdAt.slice(0, 10))}
+				</span>
+
+				{/* bottom row of header  */}
+				<div className="flex flex-row h-full items-end flex-wrap gap-[15px]">
+					<a href={data?.url} target="_blank">
+						<div className="flex border border-[#8D4D4D4] dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-[180px] md:w-[240px] justify-between items-center">
+							<div className="flex gap-[10px]">
+								<img className="w-[14px]" src={icon[data?.host]} />
+								<span className="dark:text-[#8B929F] text-[11px] w-[135px] text-left truncate overflow-hidden">
+									{data?.project.identifier} on {data?.project.host}
 								</span>
 							</div>
-							<div className="flex flex-row flex-wrap gap-[15px]">
-								<button className="flex border border-[#919190] dark:border-[#8B929F] rounded-md text-[10px] px-[12px] w-[180px] md:w-[220px] justify-between items-center">
-									<div className="flex gap-[10px]">
-										<img
-											className="w-[14px]"
-											src={dark ? githubDarkmode : githubLogo}
-										/>
-										<span className="font-semibold dark:text-white">
-											repo-name on GitHub
-										</span>
-									</div>
-									<img src={dark ? darkExternalLink : ExternalLink} />
-								</button>
-								<div className="flex items-center gap-[20px]">
-									<div className="flex gap-[5px]">
-										<img className="w-[20px]" src={dark ? darkGroup : Group} />
-										<p className="text-[#313131] dark:text-[#D9D9D9] text-[12px] font-medium">
-											Community
-										</p>
-									</div>
-									<div className="flex gap-[5px]">
-										<img src={darkDataTransfer} />
-										<p className="text-[#313131] dark:text-[#D9D9D9] text-[12px] font-medium">
-											Transfer
-										</p>
-									</div>
-									<div className="flex gap-[5px]">
-										<img src={darkSettings} />
-										<p className="text-[#313131] dark:text-[#D9D9D9] text-[12px] font-medium">
-											Settings
-										</p>
-									</div>
-								</div>
-							</div>
+							<img src={dark ? darkExternalLink : ExternalLink} />
+						</div>
+					</a>
+
+					<div className="flex items-center gap-[20px]">
+						<div className="flex gap-[7px]">
+							<img className="w-[20px]" src={dark ? darkGroup : Group} />
+							<p className="text-[#313131] dark:text-[#D9D9D9] text-[12px] font-medium">
+								Community
+							</p>
+						</div>
+						<div className="flex gap-[7px]">
+							<img src={darkDataTransfer} />
+							<p className="text-[#313131] dark:text-[#D9D9D9] text-[12px] font-medium">
+								Transfer
+							</p>
+						</div>
+						<div
+							className="flex gap-[7px] cursor-pointer"
+							onClick={() => navigate(`/projects/${data?.id}/settings`)}
+						>
+							<img src={darkSettings} />
+							<p className="text-[#313131] dark:text-[#D9D9D9] text-[12px] font-medium">
+								Settings
+							</p>
 						</div>
 					</div>
-					<p className="text-[12px] font-semibold dark:text-[#DDDCDC] whitespace-nowrap">
-						50000 Credits
-					</p>
 				</div>
 			</div>
 
-			<div className="mx-2 pb-[20px] lg:mx-auto block h-[50vh] w-{{WIDTH}} shadow-lg rounded-lg text-sm flex flex-col md:flex-row items-center md:px-[20px] lg:w-[65%] bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between overflow-auto">
-				<div className="flex flex-col gap-[15px]">
-					<div className="flex flex-row w-full justify-between p-4">
-						<div className="flex flex-row">
-							<div className="flex flex-col gap-[15px]">
-								<div className="flex flex-col">
-									<div className="flex gap-[5px]">
-										<h2 className="font-semibold dark:text-white">
-											PULL REQUEST TITLE
-										</h2>
-									</div>
-									<span className="font-light text-[#313131] dark:text-[#8B929F]">
-										#1 opened on May 23 by ramirc5
+			<div className="p-4 block w-full h-full shadow-lg rounded-lg text-sm flex flex-col md:flex-row items-start bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] lg:justify-between overflow-auto">
+				<div className="flex h-content w-full lg:w-1/3 lg:h-full flex-col gap-6">
+					<div className="flex flex-col">
+						<span className="text-lg text-[#313131] dark:text-[#8B929F]">
+							#{data?.number} {data?.title}
+						</span>
+						<span className="text-gray-600 dark:text-[#8B929F] mt-1">
+							Created on {formatDate(data?.createdAt.slice(0, 10))} by{" "}
+							{data?.author}
+						</span>
+						<a href={data?.url} target="_blank">
+							<div className="flex border border-[#8D4D4D4] my-3 dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-full justify-between items-center">
+								<div className="flex gap-[10px]">
+									<img className="w-[14px]" src={icon[data?.host]} />
+									<span className="dark:text-[#8B929F] text-[11px] text-left truncate overflow-hidden">
+										View #{data?.number} {data?.title} on {data?.host}
 									</span>
 								</div>
-								<button className="flex border border-[#919190] dark:border-[#8B929F] rounded-md text-[10px] px-[12px] w-[180px] md:w-[220px] justify-between items-center gap-[5px]">
-									<div className="flex gap-[10px]">
-										<img
-											className="w-[14px]"
-											src={dark ? githubDarkmode : githubLogo}
-										/>
-										<span className="font-semibold max-w-[125px] text-ellipsis overflow-hidden text-nowrap dark:text-white">
-											(chore) refactor: uncrustify par...
-										</span>
-									</div>
-									<img src={dark ? darkExternalLink : ExternalLink} />
-								</button>
+								<img src={dark ? darkExternalLink : ExternalLink} />
 							</div>
-						</div>
+						</a>
 					</div>
-					<div className="flex flex-col gap-[15px]">
-						<p className="font-medium text-[10px] text-black dark:text-white">
+
+					<div className="flex self-center justify-center w-full flex-col items-center mb-6">
+						<span className="font-medium my-4 text-black dark:text-white">
 							Vote yes to merge or vote No to close this pull request.
-						</p>
-						<div className="flex flex-row justify-between gap-[15px]">
-							<button className="bg-[#20B176] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white">
+						</span>
+						<div className="flex w-full flex-row mb-4 items-center justify-center gap-[15px]">
+							<button
+								onClick={() => postVote(true)}
+								className="bg-[#20B176] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white"
+							>
 								VOTE YES
 							</button>
-							<button className="bg-[#DC2626] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white">
+							<button
+								onClick={() => postVote(false)}
+								className="bg-[#DC2626] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white"
+							>
 								VOTE NO
 							</button>
 						</div>
 					</div>
-					<div className="hidden md:flex md:flex-col rounded-lg dark:bg-[#171D2B] border border-transparent border-1 dark:border-[#373D47] w-[260px] ">
-						<p className="text-[#919190] text-[8px]">
+					<div className="p-4 w-full hidden md:flex md:flex-col rounded-lg bg-[#f8f8f9] dark:bg-[#171D2B] border border-1 border-[#D9D9D9] dark:border-[#373D47]">
+						<p className="text-[#919190] text-[10px]">
 							Your amount of credits will be applied to the side you select.
 							When that side reaches a majority the pull request will be either
 							merged or closed automatically.
 						</p>
-						<p className="text-[#919190] text-[8px]">
+						<p className="text-[#919190] text-[10px]">
 							You may only vote once per pull request. It can not be undone.
 						</p>
 					</div>
 				</div>
-				<div>
-					<div className="flex flex-col gap-[5px] font-semibold text-[#8B929F] text-[12px] w-[85%] mt-[20px]">
-						<p>Voting Activity</p>
-						<ProgressBar
-							yesPercent={0.35}
-							yesVotes={123}
-							noPercent={0.1}
-							noVotes={87}
-							totalPercent={0.45}
-							quorum={0.5}
-							votesView={true}
-						/>
-					</div>
-					<div className="w-[93%] max-h-[120px] overflow-auto ">
+
+				<div className="flex h-content w-full lg:px-10 lg:w-2/3 flex-col gap-[5px] text-[#8B929F]">
+					<span>Voting Activity</span>
+					<ProgressBar
+						yesPercent={data?.voteData.totalYesPercent}
+						noPercent={data?.voteData.totalNoPercent}
+						votesView={true}
+					/>
+					<div className="w-full">
 						<div class=" grid grid-cols-4">
 							<div class="text-center ">
 								<p className="dark:text-[#8B929F] text-[10px]">User</p>
@@ -159,33 +201,40 @@ export default function Projects() {
 								<p className="dark:text-[#8B929F] text-[10px]">Age</p>
 							</div>
 						</div>
-						{data.map((item, index) => (
-							<div
-								key={index}
-								class={` p-[1px] grid grid-cols-4 ${
-									item % 2 == 1 ? "bg-[#171D2B]" : null
-								} `}
-							>
-								<div class="text-center ">
-									<p className="dark:text-white text-[10px]">jex123</p>
+						{data?.voteData?.votes.length > 0 &&
+							data?.voteData.votes.map((vote, index) => (
+								<div
+									key={index}
+									class={` p-[1px] grid grid-cols-4 ${
+										index % 2 == 0 ? "bg-[#F9F9F9] dark:bg-[#171D2B]" : null
+									} `}
+								>
+									<div class="text-center ">
+										<p className="dark:text-white text-[10px]">
+											{vote?.username}
+										</p>
+									</div>
+									<div class=" text-center ">
+										<p
+											className={`${
+												vote.side ? "text-[#038800]" : "text-[#DC2626]"
+											} text-[10px]`}
+										>
+											{vote.side ? "YES" : "NO"}
+										</p>
+									</div>
+									<div class="text-center">
+										<p className="dark:text-white text-[10px]">
+											{vote?.amount}
+										</p>
+									</div>
+									<div class="text-center  ">
+										<p className="dark:text-white text-[10px]">
+											{getDurationSince(vote?.createdAt)}
+										</p>
+									</div>
 								</div>
-								<div class=" text-center ">
-									<p
-										className={`${
-											item % 2 == 1 ? "text-[#038800]" : "text-[#DC2626]"
-										} text-[10px]`}
-									>
-										{item % 2 == 1 ? "YES" : "NO"}
-									</p>
-								</div>
-								<div class="text-center">
-									<p className="dark:text-white text-[10px]">50,000</p>
-								</div>
-								<div class="text-center  ">
-									<p className="dark:text-white text-[10px]">2 HR</p>
-								</div>
-							</div>
-						))}
+							))}
 					</div>
 				</div>
 			</div>
