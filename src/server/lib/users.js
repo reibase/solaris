@@ -37,7 +37,7 @@ router.get("/:id", async (_req, res) => {
 	try {
 		const user = await User.findOne({
 			where: { id: _req.params.id },
-			include: Projects,
+			include: Project,
 		});
 		const json = JSON.stringify(user);
 		const res = JSON.parse(json, null, 2);
@@ -52,12 +52,11 @@ router.get("/:id/projects", async (_req, res) => {
 	try {
 		const data = await User.findOne({
 			where: { id: _req.params.id },
-			include: Project,
+			include: { model: Project, as: "projects" },
 		});
 		const json = JSON.stringify(data);
 		const user = JSON.parse(json, null, 2);
-
-		const projects = user.Projects;
+		const projects = user.projects;
 
 		await Promise.all(
 			projects.map(async (project) => {
@@ -65,7 +64,6 @@ router.get("/:id/projects", async (_req, res) => {
 				project.user = { balance: bal };
 			})
 		);
-
 		return res.send({ status: 200, data: projects });
 	} catch (error) {
 		console.log(error);
@@ -115,7 +113,6 @@ router.post("/:id/installations", async (_req, res) => {
 					refreshToken: refreshToken,
 				},
 			});
-			console.log(dbCreated, _req.body.provider, dbInstallation.refreshToken);
 			installation = dbInstallation;
 			created = dbCreated;
 		} else if (_req.body.provider === "github") {
@@ -127,7 +124,6 @@ router.post("/:id/installations", async (_req, res) => {
 					installationID: _req.body.installationID,
 				},
 			});
-			console.log(dbCreated, _req.body.provider, dbInstallation.installationID);
 			installation = dbInstallation;
 			created = dbCreated;
 		}
@@ -167,9 +163,6 @@ router.get("/:id/github/installations/repos", async (_req, res) => {
 		const responseData = installationRepos.filter(
 			(installation) => installation.status === 200
 		);
-
-		console.log("installation repos:", installationRepos);
-		console.log("response data:", responseData);
 
 		return res.send({ status: 200, installations: responseData });
 	} catch (error) {
@@ -214,9 +207,11 @@ router.post("/:id/projects", async (_req, res) => {
 		clawBack,
 		isPrivate,
 	} = _req.body;
+	const owner = _req.user.id;
 	try {
 		const project = await Project.create({
 			title,
+			owner,
 			description,
 			identifier,
 			installationID,
@@ -227,7 +222,7 @@ router.post("/:id/projects", async (_req, res) => {
 			isPrivate,
 			creditAmount,
 		});
-		await project.setUser(_req.params.id);
+		await project.addMember(_req.params.id);
 
 		const initial = await Transfer.create({
 			sender: _req.params.id,
