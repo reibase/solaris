@@ -242,7 +242,6 @@ router.post("/:id/projects", async (_req, res) => {
 
 			await Promise.all(
 				pulls.data.map(async (pull) => {
-					console.log(pull);
 					const pullRequest = await Issue.create({
 						number: pull.number,
 						hostID: pull.id,

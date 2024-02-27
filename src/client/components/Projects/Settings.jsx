@@ -37,7 +37,7 @@ export default function Settings() {
 		queryKey: ["projects"],
 		queryFn: getProject,
 	});
-	console.log(data);
+
 	return (
 		<div className="flex w-full h-full flex-col gap-[10px]">
 			{/* header */}

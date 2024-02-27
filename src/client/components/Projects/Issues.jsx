@@ -61,7 +61,6 @@ export default function Issues() {
 		setCategory(category);
 	};
 	const [category, setCategory] = useState("open");
-	console.log(data);
 	return (
 		// wrapper
 		<div className="flex w-full h-full flex-col gap-[10px]">
@@ -162,7 +161,7 @@ export default function Issues() {
 					</span>
 				</div>
 
-				{data?.Issues.length ? (
+				{data?.issues[category].length ? (
 					data?.issues[category].map((pullRequest, index) => (
 						<div className="flex flex-row w-full justify-between border-b border-[#D4D4D4] py-3 px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]">
 							<div className="flex flex-row">
@@ -220,7 +219,7 @@ export default function Issues() {
 					))
 				) : (
 					<span className="w-full h-full flex justify-center items-center text-slate-400">
-						There are no merge requests for this project.
+						There are no {category} merge requests for this project.
 					</span>
 				)}
 			</div>
