@@ -187,12 +187,8 @@ export default function Votes() {
 						<p>Voting Activity</p>
 						<div className="w-[80%] md:w-full">
 							<ProgressBar
-								yesPercent={0}
-								yesVotes={0}
-								noPercent={0}
-								noVotes={0}
-								totalPercent={0}
-								quorum={0}
+								yesPercent={data?.voteData.totalYesPercent}
+								noPercent={data?.voteData.totalNoPercent}
 								votesView={true}
 							/>
 						</div>

@@ -201,12 +201,8 @@ export default function Issues() {
 							<div className="flex flex-col justify-end gap-[10px] md:gap-0 items-end md:justify-between md:w-full">
 								<div className="flex w-[45%] m-[9px] ">
 									<ProgressBar
-										yesPercent={0.35}
-										yesVotes={123}
-										noPercent={0.1}
-										noVotes={87}
-										totalPercent={0.45}
-										quorum={0.5}
+										yesPercent={pullRequest.totalYesPercent}
+										noPercent={pullRequest.totalNoPercent}
 										votesView={false}
 									/>
 									<img
