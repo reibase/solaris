@@ -1,5 +1,5 @@
 import express from "express";
-import { Project, Issue, Vote } from "../../db/models/index.js";
+import { Project, Issue, Vote, User } from "../../db/models/index.js";
 import { Op } from "sequelize";
 import getUserBalance from "./utils/getUserBalance.js";
 import mergeGitHubPullRequest from "../codehost/github/lib/mergeGitHubPullRequest.js";
@@ -14,6 +14,9 @@ router.get("/", async (_req, res) => {
 router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 	try {
 		const bal = await getUserBalance(_req.user.id, _req.params.id);
+		const userData = await User.findOne({ where: { id: _req.user.id } });
+		const userJSON = JSON.stringify(userData);
+		const user = await JSON.parse(userJSON, null, 2);
 		if (bal < 1) {
 			return res.send({ status: 401, data: "user is not authorized." });
 		} else {
@@ -41,7 +44,11 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 				return res.send({ status: 403, data: "issue is not voteable" });
 			}
 
-			const vote = await Vote.create({ side: _req.body.side, amount: bal });
+			const vote = await Vote.create({
+				side: _req.body.side,
+				amount: bal,
+				username: user.username,
+			});
 			await vote.setUser(_req.user.id);
 			await issueData.addVote(vote.id);
 			const votesData = await issueData.getVotes();

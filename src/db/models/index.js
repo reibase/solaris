@@ -11,8 +11,22 @@ import Installation from "./installation.js";
  *
  *    BlogPost.belongsTo(User)
  */
-User.hasMany(Project);
-Project.belongsTo(User);
+
+// User.hasMany(Project);
+// Project.belongsTo(User);
+
+User.belongsToMany(Project, {
+	as: "projects",
+	foreignKey: "memberID",
+	otherKey: "projectID",
+	through: "Project_Members",
+});
+Project.belongsToMany(User, {
+	as: "members",
+	foreignKey: "projectID",
+	otherKey: "memberID",
+	through: "Project_Members",
+});
 
 User.hasMany(Vote);
 Vote.belongsTo(User);
