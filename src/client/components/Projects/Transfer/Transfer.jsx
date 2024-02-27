@@ -1,6 +1,8 @@
 import React from "react";
+import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+
 import axios from "axios";
 import githubLogo from "../../../assets/github.svg";
 import githubLogoDarkMode from "../../../assets/github-darkmode.svg";
@@ -15,8 +17,27 @@ import Group from "../../../assets/Group.svg";
 import Complete from "./Complete.jsx";
 import UserAmount from "./UserAmount.jsx";
 import Review from "./Review.jsx";
-
+import ContinueTransferButton from "./ContinueTransferButton.jsx";
 export default function Transfer() {
+  const dummyData = {
+    sentAmount: 500,
+    user: "ramirc5",
+    repo: "demo",
+    identifier: "ramirc5/dmeo",
+    date: "12/25",
+    time: "11pm",
+  };
+
+  const transferData = {
+    status: 200,
+    createdAt: "12-25-02",
+    transactionID: 1234,
+    projectID: 4321,
+    sender: { id: 1, username: jex441 },
+    recipient: { id: 2, username: ramirc5 },
+  };
+
+  const [index, setIndex] = useState(0);
   const { dark, user } = useStore();
   let { id } = useParams();
   const icon = {
@@ -37,6 +58,19 @@ export default function Transfer() {
     queryKey: ["projects"],
     queryFn: getProject,
   });
+
+  const transferComponentHandler = () => {
+    switch (index) {
+      case 0:
+        return (
+          <UserAmount data={dummyData} index={index} setIndex={setIndex} />
+        );
+      case 1:
+        return <Review data={dummyData} index={index} setIndex={setIndex} />;
+      case 2:
+        return <Complete data={dummyData} index={index} setIndex={setIndex} />;
+    }
+  };
 
   console.log(data);
   return (
@@ -101,8 +135,10 @@ export default function Transfer() {
           </div>
         </div>
       </div>
-
-      <UserAmount />
+      <div className="w-full h-[50vh] items-center justify-center px-4 py-2 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+        {transferComponentHandler()}
+        <ContinueTransferButton setIndex={setIndex} index={index} />
+      </div>
     </div>
   );
 }
