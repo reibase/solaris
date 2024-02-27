@@ -32,18 +32,19 @@ router.get("/", async (_req, res) => {
 	res.status(200).json({ message: "Hello World!" });
 });
 
-// get a user
-router.get("/:id", async (_req, res) => {
+// find a user by a username
+router.get("/users", async (_req, res) => {
+	const { username } = _req.body;
 	try {
-		const user = await User.findOne({
-			where: { id: _req.params.id },
-			include: Project,
+		const userData = await User.findOne({
+			where: { username: username },
 		});
-		const json = JSON.stringify(user);
-		const res = JSON.parse(json, null, 2);
-		return { status: 200, user: res, message: "User deleted successfully." };
+		const userJSON = JSON.stringify(userData);
+		const user = JSON.parse(userJSON, null, 2);
+
+		return res.send({ status: 200, data: user });
 	} catch (error) {
-		return { status: 500, message: error.message };
+		return res.send({ status: 500, message: error.message });
 	}
 });
 

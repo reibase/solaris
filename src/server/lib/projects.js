@@ -138,11 +138,12 @@ router.post("/:id/transfer", async (_req, res) => {
 		const network = "Solaris";
 
 		const transfer = await Transfer.create({
-			amount,
-			sender,
-			recipientID,
-			network,
+			amount: amount,
+			sender: sender,
+			recipient: recipientObject.id,
+			network: network,
 		});
+
 		await transfer.setProject(_req.params.id);
 
 		return res.send({
