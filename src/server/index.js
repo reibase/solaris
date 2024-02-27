@@ -271,7 +271,7 @@ app.use("*", (req, res) => {
 
 // Connect to database
 const syncDB = async () => {
-	await db.sync();
+	await db.sync({ force: true });
 	console.log("All models were synchronized successfully.");
 };
 
