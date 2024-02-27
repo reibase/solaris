@@ -129,7 +129,11 @@ router.post("/:id/transfer", async (_req, res) => {
 			where: { username: recipient },
 		});
 		const recipientJSON = JSON.stringify(recipientData);
-		const recipientID = JSON.parse(recipientJSON);
+		const recipientObject = JSON.parse(recipientJSON);
+
+		if (!recipientObject.id) {
+			return res.send({ status: 404, data: "recipient not found" });
+		}
 
 		const network = "Solaris";
 
@@ -146,7 +150,7 @@ router.post("/:id/transfer", async (_req, res) => {
 			transactionID: transfer.id,
 			project: _req.params.id,
 			sender: { id: sender, username: senderUsername },
-			recipient: { id: recipientID, username: recipient },
+			recipient: { id: recipientObject.id, username: recipient },
 			network: network,
 		});
 	} catch (error) {
