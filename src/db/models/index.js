@@ -13,13 +13,21 @@ import Installation from "./installation.js";
  */
 User.hasMany(Project);
 Project.belongsTo(User);
+
+User.hasMany(Vote);
+Vote.belongsTo(User);
+
 User.hasMany(Installation);
 Installation.belongsTo(User);
+
 Project.hasMany(Transfer);
 Transfer.belongsTo(Project);
-Project.hasMany(Issue);
+
 Issue.belongsTo(Project);
+Project.hasMany(Issue);
+
 Issue.hasMany(Vote);
+Vote.belongsTo(Issue);
 
 /**
  * We'll export all of our models here, so that any time a module needs a model,

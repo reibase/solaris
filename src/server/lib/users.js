@@ -7,6 +7,7 @@ import {
 	Project,
 	Issue,
 	Transfer,
+	Vote,
 } from "../../db/models/index.js";
 import getGitHubInstallationRepos from "../codehost/github/getGitHubInstallationRepos.js";
 import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallationRepos.js";
@@ -241,7 +242,6 @@ router.post("/:id/projects", async (_req, res) => {
 
 			await Promise.all(
 				pulls.data.map(async (pull) => {
-					console.log(pull);
 					const pullRequest = await Issue.create({
 						number: pull.number,
 						hostID: pull.id,
@@ -332,6 +332,8 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 		project.issues = { open: [], merged: [], closed: [] };
 
 		issues.map((issue) => {
+			issue.totalYesPercent = issue.totalYesVotes / project.creditAmount;
+			issue.totalNoPercent = issue.totalNoVotes / project.creditAmount;
 			if (issue.state === "closed") {
 				if (issue.merged) {
 					project.issues.merged.push(issue);
@@ -344,6 +346,55 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 		});
 
 		return res.send({ status: 200, data: project });
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
+	try {
+		const project = await Project.findOne({
+			where: { id: _req.params.projectID },
+			include: Issue,
+		});
+
+		const issueData = await project.getIssues({
+			where: { number: _req.params.issueID },
+			include: Vote,
+		});
+
+		const issueJson = JSON.stringify(issueData);
+		let issue = JSON.parse(issueJson, null, 2);
+
+		const transfersData = await project.getTransfers({
+			where: {
+				[Op.or]: [{ recipient: _req.params.id }, { sender: _req.params.id }],
+			},
+		});
+		const transfersJson = JSON.stringify(transfersData);
+		const transfers = JSON.parse(transfersJson);
+
+		const userID = parseInt(_req.params.id);
+
+		let balance = transfers.reduce((accum, cur) => {
+			if (cur.recipient === userID) {
+				accum = accum + cur.amount;
+			} else if (cur.sender === userID) {
+				accum = accum - cur.amount;
+			}
+			return accum;
+		}, 0);
+
+		let response = issue[0];
+		response.project = project;
+		response.user = { balance: balance };
+		response.voteData = {
+			votes: issue[0].Votes,
+			totalYesPercent: response.totalYesVotes / project.creditAmount,
+			totalNoPercent: response.totalNoVotes / project.creditAmount,
+		};
+
+		return res.send({ status: 200, data: response });
 	} catch (error) {
 		console.log(error);
 	}

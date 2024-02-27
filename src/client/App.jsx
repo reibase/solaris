@@ -13,6 +13,7 @@ import Projects from "./components/Projects/Projects.jsx";
 import Create from "./components/CreateProject/Create.jsx";
 import Issues from "./components/Projects/Issues.jsx";
 import Votes from "./components/Projects/Votes.jsx";
+import Settings from "./components/Projects/Settings.jsx";
 
 function App() {
 	const { user, setUserInfo } = useStore();
@@ -41,12 +42,10 @@ function App() {
 		}
 	};
 
-	const { isFetching } = useQuery({
+	const { data, isFetching } = useQuery({
 		queryKey: ["userinfo"],
 		queryFn: getUser,
-		enabled: !user.isLoggedIn,
-		retry: 6,
-		retryDelay: 1000,
+		enabled: !user.info.id,
 	});
 
 	const router = createBrowserRouter([
@@ -70,14 +69,15 @@ function App() {
 						{ path: "/projects", element: <Projects /> },
 						{ path: "/projects/:id", element: <Issues /> },
 						{ path: "/create", element: <Create /> },
-						{ path: "/votes", element: <Votes /> },
+						{ path: "/projects/:id/issues/:issueID", element: <Votes /> },
+						{ path: "/projects/:id/settings", element: <Settings /> },
 						{ path: "/issues", element: <Issues /> },
 				  ],
 		},
 	]);
 
 	if (isFetching) {
-		return "Loading";
+		return "loading";
 	}
 	return <RouterProvider router={router} />;
 }
