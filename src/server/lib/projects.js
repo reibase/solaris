@@ -1,5 +1,5 @@
 import express from "express";
-import { Project, Issue, Vote, User } from "../../db/models/index.js";
+import { Project, Issue, Vote, User, Transfer } from "../../db/models/index.js";
 import { Op } from "sequelize";
 import getUserBalance from "./utils/getUserBalance.js";
 import mergeGitHubPullRequest from "../codehost/github/lib/mergeGitHubPullRequest.js";
@@ -87,6 +87,68 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 				id: vote.id,
 			});
 		}
+	} catch (error) {
+		console.log(error);
+		return res.send({ status: 500, data: error.message });
+	}
+});
+
+router.post("/:id/transfer", async (_req, res) => {
+	try {
+		const { amount, sender, recipient } = _req.body;
+
+		const bal = await getUserBalance(sender, _req.params.id);
+
+		if (bal < amount) {
+			return res.send({ status: 401, data: "user balance insufficient" });
+		}
+
+		if (amount < 1) {
+			return res.send({ status: 401, data: "unauthorized request" });
+		}
+
+		const projectData = await Project.findOne({
+			where: { id: _req.params.id },
+		});
+		const projectJSON = JSON.stringify(projectData);
+		const project = JSON.parse(projectJSON);
+
+		if (amount > project.creditAmount) {
+			return res.send({ status: 401, data: "unauthorized request" });
+		}
+
+		const senderData = await User.findOne({
+			where: { username: sender },
+		});
+		const senderJSON = JSON.stringify(senderData);
+		const senderObject = JSON.parse(senderJSON);
+
+		const senderUsername = senderObject.username;
+
+		const recipientData = await User.findOne({
+			where: { username: recipient },
+		});
+		const recipientJSON = JSON.stringify(recipientData);
+		const recipientID = JSON.parse(recipientJSON);
+
+		const network = "Solaris";
+
+		const transfer = await Transfer.create({
+			amount,
+			sender,
+			recipientID,
+			network,
+		});
+		await transfer.setProject(_req.params.id);
+
+		return res.send({
+			status: 200,
+			transactionID: transfer.id,
+			project: _req.params.id,
+			sender: { id: sender, username: senderUsername },
+			recipient: { id: recipientID, username: recipient },
+			network: network,
+		});
 	} catch (error) {
 		console.log(error);
 		return res.send({ status: 500, data: error.message });
