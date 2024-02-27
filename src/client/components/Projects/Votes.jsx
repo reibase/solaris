@@ -211,7 +211,7 @@ export default function Votes() {
 								>
 									<div class="text-center ">
 										<p className="dark:text-white text-[10px]">
-											{vote?.UserId}
+											{vote?.username}
 										</p>
 									</div>
 									<div class=" text-center ">
