@@ -94,6 +94,7 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 });
 
 router.post("/:id/transfer", async (_req, res) => {
+	//Remove hard coded data here:
 	try {
 		const { amount, sender, recipient } = _req.body;
 
@@ -118,7 +119,7 @@ router.post("/:id/transfer", async (_req, res) => {
 		}
 
 		const senderData = await User.findOne({
-			where: { username: sender },
+			where: { id: sender },
 		});
 		const senderJSON = JSON.stringify(senderData);
 		const senderObject = JSON.parse(senderJSON);
@@ -131,29 +132,31 @@ router.post("/:id/transfer", async (_req, res) => {
 		const recipientJSON = JSON.stringify(recipientData);
 		const recipientObject = JSON.parse(recipientJSON);
 
-		if (!recipientObject.id) {
-			return res.send({ status: 404, data: "recipient not found" });
-		}
+		// if (!recipientObject.id) {
+		// 	return res.send({ status: 404, data: "recipient not found" });
+		// }
 
 		const network = "Solaris";
 
 		const transfer = await Transfer.create({
-			amount: amount,
-			sender: sender,
-			recipient: recipientObject.id,
+			amount: 11,
+			sender: 1,
+			recipient: 2,
 			network: network,
 		});
 
 		await transfer.setProject(_req.params.id);
 
-		return res.send({
+		const transferData = {
 			status: 200,
 			transactionID: transfer.id,
 			project: _req.params.id,
 			sender: { id: sender, username: senderUsername },
-			recipient: { id: recipientObject.id, username: recipient },
+			recipient: { id: 2, username: recipient },
 			network: network,
-		});
+		};
+
+		return res.send(transferData);
 	} catch (error) {
 		console.log(error);
 		return res.send({ status: 500, data: error.message });
