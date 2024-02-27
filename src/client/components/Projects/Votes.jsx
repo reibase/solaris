@@ -125,8 +125,8 @@ export default function Votes() {
 				</div>
 			</div>
 
-			<div className="p-4 block w-full h-full shadow-lg rounded-lg text-sm flex flex-col md:flex-row items-start bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] justify-between overflow-auto">
-				<div className="flex lg:w-1/3 h-full flex-col gap-6">
+			<div className="p-4 block w-full h-full shadow-lg rounded-lg text-sm flex flex-col md:flex-row items-start bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] lg:justify-between overflow-auto">
+				<div className="flex h-content w-full lg:w-1/3 lg:h-full flex-col gap-6">
 					<div className="flex flex-col">
 						<span className="text-lg text-[#313131] dark:text-[#8B929F]">
 							#{data?.number} {data?.title}
@@ -135,24 +135,24 @@ export default function Votes() {
 							Created on {formatDate(data?.createdAt.slice(0, 10))} by{" "}
 							{data?.author}
 						</span>
-						<div className="mt-4 flex w-full border border-[#919190] dark:border-[#8B929F] rounded-md text-[10px] px-[12px] justify-between items-center gap-[5px]">
-							<div className="flex gap-[10px]">
-								<img className="w-[14px]" src={icon[data?.host]} />
-								<span className="w-full text-ellipsis overflow-hidden text-nowrap dark:text-white">
-									{data?.title} on {data?.host}
-								</span>
-							</div>
-							<a href={data?.url}>
+						<a href={data?.url} target="_blank">
+							<div className="flex border border-[#8D4D4D4] my-3 dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-full justify-between items-center">
+								<div className="flex gap-[10px]">
+									<img className="w-[14px]" src={icon[data?.host]} />
+									<span className="dark:text-[#8B929F] text-[11px] text-left truncate overflow-hidden">
+										View #{data?.number} {data?.title} on {data?.host}
+									</span>
+								</div>
 								<img src={dark ? darkExternalLink : ExternalLink} />
-							</a>
-						</div>
+							</div>
+						</a>
 					</div>
 
-					<div className="flex w-full flex-col md:gap-[40px] items-center mb-6">
-						<p className="font-medium text-[10px] text-black dark:text-white">
+					<div className="flex self-center justify-center w-full flex-col items-center mb-6">
+						<span className="font-medium my-4 text-black dark:text-white">
 							Vote yes to merge or vote No to close this pull request.
-						</p>
-						<div className="flex w-full flex-row mb-4 justify-center gap-[15px]">
+						</span>
+						<div className="flex w-full flex-row mb-4 items-center justify-center gap-[15px]">
 							<button
 								onClick={() => postVote(true)}
 								className="bg-[#20B176] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white"
@@ -178,7 +178,8 @@ export default function Votes() {
 						</p>
 					</div>
 				</div>
-				<div className="flex w-full lg:px-10 lg:w-2/3 flex-col gap-[5px] text-[#8B929F]">
+
+				<div className="flex h-content w-full lg:px-10 lg:w-2/3 flex-col gap-[5px] text-[#8B929F]">
 					<span>Voting Activity</span>
 					<ProgressBar
 						yesPercent={data?.voteData.totalYesPercent}

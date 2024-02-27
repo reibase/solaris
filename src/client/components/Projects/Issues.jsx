@@ -36,31 +36,35 @@ export default function Issues() {
 			console.log(error);
 		}
 	};
+
 	const { data, isFetching } = useQuery({
 		queryKey: ["projects"],
 		queryFn: getProject,
 	});
+
 	let issueCategory = {
 		closed: [
 			"Closed",
 			"text-[#dd2a2a] bg-[#fee2e0] dark:text-[#dd2a2a] dark:bg-[#fee2e0]",
-			data?.issues.closed,
 		],
 		merged: [
 			"Merged",
 			"text-[#7e3fec] bg-[#dbd3fb] dark:text-[#7e3fec] dark:bg-[#dbd3fb]",
-			data?.issues.merged,
 		],
 		open: [
 			"Open",
 			"text-[#1C7737] bg-[#EEFDF2] dark:bg-[#185B2E] dark:text-[#7FEDA2]",
-			data?.issues.open,
 		],
 	};
 	const handleCategoryClick = (category) => {
 		setCategory(category);
 	};
+
 	const [category, setCategory] = useState("open");
+	if (isFetching) {
+		return "Loading";
+	}
+
 	return (
 		// wrapper
 		<div className="flex w-full h-full flex-col gap-[10px]">
@@ -89,8 +93,8 @@ export default function Issues() {
 
 				{/* bottom row of header  */}
 				<div className="flex flex-row h-full items-end flex-wrap gap-[15px]">
-					<a href={data?.url} target="_blank">
-						<div className="flex border border-[#8D4D4D4] dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-[180px] md:w-[240px] justify-between items-center">
+					<a href={data?.url} target="_blank" className="cursor-pointer">
+						<div className="flex border border-[#8D4D4D4] dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-[180px] md:w-[240px] justify-between items-center cursor-pointer">
 							<div className="flex gap-[10px]">
 								<img className="w-[14px]" src={icon[data?.host]} />
 								<span className="dark:text-[#8B929F] text-[11px] w-[135px] text-left truncate overflow-hidden">
@@ -177,14 +181,18 @@ export default function Issues() {
 												{issueCategory[category][0]}
 											</span>
 										</div>
-										<span className="text-slate-500 mt-2 dark:text-[#8B929F]">
+										<span className="text-slate-500 text-[11px] mt-2 dark:text-[#8B929F]">
 											#{pullRequest.number} opened on{" "}
 											{pullRequest.createdAt.slice(0, 10)} by{" "}
 											{pullRequest.author}
 										</span>
 									</div>
 
-									<a href={pullRequest?.url} target="_blank">
+									<a
+										href={pullRequest?.url}
+										target="_blank"
+										className="cursor-pointer"
+									>
 										<div className="flex border border-[#D4D4D4] dark:border-[#8B929F] rounded-md text-[10px] px-[12px] w-[180px] md:w-[220px] justify-between items-center gap-[5px]">
 											<div className="flex gap-[10px]">
 												<img className="w-[14px]" src={icon[data?.host]} />
@@ -197,13 +205,13 @@ export default function Issues() {
 									</a>
 								</div>
 							</div>
-							<div className="flex flex-col justify-end gap-[10px] md:gap-0 items-end md:justify-between md:w-full">
-								<div className="flex w-[45%] m-[9px] ">
-									<ProgressBar
-										yesPercent={pullRequest.totalYesPercent}
-										noPercent={pullRequest.totalNoPercent}
-										votesView={false}
-									/>
+							<div className="flex justify-end items-center w-1/2 pl-4 flex-row gap-4 items-end lg:w-1/3">
+								<ProgressBar
+									yesPercent={pullRequest.totalYesPercent}
+									noPercent={pullRequest.totalNoPercent}
+									votesView={false}
+								/>
+								<span>
 									<img
 										onClick={() =>
 											navigate(
@@ -213,7 +221,7 @@ export default function Issues() {
 										src={Forward}
 										className="w-[14px] cursor-pointer"
 									/>
-								</div>
+								</span>
 							</div>
 						</div>
 					))
