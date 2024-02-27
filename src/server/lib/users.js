@@ -207,7 +207,7 @@ router.post("/:id/projects", async (_req, res) => {
 		clawBack,
 		isPrivate,
 	} = _req.body;
-	const owner = _req.user.id;
+	const owner = _req.params.id;
 	try {
 		const project = await Project.create({
 			title,
@@ -222,11 +222,11 @@ router.post("/:id/projects", async (_req, res) => {
 			isPrivate,
 			creditAmount,
 		});
-		await project.addMember(_req.params.id);
+		await project.addMember(owner);
 
 		const initial = await Transfer.create({
-			sender: _req.params.id,
-			recipient: _req.params.id,
+			sender: owner,
+			recipient: owner,
 			amount: project.creditAmount,
 		});
 
