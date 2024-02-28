@@ -70,7 +70,7 @@ export default function Transfer() {
         })
         .then((res) => {
           console.log("transfer res from server:", res);
-          return res.transferData;
+          return res.data;
         });
       // needs a return value, just logging here ^
     } catch (error) {
@@ -85,6 +85,10 @@ export default function Transfer() {
     queryFn: postTransfer,
     enabled: clicked,
   });
+
+  const handleClicked = () => {
+    setClicked(!clicked);
+  };
   /// End.
 
   const transferComponentHandler = () => {
@@ -180,7 +184,7 @@ export default function Transfer() {
       </div>
       <div className="w-full h-[50vh] items-center justify-center px-4 py-2 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
         {transferComponentHandler()}
-        <button onClick={() => setClicked(true)}>Test</button>
+        <button onClick={() => handleClicked()}>Test</button>
         <ContinueTransferButton setIndex={setIndex} index={index} />
       </div>
     </div>
