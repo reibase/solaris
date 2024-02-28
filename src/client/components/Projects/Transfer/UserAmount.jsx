@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function UserAmount({ data, index, setIndex }) {
+export default function UserAmount({ transferData, index, setIndex }) {
   const errorText = "error";
   return (
     <form className="flex flex-col gap-[35px] mb-[40px]">

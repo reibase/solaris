@@ -17,72 +17,72 @@ import Transfer from "./components/Projects/Transfer/Transfer.jsx";
 import Settings from "./components/Projects/Settings.jsx";
 
 function App() {
-	const { user, setUserInfo } = useStore();
+  const { user, setUserInfo } = useStore();
 
-	const getUser = async () => {
-		try {
-			setTimeout(async () => {
-				await axios.get("/api/auth/me").then(({ data }) => {
-					const updatedUserInfo = data?.isLoggedIn && {
-						isLoggedIn: true,
-						info: {
-							id: data.id,
-							username: data.username,
-							avatar: data.avatar,
-							verifiedThru: data.verifiedThru,
-							email: data.email,
-						},
-					};
-					data?.isLoggedIn && setUserInfo(updatedUserInfo);
-					data?.isLoggedIn &&
-						localStorage.setItem("user", JSON.stringify(updatedUserInfo));
-				});
-			}, [1000]);
-		} catch (error) {
-			console.log(error);
-		}
-	};
+  const getUser = async () => {
+    try {
+      setTimeout(async () => {
+        await axios.get("/api/auth/me").then(({ data }) => {
+          const updatedUserInfo = data?.isLoggedIn && {
+            isLoggedIn: true,
+            info: {
+              id: data.id,
+              username: data.username,
+              avatar: data.avatar,
+              verifiedThru: data.verifiedThru,
+              email: data.email,
+            },
+          };
+          data?.isLoggedIn && setUserInfo(updatedUserInfo);
+          data?.isLoggedIn &&
+            localStorage.setItem("user", JSON.stringify(updatedUserInfo));
+        });
+      }, [1000]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-	const { isFetching } = useQuery({
-		queryKey: ["userinfo"],
-		queryFn: getUser,
-		enabled: !user.isLoggedIn,
-		retry: 6,
-		retryDelay: 1000,
-	});
+  const { isFetching } = useQuery({
+    queryKey: ["userinfo"],
+    queryFn: getUser,
+    enabled: !user.isLoggedIn,
+    retry: 6,
+    retryDelay: 1000,
+  });
 
-	const router = createBrowserRouter([
-		{
-			path: "/",
-			element: <Layout />,
-			children: !user.isLoggedIn
-				? [
-						{ index: true, element: <AccessCode /> },
-						{ path: "/Profile", element: <Profile /> },
-						{ path: "/requestaccess", element: <RequestAccess /> },
-						{ path: "/login", element: <Login /> },
-						{ path: "/access", element: <AccessCode /> },
-				  ]
-				: [
-						{ index: true, element: <Projects /> },
-						{ path: "/profile", element: <Profile /> },
-						{ path: "/requestaccess", element: <Profile /> },
-						{ path: "/login", element: <Profile /> },
-						{ path: "/access", element: <Profile /> },
-						{ path: "/projects", element: <Projects /> },
-						{ path: "/projects/:id", element: <Issues /> },
-						{ path: "/projects/:id/transfer", element: <Transfer /> },
-						{ path: "/create", element: <Create /> },
-						{ path: "/votes", element: <Votes /> },
-						{ path: "/issues", element: <Issues /> },
-				  ],
-		},
-	]);
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Layout />,
+      children: !user.isLoggedIn
+        ? [
+            { index: true, element: <AccessCode /> },
+            { path: "/Profile", element: <Profile /> },
+            { path: "/requestaccess", element: <RequestAccess /> },
+            { path: "/login", element: <Login /> },
+            { path: "/access", element: <AccessCode /> },
+          ]
+        : [
+            { index: true, element: <Transfer /> },
+            { path: "/profile", element: <Profile /> },
+            { path: "/requestaccess", element: <Profile /> },
+            { path: "/login", element: <Profile /> },
+            { path: "/access", element: <Profile /> },
+            { path: "/projects", element: <Projects /> },
+            { path: "/projects/:id", element: <Issues /> },
+            { path: "/projects/:id/transfer", element: <Transfer /> },
+            { path: "/create", element: <Create /> },
+            { path: "/votes", element: <Votes /> },
+            { path: "/issues", element: <Issues /> },
+          ],
+    },
+  ]);
 
-	if (isFetching) {
-		return "Loading";
-	}
-	return <RouterProvider router={router} />;
+  if (isFetching) {
+    return "Loading";
+  }
+  return <RouterProvider router={router} />;
 }
 
 export default App;

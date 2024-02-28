@@ -1,6 +1,10 @@
 import React from "react";
 
-export default function ContinueTransferButton({ data, index, setIndex }) {
+export default function ContinueTransferButton({
+  transferData,
+  index,
+  setIndex,
+}) {
   return (
     <button
       onClick={() => setIndex(index + 1)}
