@@ -399,6 +399,28 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 	}
 });
 
+router.put("/:id/projects/:projectID", async (_req, res) => {
+	const { live, creditAmount, quorum } = _req.body;
+	try {
+		const projectData = await Project.update(
+			{
+				live: live,
+				creditAmount: creditAmount,
+				quorum: quorum,
+			},
+			{ where: { id: _req.params.projectID } }
+		);
+
+		const json = JSON.stringify(projectData);
+		const project = JSON.parse(json);
+
+		console.log(_req.body);
+		return res.send({ status: 200, data: project });
+	} catch (error) {
+		console.log(error);
+	}
+});
+
 router.delete("/:id/projects/:id", async (_req, res) => {
 	const { id } = _req.body;
 	try {
