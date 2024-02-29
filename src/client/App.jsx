@@ -135,6 +135,11 @@ function App() {
 							errorElement: <ErrorBoundary />,
 						},
 						{
+							path: "/projects/:id/settings",
+							element: <Settings />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
 							path: "/create",
 							element: <Create />,
 							errorElement: <ErrorBoundary />,
