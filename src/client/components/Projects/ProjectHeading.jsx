@@ -26,7 +26,7 @@ export default function ProjectHeading({ project }) {
 
 	return (
 		<>
-			<div className="w-full h-[140px] items-start justify-start px-4 py-2 shadow-md rounded-lg mb-2 text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+			<div className="w-full h-50 items-start justify-start px-4 py-2 shadow-md rounded-lg mb-2 text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 				{/* top row of header */}
 				<div className="flex flex-row w-full justify-between">
 					{/* top left of header */}
@@ -34,7 +34,7 @@ export default function ProjectHeading({ project }) {
 						<span className="font-semibold text-lg tracking-wide dark:text-white">
 							{project?.title}
 						</span>
-						{project.live ? (
+						{project?.live ? (
 							<span className="flex items-center justify-center font-semibold bg-[#EEFDF2] text-[10px] px-[10px] h-[18px] rounded-md text-[#1C7737] dark:bg-[#185B2E] dark:text-[#7FEDA2]">
 								LIVE
 							</span>
