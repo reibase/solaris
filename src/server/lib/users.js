@@ -35,9 +35,6 @@ router.get("/", async (_req, res) => {
 // find a user by a username
 router.get("/:username", async (_req, res) => {
 	const username = _req.params.username;
-	console.log(username);
-	console.log(_req.params);
-
 	try {
 		const userData = await User.findOne({
 			where: { username: username },
@@ -50,8 +47,6 @@ router.get("/:username", async (_req, res) => {
 			return res.send({ status: 404, user: "not found" });
 		}
 	} catch (error) {
-		console.log("error:", username);
-		console.log("error:", _req.params);
 		return res.send({ status: 500, message: error.message });
 	}
 });
