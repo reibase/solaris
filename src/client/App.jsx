@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import axios from "axios";
 import { useStore } from "./store";
-import { React, useEffect } from "react";
+import { React, useEffect, useState } from "react";
 
 import RequestAccess from "./components/RequestAccess.jsx";
 import Profile from "./components/Profile.jsx";
@@ -26,7 +26,11 @@ function App() {
 	const getUser = async () => {
 		try {
 			await axios.get("/api/auth/me").then(({ data }) => {
-				const updatedUserInfo = data?.isLoggedIn && {
+				console.log("data", data);
+				if (!data?.isLoggedIn) {
+					throw new Error();
+				}
+				const updatedUserInfo = {
 					isLoggedIn: true,
 					info: {
 						id: data.id,
@@ -36,31 +40,30 @@ function App() {
 						email: data.email,
 					},
 				};
-				data?.isLoggedIn && setUserInfo(updatedUserInfo);
-				data?.isLoggedIn &&
-					localStorage.setItem("user", JSON.stringify(updatedUserInfo));
+				setUserInfo(updatedUserInfo);
+				localStorage.setItem("user", JSON.stringify(updatedUserInfo));
 			});
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	useEffect(() => {
-		if (!user?.isLoggedIn) {
-			getUser();
-		}
-	}, [user]);
+	const { isFetching: loading } = useQuery({
+		queryKey: ["userinfo"],
+		queryFn: getUser,
+		enabled: !user.isLoggedIn,
+		retry: 6,
+	});
 
 	const router = createBrowserRouter([
 		{
 			path: "/",
 			element: <Layout />,
-
 			children: !user.isLoggedIn
 				? [
 						{
 							index: true,
-							element: <AccessCode />,
+							element: <AccessCode loading={loading} />,
 							errorElement: <ErrorBoundary />,
 						},
 						{
@@ -143,9 +146,9 @@ function App() {
 				  ],
 		},
 	]);
+
 	function ErrorBoundary() {
 		let error = useRouteError();
-		console.log(error);
 		return (
 			<div className="w-full h-full items-center justify-center px-4 py-2 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 				Dang - there was an error. Please return to{" "}

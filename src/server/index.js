@@ -224,6 +224,7 @@ app.get("/api/auth/logout", function (req, res) {
 });
 
 app.get("/api/auth/me", function (req, res) {
+	console.log("req.user.id", req?.user?.id);
 	if (!req.user) {
 		return res.send({ isLoggedIn: false });
 	}
