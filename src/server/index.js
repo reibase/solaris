@@ -209,6 +209,7 @@ app.get(
 		failureRedirect: "/login",
 	}),
 	function (req, res) {
+		console.log("final:", req.user);
 		// Successful authentication, redirect home.
 		res.redirect("/");
 	}
