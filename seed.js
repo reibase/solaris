@@ -3,12 +3,12 @@ import axios from "axios";
 import { Project, User } from "./src/db/models/index.js";
 
 const users = [
-	// {
-	// 	username: "jex441",
-	// 	verifiedThru: "github",
-	// 	email: "jwfirenze@gmail.com",
-	// 	avatar: "https://avatars.githubusercontent.com/u/75996017?v=4",
-	// },
+	{
+		username: "elheffe",
+		verifiedThru: "github",
+		email: "el_jeffe@gmail.com",
+		avatar: "https://avatars.githubusercontent.com/u/75996017?v=4",
+	},
 	{
 		username: "user456",
 		verifiedThru: "github",

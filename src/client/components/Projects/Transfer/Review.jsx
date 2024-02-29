@@ -3,7 +3,10 @@ import React from "react";
 export default function Review({ transferData, setClicked }) {
 	return (
 		<div className="w-1/2 flex h-[300px] flex-col justify-center items-start">
-			<div className="w-full text-lg pb-4">Transfer Summary:</div>
+			<div className="w-full text-lg">Transfer Summary:</div>
+			<div className="text-slate-400 mt-1 pb-4">
+				Please review before submiitting.
+			</div>
 			<div className="flex justify-center flex-col items-center gap-[35px] w-full">
 				<div className=" flex flex-col gap-[5px] items-center w-full">
 					<div className="p-2 flex justify-between w-full">

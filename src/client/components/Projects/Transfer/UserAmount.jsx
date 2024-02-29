@@ -16,10 +16,10 @@ export default function UserAmount({
 			setAmountError(true);
 			setAmountErrorText("Amount exceeds current balance");
 		}
-		if (transferData.amount < 1) {
-			setAmountError(true);
-			setAmountErrorText("Please enter a value greater than 1");
-		}
+		// if (transferData.amount < 1) {
+		// 	setAmountError(true);
+		// 	setAmountErrorText("Please enter a value greater than 1");
+		// }
 		if (transferData.amount > 0 && transferData.amount <= balance) {
 			setAmountError(false);
 		}
@@ -28,6 +28,9 @@ export default function UserAmount({
 			setRecipientErrorText("User not found");
 		}
 		if (transferData.recipientFound) {
+			setRecipientError(false);
+		}
+		if (recipientName.current < 3) {
 			setRecipientError(false);
 		}
 	}, [transferData]);

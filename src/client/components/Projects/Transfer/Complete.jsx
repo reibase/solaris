@@ -13,6 +13,7 @@ export default function Complete({
 	console.log("transferRes", transferRes);
 	useEffect(() => {
 		if (transferRes.status === 200) {
+			recipientName.current = "";
 			setTransferData({
 				...transferData,
 				amount: 0,
