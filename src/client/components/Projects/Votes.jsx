@@ -151,7 +151,7 @@ export default function Votes() {
 								<p className="dark:text-[#8B929F] text-[10px]">Age</p>
 							</div>
 						</div>
-						{issue?.voteissue?.votes.length > 0 &&
+						{issue?.voteData?.votes.length > 0 &&
 							issue?.voteData.votes.map((vote, index) => (
 								<div
 									key={index}
