@@ -1,5 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+	createBrowserRouter,
+	RouterProvider,
+	useRouteError,
+} from "react-router-dom";
 import axios from "axios";
 import { useStore } from "./store";
 import { React, useEffect } from "react";
@@ -55,30 +59,106 @@ function App() {
 		{
 			path: "/",
 			element: <Layout />,
+
 			children: !user.isLoggedIn
 				? [
-						{ index: true, element: <AccessCode /> },
-						{ path: "/Profile", element: <Profile /> },
-						{ path: "/requestaccess", element: <RequestAccess /> },
-						{ path: "/login", element: <Login /> },
-						{ path: "/access", element: <AccessCode /> },
+						{
+							index: true,
+							element: <AccessCode />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/Profile",
+							element: <Profile />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/requestaccess",
+							element: <RequestAccess />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/login",
+							element: <Login />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/access",
+							element: <AccessCode />,
+							errorElement: <ErrorBoundary />,
+						},
 				  ]
 				: [
-						{ index: true, element: <Projects /> },
-						{ path: "/profile", element: <Profile /> },
-						{ path: "/requestaccess", element: <Profile /> },
-						{ path: "/login", element: <Profile /> },
-						{ path: "/access", element: <Profile /> },
-						{ path: "/projects", element: <Projects /> },
-						{ path: "/projects/:id", element: <Issues /> },
-						{ path: "/projects/:id/transfer", element: <Transfer /> },
-						{ path: "/create", element: <Create /> },
-						{ path: "/votes", element: <Votes /> },
-						{ path: "/issues", element: <Issues /> },
+						{
+							index: true,
+							element: <Projects />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/profile",
+							element: <Profile />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/requestaccess",
+							element: <Profile />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/login",
+							element: <Profile />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/access",
+							element: <Profile />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/projects",
+							element: <Projects />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/projects/:id",
+							element: <Issues />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/projects/:id/transfer",
+							element: <Transfer />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/create",
+							element: <Create />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/votes",
+							element: <Votes />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/issues",
+							element: <Issues />,
+							errorElement: <ErrorBoundary />,
+						},
 				  ],
 		},
 	]);
-
+	function ErrorBoundary() {
+		let error = useRouteError();
+		console.log(error);
+		return (
+			<div className="w-full h-full items-center justify-center px-4 py-2 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+				Dang - there was an error. Please return to{" "}
+				<a className="underline" href="/">
+					home.
+				</a>
+			</div>
+		);
+	}
 	if (isFetching) {
 		return "Loading";
 	}

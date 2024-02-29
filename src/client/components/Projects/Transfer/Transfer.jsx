@@ -150,6 +150,7 @@ export default function Transfer() {
 						setTransferData={setTransferData}
 						changeHandler={changeHandler}
 						recipientName={recipientName}
+						setClicked={setClicked}
 					/>
 				);
 		}
