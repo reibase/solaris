@@ -33,7 +33,6 @@ export default function Projects() {
 		queryKey: ["userprojects"],
 		queryFn: getUserProjects,
 	});
-	console.log(data);
 	if (isFetching) {
 		return "Loading";
 	}
@@ -82,7 +81,7 @@ export default function Projects() {
 							</div>
 							<div className="flex flex-col justify-start md:gap-0 items-end md:justify-between ">
 								<span className="text-[10px] font-medium dark:text-[#8B929F]">
-									{project.creditAmount} Credits
+									{project?.user.balance} Credits
 								</span>
 								<span
 									onClick={() => navigate(`/projects/${project.id}`)}

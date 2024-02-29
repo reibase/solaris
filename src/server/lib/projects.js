@@ -1,5 +1,5 @@
 import express from "express";
-import { Project, Issue, Vote, User } from "../../db/models/index.js";
+import { Project, Issue, Vote, User, Transfer } from "../../db/models/index.js";
 import { Op } from "sequelize";
 import getUserBalance from "./utils/getUserBalance.js";
 import mergeGitHubPullRequest from "../codehost/github/lib/mergeGitHubPullRequest.js";
@@ -87,6 +87,86 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 				id: vote.id,
 			});
 		}
+	} catch (error) {
+		console.log(error);
+		return res.send({ status: 500, data: error.message });
+	}
+});
+
+router.post("/:id/transfer", async (_req, res) => {
+	try {
+		const { amount, sender, recipient } = _req.body;
+
+		if (sender === recipient) {
+			return res.send({
+				status: 401,
+				data: "sender cannot be same as recipient",
+			});
+		}
+		const bal = await getUserBalance(sender, _req.params.id);
+
+		if (bal < amount) {
+			return res.send({ status: 401, data: "user balance insufficient" });
+		}
+
+		if (amount < 1) {
+			return res.send({ status: 401, data: "unauthorized request" });
+		}
+
+		const projectData = await Project.findOne({
+			where: { id: _req.params.id },
+		});
+		const projectJSON = JSON.stringify(projectData);
+		const project = JSON.parse(projectJSON);
+
+		if (amount > project.creditAmount) {
+			return res.send({ status: 401, data: "unauthorized request" });
+		}
+
+		const senderData = await User.findOne({
+			where: { id: sender },
+		});
+		const senderJSON = JSON.stringify(senderData);
+		const senderObject = JSON.parse(senderJSON);
+
+		const senderUsername = senderObject.username;
+
+		const recipientData = await User.findOne({
+			where: { id: recipient },
+		});
+		const recipientJSON = JSON.stringify(recipientData);
+		const recipientObject = JSON.parse(recipientJSON);
+
+		if (!recipientObject.id) {
+			return res.send({ status: 404, data: "recipient not found" });
+		}
+
+		const network = "Solaris";
+
+		const transferData = await Transfer.create({
+			amount: amount,
+			sender: sender,
+			recipient: recipient,
+			network: network,
+		});
+		const transferJSON = JSON.stringify(transferData);
+		const transfer = JSON.parse(transferJSON, null, 2);
+
+		await transferData.setProject(_req.params.id);
+
+		const transferRes = {
+			status: 200,
+			amount: transfer.amount,
+			transactionID: transfer.id,
+			project: _req.params.id,
+			createdAt: transfer.createdAt,
+			sender: { id: sender, username: senderUsername },
+			recipient: { id: transfer.recipient, username: recipientObject.username },
+			transferStatus: "complete",
+			network: network,
+		};
+
+		return res.send(transferRes);
 	} catch (error) {
 		console.log(error);
 		return res.send({ status: 500, data: error.message });

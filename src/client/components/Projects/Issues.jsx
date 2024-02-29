@@ -112,7 +112,10 @@ export default function Issues() {
 								Community
 							</p>
 						</div>
-						<div className="flex gap-[7px]">
+						<div
+							className="flex gap-[7px] cursor-pointer"
+							onClick={() => navigate(`/projects/${data?.id}/transfer`)}
+						>
 							<img src={darkDataTransfer} />
 							<p className="text-[#313131] dark:text-[#D9D9D9] text-[12px] font-medium">
 								Transfer
