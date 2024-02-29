@@ -33,6 +33,7 @@ export default function Projects() {
 		queryKey: ["userprojects"],
 		queryFn: getUserProjects,
 	});
+
 	if (isFetching) {
 		return "Loading";
 	}

@@ -153,6 +153,7 @@ router.post("/:id/transfer", async (_req, res) => {
 		const transfer = JSON.parse(transferJSON, null, 2);
 
 		await transferData.setProject(_req.params.id);
+		await projectData.addMember(recipient);
 
 		const transferRes = {
 			status: 200,
