@@ -5,12 +5,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import ExternalLink from "../../assets/ExternalLink.svg";
+import darkExternalLink from "../../assets/darkExternalLink.svg";
 import githubLogo from "../../assets/github.svg";
 import githubLogoDarkMode from "../../assets/github-darkmode.svg";
 import gitlabLogo from "../../assets/gitlab.svg";
 import { useStore } from "../../store.js";
-import ExternalLink from "../../assets/ExternalLink.svg";
-import darkExternalLink from "../../assets/darkExternalLink.svg";
 import Forward from "../../assets/Forward.svg";
 import ProgressBar from "./ProgressBar.jsx";
 import ProjectHeading from "./ProjectHeading.jsx";
@@ -150,7 +150,7 @@ export default function Issues() {
 									<img
 										onClick={() =>
 											navigate(
-												`/projects/${data.id}/issues/${pullRequest.number}`
+												`/projects/${project?.id}/issues/${pullRequest.number}`
 											)
 										}
 										src={Forward}

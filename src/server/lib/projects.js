@@ -75,9 +75,13 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 			);
 
 			if (yesTotals >= project.quorum) {
-				await mergeGitHubPullRequest(project.identifier, issue.number);
+				if (project.live) {
+					await mergeGitHubPullRequest(project.identifier, issue.number);
+				}
 			} else if (noTotals >= project.quorum) {
-				await closeGitHubPullRequest(project.identifier, issue.number);
+				if (project.live) {
+					await closeGitHubPullRequest(project.identifier, issue.number);
+				}
 			}
 
 			return res.send({

@@ -414,7 +414,6 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 		const json = JSON.stringify(projectData);
 		const project = JSON.parse(json);
 
-		console.log(_req.body);
 		return res.send({ status: 200, data: project });
 	} catch (error) {
 		console.log(error);
