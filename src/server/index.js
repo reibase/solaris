@@ -117,7 +117,6 @@ passport.use(
 			clientSecret: GOOGLE_OAUTH_APP_CLIENT_SECRET,
 			callbackURL: GOOGLE_OAUTH_APP_CALLBACK_URL,
 			scope: ["https://www.googleapis.com/auth/userinfo.email"],
-			state: true,
 		},
 		async function (accessToken, refreshToken, profile, cb) {
 			const email = profile.emails[0].value;
@@ -132,6 +131,7 @@ passport.use(
 					verifiedThru: "google",
 				},
 			});
+			console.log("user", user);
 			return cb(null, user);
 		}
 	)
