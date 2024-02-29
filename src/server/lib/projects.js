@@ -94,10 +94,15 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 });
 
 router.post("/:id/transfer", async (_req, res) => {
-	//Remove hard coded data here:
 	try {
 		const { amount, sender, recipient } = _req.body;
 
+		if (sender === recipient) {
+			return res.send({
+				status: 401,
+				data: "sender cannot be same as recipient",
+			});
+		}
 		const bal = await getUserBalance(sender, _req.params.id);
 
 		if (bal < amount) {
@@ -127,36 +132,41 @@ router.post("/:id/transfer", async (_req, res) => {
 		const senderUsername = senderObject.username;
 
 		const recipientData = await User.findOne({
-			where: { username: recipient },
+			where: { id: recipient },
 		});
 		const recipientJSON = JSON.stringify(recipientData);
 		const recipientObject = JSON.parse(recipientJSON);
 
-		// if (!recipientObject.id) {
-		// 	return res.send({ status: 404, data: "recipient not found" });
-		// }
+		if (!recipientObject.id) {
+			return res.send({ status: 404, data: "recipient not found" });
+		}
 
 		const network = "Solaris";
 
-		const transfer = await Transfer.create({
-			amount: 11,
-			sender: 1,
-			recipient: 2,
+		const transferData = await Transfer.create({
+			amount: amount,
+			sender: sender,
+			recipient: recipient,
 			network: network,
 		});
+		const transferJSON = JSON.stringify(transferData);
+		const transfer = JSON.parse(transferJSON, null, 2);
 
-		await transfer.setProject(_req.params.id);
+		await transferData.setProject(_req.params.id);
 
-		const transferData = {
+		const transferRes = {
 			status: 200,
+			amount: transfer.amount,
 			transactionID: transfer.id,
 			project: _req.params.id,
+			createdAt: transfer.createdAt,
 			sender: { id: sender, username: senderUsername },
-			recipient: { id: 2, username: recipient },
+			recipient: { id: transfer.recipient, username: recipientObject.username },
+			transferStatus: "complete",
 			network: network,
 		};
 
-		return res.send(transferData);
+		return res.send(transferRes);
 	} catch (error) {
 		console.log(error);
 		return res.send({ status: 500, data: error.message });

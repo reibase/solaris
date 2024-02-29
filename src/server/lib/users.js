@@ -33,17 +33,25 @@ router.get("/", async (_req, res) => {
 });
 
 // find a user by a username
-router.get("/users", async (_req, res) => {
-	const { username } = _req.body;
+router.get("/:username", async (_req, res) => {
+	const username = _req.params.username;
+	console.log(username);
+	console.log(_req.params);
+
 	try {
 		const userData = await User.findOne({
 			where: { username: username },
 		});
 		const userJSON = JSON.stringify(userData);
 		const user = JSON.parse(userJSON, null, 2);
-
-		return res.send({ status: 200, data: user });
+		if (user?.id) {
+			return res.send({ status: 200, user: user });
+		} else {
+			return res.send({ status: 404, user: "not found" });
+		}
 	} catch (error) {
+		console.log("error:", username);
+		console.log("error:", _req.params);
 		return res.send({ status: 500, message: error.message });
 	}
 });
