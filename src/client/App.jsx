@@ -25,35 +25,31 @@ function App() {
 
 	const getUser = async () => {
 		try {
-			setTimeout(async () => {
-				await axios.get("/api/auth/me").then(({ data }) => {
-					const updatedUserInfo = data?.isLoggedIn && {
-						isLoggedIn: true,
-						info: {
-							id: data.id,
-							username: data.username,
-							avatar: data.avatar,
-							verifiedThru: data.verifiedThru,
-							email: data.email,
-						},
-					};
-					data?.isLoggedIn && setUserInfo(updatedUserInfo);
-					data?.isLoggedIn &&
-						localStorage.setItem("user", JSON.stringify(updatedUserInfo));
-				});
-			}, [1000]);
+			await axios.get("/api/auth/me").then(({ data }) => {
+				const updatedUserInfo = data?.isLoggedIn && {
+					isLoggedIn: true,
+					info: {
+						id: data.id,
+						username: data.username,
+						avatar: data.avatar,
+						verifiedThru: data.verifiedThru,
+						email: data.email,
+					},
+				};
+				data?.isLoggedIn && setUserInfo(updatedUserInfo);
+				data?.isLoggedIn &&
+					localStorage.setItem("user", JSON.stringify(updatedUserInfo));
+			});
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	const { isFetching } = useQuery({
-		queryKey: ["userinfo"],
-		queryFn: getUser,
-		enabled: !user.isLoggedIn,
-		retry: 6,
-		retryDelay: 1000,
-	});
+	useEffect(() => {
+		if (!user?.isLoggedIn) {
+			getUser();
+		}
+	}, [user]);
 
 	const router = createBrowserRouter([
 		{
@@ -159,9 +155,7 @@ function App() {
 			</div>
 		);
 	}
-	if (isFetching) {
-		return "Loading";
-	}
+
 	return <RouterProvider router={router} />;
 }
 
