@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build --watch",
+    "build": "vite build",
     "preview": "vite preview",
     "start": "nodemon src/server",
     "start-server": "concurrently \"npm run preview\" \"npm start\""
