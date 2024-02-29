@@ -130,18 +130,13 @@ function App() {
 							errorElement: <ErrorBoundary />,
 						},
 						{
-							path: "/create",
-							element: <Create />,
-							errorElement: <ErrorBoundary />,
-						},
-						{
-							path: "/votes",
+							path: "/projects/:id/issues/:issueID",
 							element: <Votes />,
 							errorElement: <ErrorBoundary />,
 						},
 						{
-							path: "/issues",
-							element: <Issues />,
+							path: "/create",
+							element: <Create />,
 							errorElement: <ErrorBoundary />,
 						},
 				  ],
