@@ -420,13 +420,13 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 	}
 });
 
-router.delete("/:id/projects/:id", async (_req, res) => {
-	const { id } = _req.body;
+router.delete("/:id/projects/:projectID", async (_req, res) => {
+	const { id, projectID } = _req.params;
 	try {
 		const project = await Project.destroy({
-			where: { id: id },
+			where: { id: projectID },
 		});
-		res.status(200).json({ message: "project deleted successfully" });
+		return res.send({ status: 200 });
 	} catch (error) {
 		res.status(500).json(error.message);
 	}

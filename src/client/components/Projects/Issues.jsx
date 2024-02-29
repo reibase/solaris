@@ -56,6 +56,7 @@ export default function Issues() {
 	const handleCategoryClick = (category) => {
 		setCategory(category);
 	};
+	console.log(project);
 
 	const [category, setCategory] = useState("open");
 	if (isFetching) {

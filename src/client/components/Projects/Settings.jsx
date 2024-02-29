@@ -3,13 +3,13 @@ import { useState, useEffect } from "react";
 import { useStore } from "../../store.js";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import ProjectHeading from "./ProjectHeading.jsx";
 
 export default function Settings() {
 	let { id } = useParams();
-
+	const navigate = useNavigate();
 	const { dark, user } = useStore();
 
 	const getProject = async () => {
@@ -36,9 +36,10 @@ export default function Settings() {
 
 	const updateProject = async () => {
 		try {
-			await axios
-				.put(`/api/users/${id}/projects/${project?.id}`, updatedProject)
-				.then((res) => res);
+			await axios.put(
+				`/api/users/${id}/projects/${project?.id}`,
+				updatedProject
+			);
 		} catch (error) {
 			console.log(error);
 		}
@@ -54,9 +55,20 @@ export default function Settings() {
 		updateProject();
 	};
 
-	console.log(project);
-	console.log(updatedProject);
-
+	const deleteHandler = async (e) => {
+		e.preventDefault();
+		try {
+			await axios
+				.delete(`/api/users/${user.info.id}/projects/${id}`)
+				.then((res) => {
+					if (res.data.status === 200) {
+						navigate("/");
+					}
+				});
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	return (
 		<div className="w-full h-full">
 			<ProjectHeading project={project} />
@@ -110,7 +122,10 @@ export default function Settings() {
 					</div>
 				</div>
 				<div className="flex">
-					<span className="font-inter mx-auto text-[#D33131] border border-[#D33131] rounded-md py-[2px] px-[10px]">
+					<span
+						onClick={(e) => deleteHandler(e)}
+						className="cursor-pointer font-inter mx-auto text-[#D33131] border border-[#D33131] rounded-md py-[2px] px-[10px]"
+					>
 						Delete Project
 					</span>
 					<button

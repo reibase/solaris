@@ -31,7 +31,10 @@ export default function ProjectHeading({ project }) {
 				<div className="flex flex-row w-full justify-between">
 					{/* top left of header */}
 					<div className="flex flex-row items-center gap-[20px]">
-						<span className="font-semibold text-lg tracking-wide dark:text-white">
+						<span
+							onClick={() => navigate(`/projects/${id}`)}
+							className="font-semibold text-lg tracking-wide dark:text-white cursor-pointer"
+						>
 							{project?.title}
 						</span>
 						{project?.live ? (
