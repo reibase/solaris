@@ -399,13 +399,34 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 	}
 });
 
-router.delete("/:id/projects/:id", async (_req, res) => {
-	const { id } = _req.body;
+router.put("/:id/projects/:projectID", async (_req, res) => {
+	const { live, creditAmount, quorum } = _req.body;
+	try {
+		const projectData = await Project.update(
+			{
+				live: live,
+				creditAmount: creditAmount,
+				quorum: quorum,
+			},
+			{ where: { id: _req.params.projectID } }
+		);
+
+		const json = JSON.stringify(projectData);
+		const project = JSON.parse(json);
+
+		return res.send({ status: 200, data: project });
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+router.delete("/:id/projects/:projectID", async (_req, res) => {
+	const { id, projectID } = _req.params;
 	try {
 		const project = await Project.destroy({
-			where: { id: id },
+			where: { id: projectID },
 		});
-		res.status(200).json({ message: "project deleted successfully" });
+		return res.send({ status: 200 });
 	} catch (error) {
 		res.status(500).json(error.message);
 	}

@@ -75,9 +75,38 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 			);
 
 			if (yesTotals >= project.quorum) {
-				await mergeGitHubPullRequest(project.identifier, issue.number);
+				if (project.live) {
+					await mergeGitHubPullRequest(project.identifier, issue.number);
+				} else {
+					//Artificially merge for testing purposes:
+					await Issue.update(
+						{
+							state: "closed",
+							mergedAt: Date.now(),
+							merged: true,
+							mergeable: false,
+						},
+						{
+							where: { ProjectId: _req.params.id, number: _req.params.issueID },
+						}
+					);
+				}
 			} else if (noTotals >= project.quorum) {
-				await closeGitHubPullRequest(project.identifier, issue.number);
+				if (project.live) {
+					await closeGitHubPullRequest(project.identifier, issue.number);
+				} else {
+					await Issue.update(
+						{
+							state: "closed",
+							closedAt: Date.now(),
+							mergeable: false,
+							merged: false,
+						},
+						{
+							where: { ProjectId: _req.params.id, number: _req.params.issueID },
+						}
+					);
+				}
 			}
 
 			return res.send({

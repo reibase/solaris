@@ -59,9 +59,15 @@ export default function Projects() {
 											<span className="font-semibold text-[14px] dark:text-white tracking-wide">
 												{project.identifier}
 											</span>
-											<span className="flex items-center justify-center font-semibold bg-[#EEFDF2] text-[10px] px-[10px] h-[18px] rounded-md text-[#1C7737] dark:bg-[#185B2E] dark:text-[#7FEDA2]">
-												{project.live ? `LIVE` : `TEST`}
-											</span>
+											{project.live ? (
+												<span className="flex items-center justify-center font-semibold bg-[#EEFDF2] text-[10px] px-[10px] h-[18px] rounded-md text-[#1C7737] dark:bg-[#185B2E] dark:text-[#7FEDA2]">
+													LIVE
+												</span>
+											) : (
+												<span className="flex items-center justify-center font-semibold bg-gray-100 text-[10px] px-[10px] h-[18px] rounded-md text-gray-500 dark:bg-[#185B2E] dark:text-[#7FEDA2]">
+													TEST
+												</span>
+											)}
 										</div>
 										<span className="text-[10px] leading-6 text-[#8B929F]">
 											Added on {project.createdAt.slice(0, 10)}
