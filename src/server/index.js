@@ -87,15 +87,17 @@ passport.deserializeUser(function (obj, done) {
 });
 
 const addToSandbox = async (userID) => {
-	const transfer = await Transfer.create({
-		sender: 1,
-		recipient: userID,
-		project: 5,
-		amount: 5,
-	});
 	const sandbox = await Project.findByPk(5);
-	await transfer.setProject(5);
-	await sandbox.addMember(userID);
+	if (sandbox?.id) {
+		const transfer = await Transfer.create({
+			sender: 1,
+			recipient: userID,
+			project: 5,
+			amount: 5,
+		});
+		await transfer.setProject(5);
+		await sandbox.addMember(userID);
+	}
 };
 
 passport.use(
