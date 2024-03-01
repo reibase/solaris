@@ -385,8 +385,26 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 		}, 0);
 
 		let response = issue[0];
+		let userVoteData = {
+			voted: false,
+			side: null,
+			amount: 0,
+			createdAt: null,
+			balance: balance,
+		};
+
+		issue[0]?.Votes.map((vote) => {
+			if (vote.UserId === parseInt(_req.params.id)) {
+				userVoteData.voted = true;
+				userVoteData.side = vote.side;
+				userVoteData.amount = vote.amount;
+				userVoteData.createdAt = vote.createdAt;
+			}
+		});
+
 		response.project = project;
-		response.user = { balance: balance };
+		response.user = userVoteData;
+
 		response.voteData = {
 			votes: issue[0].Votes,
 			totalYesPercent: response.totalYesVotes / project.creditAmount,
