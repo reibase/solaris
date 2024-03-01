@@ -87,16 +87,22 @@ passport.deserializeUser(function (obj, done) {
 });
 
 const addToSandbox = async (userID) => {
-	const sandbox = await Project.findByPk(5);
+	const sandboxData = await Project.findOne({
+		where: { identifier: "reibase/solaris-sandbox" },
+	});
+	const sandboxJSON = JSON.stringify(sandboxData);
+	const sandbox = JSON.parse(sandboxJSON);
+	console.log(sandbox);
 	if (sandbox?.id) {
 		const transfer = await Transfer.create({
 			sender: 1,
 			recipient: userID,
-			project: 5,
+			project: sandbox.id,
 			amount: 5,
 		});
-		await transfer.setProject(5);
-		await sandbox.addMember(userID);
+		await transfer.setProject(sandbox.id);
+		await sandboxData.addMember(userID);
+		console.log("user added to sandbox");
 	}
 };
 
