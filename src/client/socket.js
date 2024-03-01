@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const socket = io();
+const socket = io("https://seashell-app-fs86p.ondigitalocean.app/");
 
 // client-side
 socket.on("connect", () => {
