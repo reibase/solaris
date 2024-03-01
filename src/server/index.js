@@ -19,7 +19,7 @@ const smee = new SmeeClient({
 });
 
 import db from "../db/index.js";
-import { User } from "../db/models/index.js";
+import { User, Transfer, Project } from "../db/models/index.js";
 
 import projects from "./lib/projects.js";
 import users from "./lib/users.js";
@@ -86,6 +86,20 @@ passport.deserializeUser(function (obj, done) {
 	done(null, obj);
 });
 
+const addToSandbox = async (userID) => {
+	const sandbox = await Project.findByPk(5);
+	if (sandbox?.id) {
+		const transfer = await Transfer.create({
+			sender: 1,
+			recipient: userID,
+			project: 5,
+			amount: 5,
+		});
+		await transfer.setProject(5);
+		await sandbox.addMember(userID);
+	}
+};
+
 passport.use(
 	new GitHubStrategy(
 		{
@@ -116,6 +130,10 @@ passport.use(
 					},
 				});
 
+				if (created) {
+					await addToSandbox(user.id);
+				}
+
 				return done(null, user);
 			});
 		}
@@ -143,7 +161,10 @@ passport.use(
 					verifiedThru: "google",
 				},
 			});
-			console.log("user", user);
+			if (created) {
+				console.log("user id", user.id);
+				await addToSandbox(user.id);
+			}
 			return cb(null, user);
 		}
 	)
@@ -169,6 +190,10 @@ passport.use(
 						verifiedThru: "gitlab",
 					},
 				});
+
+				if (created) {
+					await addToSandbox(user.id);
+				}
 
 				return done(null, user);
 			});
