@@ -407,8 +407,8 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 
 		response.voteData = {
 			votes: issue[0].Votes,
-			totalYesPercent: response.totalYesVotes / project.creditAmount,
-			totalNoPercent: response.totalNoVotes / project.creditAmount,
+			totalYesPercent: response.totalYesVotes / project.quorum,
+			totalNoPercent: response.totalNoVotes / project.quorum,
 		};
 
 		return res.send({ status: 200, data: response });

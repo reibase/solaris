@@ -1,6 +1,7 @@
 import React from "react";
 
 const ProgressBar = ({ yesPercent, noPercent, votesView }) => {
+	console.log(yesPercent, noPercent);
 	return (
 		<div className={`flex flex-col p-[5px] ${!votesView ? "w-[90%]" : null}`}>
 			<div className="flex flex-start items-center md:flex-col md:items-start w-full rounded-md gap-[15px] md:gap-[5px]">
