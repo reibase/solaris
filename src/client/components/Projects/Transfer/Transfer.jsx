@@ -37,6 +37,11 @@ export default function Transfer() {
 					setTransferData({ ...transferData, project: data.data.title });
 					return data;
 				});
+			if (data.status === 502) {
+				localStorage.removeItem("user");
+				window.location.pathname = "/";
+			}
+			return data;
 			return data;
 		} catch (error) {
 			console.log(error);

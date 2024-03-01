@@ -254,11 +254,21 @@ app.post("/api/auth/access-code", function (req, res) {
 //   the request will proceed.  Otherwise, the user will be redirected to the
 //   login page.
 function ensureAuthenticated(req, res, next) {
+	console.log("request:");
 	if (req.isAuthenticated()) {
+		console.log("authorized");
 		return next();
 	}
-	res.redirect("/login");
+	console.log("unauthorized");
+	return res.send({
+		status: 502,
+		message: "server restarted. please log out/log back in.",
+	});
 }
+
+app.use(async function (req, res, next) {
+	ensureAuthenticated(req, res, next);
+});
 
 app.use("/api/users", users);
 app.use("/api/projects", async function (req, res) {

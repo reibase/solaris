@@ -26,6 +26,10 @@ export default function Votes() {
 			const { data } = await axios
 				.get(`/api/users/${user.info.id}/projects/${id}`)
 				.then(({ data }) => data);
+			if (data.status === 502) {
+				localStorage.removeItem("user");
+				navigate("/");
+			}
 			return data;
 		} catch (error) {
 			console.log(error);
@@ -37,6 +41,11 @@ export default function Votes() {
 			const { data } = await axios
 				.get(`/api/users/${user.info.id}/projects/${id}/issues/${issueID}`)
 				.then(({ data }) => data);
+			if (data.status === 502) {
+				localStorage.removeItem("user");
+				window.location.pathname = "/";
+			}
+			return data;
 			return data;
 		} catch (error) {
 			console.log(error);

@@ -22,7 +22,13 @@ export default function Projects() {
 		try {
 			const { data } = await axios
 				.get(`/api/users/${user.info.id}/projects`)
-				.then(({ data }) => data);
+				.then(({ data }) => {
+					if (data.status === 502) {
+						localStorage.removeItem("user");
+						window.location.pathname = "/";
+					}
+					return data;
+				});
 			return data;
 		} catch (error) {
 			console.log(error);

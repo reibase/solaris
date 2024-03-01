@@ -28,6 +28,11 @@ export default function Issues() {
 			const { data } = await axios
 				.get(`/api/users/${user.info.id}/projects/${id}`)
 				.then(({ data }) => data);
+			if (data.status === 502) {
+				localStorage.removeItem("user");
+				window.location.pathname = "/";
+			}
+			return data;
 			return data;
 		} catch (error) {
 			console.log(error);
