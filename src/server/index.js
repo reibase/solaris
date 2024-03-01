@@ -90,7 +90,7 @@ const addToSandbox = async (userID) => {
 	const transfer = await Transfer.create({
 		sender: 1,
 		recipient: userID,
-		project: 13,
+		project: 5,
 		amount: 5,
 	});
 	const sandbox = await Project.findByPk(13);
