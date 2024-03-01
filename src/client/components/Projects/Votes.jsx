@@ -81,7 +81,7 @@ export default function Votes() {
 
 	const chosenSide = issue?.user.side === true ? "yes" : "no";
 
-	if (isFetching || isFetchingIssue) {
+	if (isFetching) {
 		return "Loading";
 	}
 
