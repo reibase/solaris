@@ -12,6 +12,7 @@ import { useStore } from "../../store.js";
 import ProgressBar from "../Projects/ProgressBar.jsx";
 import { getDurationSince, formatDate } from "./formatting.js";
 import ProjectHeading from "./ProjectHeading.jsx";
+import socket from "../../socket.js";
 
 export default function Votes() {
 	const { dark, user } = useStore();
@@ -43,6 +44,20 @@ export default function Votes() {
 		}
 	};
 
+	const { data: project, isFetching } = useQuery({
+		queryKey: ["projects"],
+		queryFn: getProject,
+	});
+
+	const {
+		data: issue,
+		isFetching: isFetchingIssue,
+		refetch,
+	} = useQuery({
+		queryKey: ["issue"],
+		queryFn: getIssue,
+	});
+
 	const postVote = async (chosenSide) => {
 		try {
 			const { data, status } = await axios
@@ -51,21 +66,20 @@ export default function Votes() {
 					side: chosenSide,
 				})
 				.then((res) => res);
+			socket.emit("vote cast", project.id);
 			return data;
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	const { data: project, isFetching } = useQuery({
-		queryKey: ["projects"],
-		queryFn: getProject,
+	socket.on("vote received", (projectID) => {
+		if (projectID === project.id) {
+			refetch();
+		}
 	});
 
-	const { data: issue, isFetching: isFetchingIssue } = useQuery({
-		queryKey: ["issue"],
-		queryFn: getIssue,
-	});
+	const chosenSide = issue?.user.side === true ? "yes" : "no";
 
 	if (isFetching || isFetchingIssue) {
 		return "Loading";
@@ -100,18 +114,25 @@ export default function Votes() {
 
 					<div className="flex self-center justify-center w-full flex-col items-center mb-6">
 						<span className="font-medium my-4 text-black dark:text-white">
-							Vote yes to merge or vote No to close this pull request.
+							{issue?.user.voted
+								? `You voted ${chosenSide} on ${issue?.user.createdAt.slice(
+										0,
+										10
+								  )}`
+								: "Vote yes to merge or vote No to close this pull request."}
 						</span>
 						<div className="flex w-full flex-row mb-4 items-center justify-center gap-[15px]">
 							<button
 								onClick={() => postVote(true)}
-								className="bg-[#20B176] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white"
+								className="bg-[#20B176] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white disabled:opacity-50"
+								disabled={issue?.user.voted}
 							>
 								VOTE YES
 							</button>
 							<button
 								onClick={() => postVote(false)}
-								className="bg-[#DC2626] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white"
+								className="bg-[#DC2626] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white disabled:opacity-50"
+								disabled={issue?.user.voted}
 							>
 								VOTE NO
 							</button>
