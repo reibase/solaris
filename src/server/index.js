@@ -52,6 +52,8 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server);
 
+io.set("origins", "*:*");
+
 io.on("connection", (socket) => {
 	console.log("a user connected", socket.id);
 	socket.on("vote cast", (projectID) => {
