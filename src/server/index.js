@@ -27,6 +27,9 @@ import issues from "./lib/issues.js";
 import installation from "./lib/installation.js";
 import githubWebhook from "./webhooks/github/index.js";
 
+import { createServer } from "node:http";
+import { Server } from "socket.io";
+
 // Constants
 const port = process.env.PORT || 3001;
 const __dirname = path.resolve();
@@ -44,8 +47,17 @@ const {
 	NODE_ENV,
 } = process.env;
 
-// Create http server
 const app = express();
+
+const server = createServer(app);
+const io = new Server(server);
+
+io.on("connection", (socket) => {
+	console.log("a user connected", socket.id);
+	socket.on("vote cast", (projectID) => {
+		socket.emit("vote received", projectID);
+	});
+});
 
 // body parsing middleware
 app.use(express.json());
@@ -313,6 +325,6 @@ syncDB();
 authenticateDB();
 
 // Start http server
-app.listen(port, () => {
+server.listen(port, () => {
 	console.log(`Server started at http://localhost:${port}`);
 });

@@ -87,15 +87,17 @@ export default function ProjectHeading({ project }) {
 								Transfer
 							</p>
 						</div>
-						<div
-							className="flex gap-[7px] cursor-pointer"
-							onClick={() => navigate(`/projects/${project?.id}/settings`)}
-						>
-							<img src={darkSettings} />
-							<p className="text-[#313131] dark:text-[#D9D9D9] text-[12px] font-medium">
-								Settings
-							</p>
-						</div>
+						{project?.owner === user.info.id && (
+							<div
+								className="flex gap-[7px] cursor-pointer"
+								onClick={() => navigate(`/projects/${project?.id}/settings`)}
+							>
+								<img src={darkSettings} />
+								<p className="text-[#313131] dark:text-[#D9D9D9] text-[12px] font-medium">
+									Settings
+								</p>
+							</div>
+						)}
 					</div>
 				</div>
 			</div>
