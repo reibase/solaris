@@ -93,8 +93,8 @@ const addToSandbox = async (userID) => {
 		project: 5,
 		amount: 5,
 	});
-	const sandbox = await Project.findByPk(13);
-	await transfer.setProject(1);
+	const sandbox = await Project.findByPk(5);
+	await transfer.setProject(5);
 	await sandbox.addMember(userID);
 };
 
