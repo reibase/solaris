@@ -66,11 +66,7 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
-	session({
-		secret: "keyboard cat",
-		resave: false,
-		saveUninitialized: true,
-	})
+	session({ secret: "keyboard cat", resave: false, saveUninitialized: false })
 );
 
 const events = NODE_ENV === "development" && smee.start();
@@ -171,9 +167,9 @@ passport.use(
 				},
 			});
 			if (created) {
+				console.log("user id", user.id);
 				await addToSandbox(user.id);
 			}
-			console.log("google: user id", user.id);
 			return cb(null, user);
 		}
 	)
@@ -209,6 +205,10 @@ passport.use(
 		}
 	)
 );
+
+app.get("/api/test", function (req, res) {
+	return res.send(200);
+});
 
 app.get(
 	"/api/auth/github",
@@ -251,6 +251,8 @@ app.get(
 		failureRedirect: "/login",
 	}),
 	function (req, res) {
+		console.log("final:", req.user);
+		// Successful authentication, redirect home.
 		res.redirect("/");
 	}
 );
@@ -265,10 +267,11 @@ app.get("/api/auth/logout", function (req, res) {
 });
 
 app.get("/api/auth/me", function (req, res) {
-	if (!req?.user?.id) {
+	console.log("req.user.id", req?.user?.id);
+	if (!req.user) {
 		return res.send({ isLoggedIn: false });
 	}
-	console.log({ isLoggedIn: true });
+	console.log({ isLoggedIn: true, info: req.user });
 	return res.send({ isLoggedIn: true, info: req.user });
 });
 
