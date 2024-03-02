@@ -265,7 +265,7 @@ app.get("/api/auth/logout", function (req, res) {
 });
 
 app.get("/api/auth/me", function (req, res) {
-	if (!req?.user.id) {
+	if (!req?.user?.id) {
 		return res.send({ isLoggedIn: false });
 	}
 	console.log({ isLoggedIn: true });
