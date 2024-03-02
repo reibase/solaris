@@ -167,9 +167,9 @@ passport.use(
 				},
 			});
 			if (created) {
-				console.log("user id", user.id);
 				await addToSandbox(user.id);
 			}
+			console.log("google: user id", user.id);
 			return cb(null, user);
 		}
 	)
@@ -251,8 +251,6 @@ app.get(
 		failureRedirect: "/login",
 	}),
 	function (req, res) {
-		console.log("final:", req.user);
-		// Successful authentication, redirect home.
 		res.redirect("/");
 	}
 );
@@ -271,7 +269,7 @@ app.get("/api/auth/me", function (req, res) {
 	if (!req.user) {
 		return res.send({ isLoggedIn: false });
 	}
-	console.log({ isLoggedIn: true, info: req.user });
+	console.log({ isLoggedIn: true });
 	return res.send({ isLoggedIn: true, info: req.user });
 });
 

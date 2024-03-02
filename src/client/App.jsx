@@ -151,7 +151,9 @@ function App() {
 			</div>
 		);
 	}
-
+	if (loading) {
+		return "loading";
+	}
 	return <RouterProvider router={router} />;
 }
 
