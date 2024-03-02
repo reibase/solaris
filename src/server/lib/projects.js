@@ -14,7 +14,7 @@ router.get("/", async (_req, res) => {
 router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 	console.log("---->", _req);
 	try {
-		const bal = await getUserBalance(_req?.session?.user?.id, _req.params.id);
+		const bal = await getUserBalance(_req.user.id, _req.params.id);
 		const userData = await User.findOne({ where: { id: _req.user.id } });
 		const userJSON = JSON.stringify(userData);
 		const user = await JSON.parse(userJSON, null, 2);

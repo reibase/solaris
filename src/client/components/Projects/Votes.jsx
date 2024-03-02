@@ -61,10 +61,14 @@ export default function Votes() {
 	const postVote = async (chosenSide) => {
 		try {
 			const { data, status } = await axios
-				.post(`/api/projects/${id}/issues/${issueID}/vote`, {
-					user: user.info.id,
-					side: chosenSide,
-				})
+				.post(
+					`/api/projects/${id}/issues/${issueID}/vote`,
+					{
+						user: user.info.id,
+						side: chosenSide,
+					},
+					{ withCredentials: true }
+				)
 				.then((res) => res);
 			socket.emit("vote cast", project.id);
 			return data;
