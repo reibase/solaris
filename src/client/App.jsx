@@ -25,35 +25,28 @@ function App() {
 
 	const getUser = async () => {
 		try {
-			await axios.get("/api/auth/me").then(({ data }) => {
-				console.log("data", data);
-				if (!data?.isLoggedIn) {
-					throw new Error();
-				}
-				const updatedUserInfo = {
-					isLoggedIn: true,
-					info: {
-						id: data.id,
-						username: data.username,
-						avatar: data.avatar,
-						verifiedThru: data.verifiedThru,
-						email: data.email,
-					},
-				};
-				setUserInfo(updatedUserInfo);
-				localStorage.setItem("user", JSON.stringify(updatedUserInfo));
+			const { data } = await axios.get("/api/auth/me").then((res) => {
+				console.log(res);
+				return res;
 			});
+			console.log(data);
+			return data;
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	const { isFetching: loading } = useQuery({
+	const { data, isFetching: loading } = useQuery({
 		queryKey: ["userinfo"],
 		queryFn: getUser,
 		enabled: !user.isLoggedIn,
-		retry: 6,
 	});
+
+	if (data?.isLoggedIn && !user.isLoggedIn) {
+		console.log("data", data);
+		setUserInfo(data);
+		localStorage.setItem("user", JSON.stringify(data));
+	}
 
 	const router = createBrowserRouter([
 		{
@@ -63,7 +56,7 @@ function App() {
 				? [
 						{
 							index: true,
-							element: <AccessCode loading={loading} />,
+							element: <Login loading={loading} />,
 							errorElement: <ErrorBoundary />,
 						},
 						{

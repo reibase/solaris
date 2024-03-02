@@ -92,18 +92,18 @@ const addToSandbox = async (userID) => {
 	});
 	const sandboxJSON = JSON.stringify(sandboxData);
 	const sandbox = JSON.parse(sandboxJSON);
-	console.log(sandbox);
-	if (sandbox?.id) {
-		const transfer = await Transfer.create({
-			sender: 1,
-			recipient: userID,
-			project: sandbox.id,
-			amount: 5,
-		});
-		await transfer.setProject(sandbox.id);
-		await sandboxData.addMember(userID);
-		console.log("user added to sandbox");
-	}
+	console.log("sandbox found");
+	// if (sandbox?.id) {
+	// 	const transfer = await Transfer.create({
+	// 		sender: 1,
+	// 		recipient: userID,
+	// 		project: sandbox.id,
+	// 		amount: 5,
+	// 	});
+	// 	await transfer.setProject(sandbox.id);
+	// 	await sandboxData.addMember(userID);
+	// 	console.log("user added to sandbox");
+	// }
 };
 
 passport.use(
@@ -272,7 +272,8 @@ app.get("/api/auth/me", function (req, res) {
 	if (!req.user) {
 		return res.send({ isLoggedIn: false });
 	}
-	return res.send({ ...req.user, isLoggedIn: true });
+	console.log({ isLoggedIn: true, info: req.user });
+	return res.send({ isLoggedIn: true, info: req.user });
 });
 
 // Route for when user clicks submit access code:

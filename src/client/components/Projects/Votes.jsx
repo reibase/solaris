@@ -158,17 +158,17 @@ export default function Votes() {
 						votesView={true}
 					/>
 					<div className="w-full">
-						<div class=" grid grid-cols-4">
-							<div class="text-center ">
+						<div className=" grid grid-cols-4">
+							<div className="text-center ">
 								<p className="dark:text-[#8B929F] text-[10px]">User</p>
 							</div>
-							<div class=" text-center ">
+							<div className=" text-center ">
 								<p className="dark:text-[#8B929F] text-[10px]">Side</p>
 							</div>
-							<div class="text-center">
+							<div className="text-center">
 								<p className="dark:text-[#8B929F] text-[10px]">Amount</p>
 							</div>
-							<div class="text-center  ">
+							<div className="text-center  ">
 								<p className="dark:text-[#8B929F] text-[10px]">Age</p>
 							</div>
 						</div>
@@ -180,12 +180,12 @@ export default function Votes() {
 										index % 2 == 0 ? "bg-[#F9F9F9] dark:bg-[#171D2B]" : null
 									} `}
 								>
-									<div class="text-center ">
+									<div className="text-center ">
 										<p className="dark:text-white text-[10px]">
 											{vote?.username}
 										</p>
 									</div>
-									<div class=" text-center ">
+									<div className=" text-center ">
 										<p
 											className={`${
 												vote.side ? "text-[#038800]" : "text-[#DC2626]"
@@ -194,12 +194,12 @@ export default function Votes() {
 											{vote.side ? "YES" : "NO"}
 										</p>
 									</div>
-									<div class="text-center">
+									<div className="text-center">
 										<p className="dark:text-white text-[10px]">
 											{vote?.amount}
 										</p>
 									</div>
-									<div class="text-center  ">
+									<div className="text-center  ">
 										<p className="dark:text-white text-[10px]">
 											{getDurationSince(vote?.createdAt)}
 										</p>

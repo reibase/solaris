@@ -42,7 +42,7 @@ export default function UserAmount({
 	return (
 		<div className="w-1/2 flex h-[300px] flex-col justify-center items-center">
 			<div className="w-full text-lg pb-4 dark:text-white">Transfer</div>
-			<div class="w-full flex flex-col gap-2">
+			<div className="w-full flex flex-col gap-2">
 				<label
 					for="name"
 					className="font-inter font-regular text-[14px] dark:text-[#DDDCDC] text-gray-900"
@@ -60,7 +60,7 @@ export default function UserAmount({
 					{recipientError && recipientErrorText}
 				</div>
 			</div>
-			<div class="w-full flex flex-col justify-start items-start gap-2">
+			<div className="w-full flex flex-col justify-start items-start gap-2">
 				<label
 					for="amount"
 					id="amount"

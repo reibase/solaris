@@ -81,11 +81,11 @@ export default function Settings() {
 						Mode:
 					</p>
 					<div className="flex mx-auto w-[70%] ">
-						<div class="flex flex-col items-center gap-[10px]">
+						<div className="flex flex-col items-center gap-[10px]">
 							<div className="flex">
 								<label
 									for="live"
-									class="text-[#313131] dark:text-white text-sm font-medium text-gray-700"
+									className="text-[#313131] dark:text-white text-sm font-medium text-gray-700"
 								>
 									Live
 								</label>
@@ -97,13 +97,13 @@ export default function Settings() {
 									id="live"
 									value={true}
 									checked={updatedProject?.live ? true : false}
-									class="h-4 w-4 border-gray-300 checked:bg-blue-500 checked:border-blue-500 focus:ring-0 ml-2"
+									className="h-4 w-4 border-gray-300 checked:bg-blue-500 checked:border-blue-500 focus:ring-0 ml-2"
 								/>
 							</div>
 							<div className="flex">
 								<label
 									for="test"
-									class="text-[#313131] dark:text-white text-sm font-medium text-gray-700"
+									className="text-[#313131] dark:text-white text-sm font-medium text-gray-700"
 								>
 									Test
 								</label>
@@ -115,7 +115,7 @@ export default function Settings() {
 									id="live"
 									value={false}
 									checked={updatedProject?.live ? false : true}
-									class="h-4 w-4 square border-gray-300 focus:ring-0 ml-2"
+									className="h-4 w-4 square border-gray-300 focus:ring-0 ml-2"
 								/>
 							</div>
 						</div>
