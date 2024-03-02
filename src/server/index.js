@@ -66,7 +66,11 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
-	session({ secret: "keyboard cat", resave: false, saveUninitialized: false })
+	session({
+		secret: "keyboard cat",
+		resave: false,
+		saveUninitialized: false,
+	})
 );
 
 const events = NODE_ENV === "development" && smee.start();
@@ -79,11 +83,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser(function (user, done) {
-	done(null, user);
+	process.nextTick(function () {
+		return done(null, user);
+	});
 });
 
-passport.deserializeUser(function (obj, done) {
-	done(null, obj);
+passport.deserializeUser(function (user, done) {
+	process.nextTick(function () {
+		return done(null, user);
+	});
 });
 
 const addToSandbox = async (userID) => {
@@ -206,10 +214,6 @@ passport.use(
 	)
 );
 
-app.get("/api/test", function (req, res) {
-	return res.send(200);
-});
-
 app.get(
 	"/api/auth/github",
 	passport.authenticate("github", { scope: ["user:email"] })
@@ -266,11 +270,12 @@ app.get("/api/auth/logout", function (req, res) {
 
 app.get("/api/auth/me", function (req, res) {
 	console.log("req.user.id", req?.user?.id);
-	if (!req.user) {
+	console.log("sesh", req.session?.passport?.user);
+	if (!req.session?.passport?.user) {
 		return res.send({ isLoggedIn: false });
 	}
 	console.log({ isLoggedIn: true });
-	return res.send({ isLoggedIn: true, info: req.user });
+	return res.send({ isLoggedIn: true, info: req.session?.passport?.user });
 });
 
 // Route for when user clicks submit access code:
@@ -301,12 +306,12 @@ function ensureAuthenticated(req, res, next) {
 	res.redirect("/login");
 }
 
-app.use("/api/users", users);
-app.use("/api/projects", async function (req, res) {
+app.use("/api/users", ensureAuthenticated, users);
+app.use("/api/projects", ensureAuthenticated, async function (req, res) {
 	return projects(req, res);
 });
-app.use("/api/issues", issues);
-app.use("/api/installation", installation);
+app.use("/api/issues", ensureAuthenticated, issues);
+app.use("/api/installation", ensureAuthenticated, installation);
 
 app.use("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "/dist/index.html"));
