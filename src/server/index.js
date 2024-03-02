@@ -92,18 +92,17 @@ const addToSandbox = async (userID) => {
 	});
 	const sandboxJSON = JSON.stringify(sandboxData);
 	const sandbox = JSON.parse(sandboxJSON);
-	console.log("sandbox found");
-	// if (sandbox?.id) {
-	// 	const transfer = await Transfer.create({
-	// 		sender: 1,
-	// 		recipient: userID,
-	// 		project: sandbox.id,
-	// 		amount: 5,
-	// 	});
-	// 	await transfer.setProject(sandbox.id);
-	// 	await sandboxData.addMember(userID);
-	// 	console.log("user added to sandbox");
-	// }
+	if (sandbox?.id) {
+		const transfer = await Transfer.create({
+			sender: 1,
+			recipient: userID,
+			project: sandbox.id,
+			amount: 5,
+		});
+		await transfer.setProject(sandbox.id);
+		await sandboxData.addMember(userID);
+		console.log("user added to sandbox");
+	}
 };
 
 passport.use(
