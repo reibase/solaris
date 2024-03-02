@@ -83,15 +83,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.serializeUser(function (user, done) {
-	process.nextTick(function () {
-		return done(null, user);
-	});
+	done(null, user);
 });
 
-passport.deserializeUser(function (user, done) {
-	process.nextTick(function () {
-		return done(null, user);
-	});
+passport.deserializeUser(function (obj, done) {
+	done(null, obj);
 });
 
 const addToSandbox = async (userID) => {
