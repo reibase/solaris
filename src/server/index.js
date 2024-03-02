@@ -265,13 +265,11 @@ app.get("/api/auth/logout", function (req, res) {
 });
 
 app.get("/api/auth/me", function (req, res) {
-	console.log("req.user.id", req?.user?.id);
-	console.log("sesh", req.session?.passport?.user);
-	if (!req.session?.passport?.user) {
+	if (!req?.user.id) {
 		return res.send({ isLoggedIn: false });
 	}
 	console.log({ isLoggedIn: true });
-	return res.send({ isLoggedIn: true, info: req.session?.passport?.user });
+	return res.send({ isLoggedIn: true, info: req.user });
 });
 
 // Route for when user clicks submit access code:
