@@ -51,14 +51,6 @@ const sequelizeStore = SequelizeStore(session.Store);
 const store = new sequelizeStore({ db });
 
 const app = express();
-app.use(
-	session({
-		secret: "keyboard cat",
-		resave: false,
-		saveUninitialized: false,
-		store,
-	})
-);
 
 const server = createServer(app);
 const io = new Server(server);
@@ -69,6 +61,15 @@ io.on("connection", (socket) => {
 		socket.emit("vote received", projectID);
 	});
 });
+
+app.use(
+	session({
+		secret: "keyboard cat",
+		resave: false,
+		saveUninitialized: false,
+		store,
+	})
+);
 
 // body parsing middleware
 app.use(express.json());
