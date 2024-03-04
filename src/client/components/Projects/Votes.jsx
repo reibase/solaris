@@ -2,6 +2,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useState } from "react";
 
 import ExternalLink from "../../assets/ExternalLink.svg";
 import darkExternalLink from "../../assets/darkExternalLink.svg";
@@ -15,6 +16,7 @@ import ProjectHeading from "./ProjectHeading.jsx";
 import socket from "../../socket.js";
 
 export default function Votes() {
+	const [voting, setVoting] = useState(false);
 	const { dark, user } = useStore();
 	let { id, issueID } = useParams();
 	const icon = {
@@ -59,6 +61,7 @@ export default function Votes() {
 	});
 
 	const postVote = async (chosenSide) => {
+		setVoting(true);
 		try {
 			const { data, status } = await axios
 				.post(
@@ -70,15 +73,17 @@ export default function Votes() {
 					{ withCredentials: true }
 				)
 				.then((res) => res);
-			socket.emit("vote cast", project.id);
+			socket.emit("vote cast", project?.id);
+			setVoting(false);
 			return data;
 		} catch (error) {
+			setVoting(false);
 			console.log(error);
 		}
 	};
 
 	socket.on("vote received", (projectID) => {
-		if (projectID === project.id) {
+		if (projectID === project?.id) {
 			refetch();
 		}
 	});
@@ -88,7 +93,7 @@ export default function Votes() {
 	if (isFetching) {
 		return "Loading";
 	}
-
+	console.log(issue);
 	return (
 		<div className="flex w-full h-full flex-col gap-[10px]">
 			<ProjectHeading project={project} />
@@ -126,20 +131,26 @@ export default function Votes() {
 								: "Vote yes to merge or vote No to close this pull request."}
 						</span>
 						<div className="flex w-full flex-row mb-4 items-center justify-center gap-[15px]">
-							<button
-								onClick={() => postVote(true)}
-								className="bg-[#20B176] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white disabled:opacity-50"
-								disabled={issue?.user.voted}
-							>
-								VOTE YES
-							</button>
-							<button
-								onClick={() => postVote(false)}
-								className="bg-[#DC2626] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white disabled:opacity-50"
-								disabled={issue?.user.voted}
-							>
-								VOTE NO
-							</button>
+							{voting ? (
+								"Loading"
+							) : (
+								<>
+									<button
+										onClick={() => postVote(true)}
+										className="bg-[#20B176] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white disabled:opacity-50"
+										disabled={issue?.user.voted}
+									>
+										VOTE YES
+									</button>
+									<button
+										onClick={() => postVote(false)}
+										className="bg-[#DC2626] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white disabled:opacity-50"
+										disabled={issue?.user.voted}
+									>
+										VOTE NO
+									</button>
+								</>
+							)}
 						</div>
 					</div>
 					<div className="p-4 w-full hidden md:flex md:flex-col rounded-lg bg-[#f8f8f9] dark:bg-[#171D2B] border border-1 border-[#D9D9D9] dark:border-[#373D47]">
@@ -157,6 +168,9 @@ export default function Votes() {
 				<div className="flex h-content w-full lg:px-10 lg:w-2/3 flex-col gap-[5px] text-[#8B929F]">
 					<span>Voting Activity</span>
 					<ProgressBar
+						quorum={project?.quorum}
+						totalYesVotes={issue?.voteData.totalYesVotes}
+						totalNoVotes={issue?.voteData.totalNoVotes}
 						yesPercent={issue?.voteData.totalYesPercent}
 						noPercent={issue?.voteData.totalNoPercent}
 						votesView={true}
