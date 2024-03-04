@@ -10,7 +10,6 @@ const ProgressBar = ({
 }) => {
 	const yes = yesPercent * 100;
 	const no = noPercent * 100;
-	console.log(yes);
 
 	return (
 		<div className={`flex flex-col p-[5px] ${!votesView && "w-[90%]"}`}>
