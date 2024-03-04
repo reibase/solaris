@@ -1,29 +1,27 @@
 import React from "react";
 
-const ProgressBar = ({ yesPercent, noPercent, votesView }) => {
-	console.log(yesPercent, noPercent);
+const ProgressBar = ({
+	yesPercent,
+	noPercent,
+	votesView,
+	totalYesVotes,
+	totalNoVotes,
+	quorum,
+}) => {
+	const yes = yesPercent * 100;
+	const no = noPercent * 100;
+
 	return (
-		<div className={`flex flex-col p-[5px] ${!votesView ? "w-[90%]" : null}`}>
-			<div className="flex flex-start items-center md:flex-col md:items-start w-full rounded-md gap-[15px] md:gap-[5px]">
-				<div className="text-right text-[#20B176]">{yesPercent * 100}%</div>
-				<div className="text-right text-red-400">{noPercent * 100}%</div>
+		<div className={`flex flex-col p-[5px] ${!votesView && "w-[90%]"}`}>
+			<div className="flex flex-start mb-1 items-center flex-row text-slate-400 md:items-start w-full rounded-md gap-[15px] md:gap-[5px]">
+				<span className="text-[#20B176]">{totalYesVotes || 0}</span>
+				<span className="text-red-400">{totalNoVotes || 0}</span> /
+				<span className="text-slate-600">{quorum}</span>
 			</div>
 			{/* Colored bars representing votes */}
-			<div className="flex items-center justify-between h-5 w-full rounded-md">
-				<div
-					style={{ flexBasis: `${noPercent * 100}%` }}
-					className="bg-[#DC2626] h-[4px] rounded-tl-md rounded-bl-md"
-				></div>
-				<div
-					style={{ flexBasis: `${yesPercent * 100}%` }}
-					className="bg-[#20B176] h-[4px]"
-				></div>
-				<div
-					style={{
-						flexBasis: `${100 - (yesPercent * 100 + noPercent * 100)}%`,
-					}}
-					className="bg-gray-400 h-[4px] rounded-tr-md rounded-br-md"
-				></div>
+			<div className="flex w-full bg-slate-200 flex-col h-2 overflow-hidden">
+				<div style={{ width: `${yes}%` }} className={`bg-[#20B176] h-1`}></div>
+				<div style={{ width: `${no}%` }} className={`bg-red-500 h-1`}></div>
 			</div>
 		</div>
 	);

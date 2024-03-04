@@ -143,6 +143,9 @@ export default function Issues() {
 							</div>
 							<div className="flex justify-end items-center w-1/2 pl-4 flex-row gap-4 items-end lg:w-1/3">
 								<ProgressBar
+									quorum={project?.quorum}
+									totalYesVotes={pullRequest?.totalYesVotes}
+									totalNoVotes={pullRequest?.totalNoVotes}
 									yesPercent={pullRequest.totalYesPercent}
 									noPercent={pullRequest.totalNoPercent}
 									votesView={false}

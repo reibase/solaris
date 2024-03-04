@@ -333,6 +333,7 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 		issues.map((issue) => {
 			issue.totalYesPercent = issue.totalYesVotes / project.quorum;
 			issue.totalNoPercent = issue.totalNoVotes / project.quorum;
+
 			if (issue.state === "closed") {
 				if (issue.merged) {
 					project.issues.merged.push(issue);
@@ -407,6 +408,8 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 
 		response.voteData = {
 			votes: issue[0].Votes,
+			totalYesVotes: issue[0].totalYesVotes,
+			totalNoVotes: issue[0].totalNoVotes,
 			totalYesPercent: response.totalYesVotes / project.quorum,
 			totalNoPercent: response.totalNoVotes / project.quorum,
 		};
