@@ -90,6 +90,14 @@ export default function Votes() {
 
 	const chosenSide = issue?.user.side === true ? "yes" : "no";
 
+	const text = !issue?.mergeable
+		? "This pull request is not mergeable"
+		: issue?.user.voted
+		? `You voted ${chosenSide} on ${issue?.user.createdAt.slice(0, 10)}`
+		: "Vote yes to merge or vote No to close this pull request.";
+
+	const disabled = !issue?.mergeable ? true : issue?.user.voted ? true : false;
+
 	if (isFetching) {
 		return "Loading";
 	}
@@ -123,12 +131,7 @@ export default function Votes() {
 
 					<div className="flex self-center justify-center w-full flex-col items-center mb-6">
 						<span className="font-medium my-4 text-black dark:text-white">
-							{issue?.user.voted
-								? `You voted ${chosenSide} on ${issue?.user.createdAt.slice(
-										0,
-										10
-								  )}`
-								: "Vote yes to merge or vote No to close this pull request."}
+							{text}
 						</span>
 						<div className="flex w-full flex-row mb-4 items-center justify-center gap-[15px]">
 							{voting ? (
@@ -138,14 +141,14 @@ export default function Votes() {
 									<button
 										onClick={() => postVote(true)}
 										className="bg-[#20B176] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white disabled:opacity-50"
-										disabled={issue?.user.voted}
+										disabled={disabled}
 									>
 										VOTE YES
 									</button>
 									<button
 										onClick={() => postVote(false)}
 										className="bg-[#DC2626] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white disabled:opacity-50"
-										disabled={issue?.user.voted}
+										disabled={disabled}
 									>
 										VOTE NO
 									</button>
