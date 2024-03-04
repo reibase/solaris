@@ -12,6 +12,7 @@ import {
 import getGitHubInstallationRepos from "../codehost/github/getGitHubInstallationRepos.js";
 import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallationRepos.js";
 import getGitHubPullRequests from "../codehost/github/lib/getGitHubPullRequests.js";
+import getGitHubPullRequest from "../codehost/github/lib/getGitHubPullRequest.js";
 import getGitLabMergeRequests from "../codehost/gitlab/lib/getGitLabMergeRequests.js";
 import getUserBalance from "./utils/getUserBalance.js";
 
@@ -363,6 +364,11 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 			include: Vote,
 		});
 
+		const gitHubPullRequest = await getGitHubPullRequest(
+			project.identifier,
+			_req.params.issueID
+		);
+
 		const issueJson = JSON.stringify(issueData);
 		let issue = JSON.parse(issueJson, null, 2);
 
@@ -393,6 +399,8 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 			createdAt: null,
 			balance: balance,
 		};
+
+		response.mergeable = gitHubPullRequest.data.mergeable;
 
 		issue[0]?.Votes.map((vote) => {
 			if (vote.UserId === parseInt(_req.params.id)) {
