@@ -8,9 +8,9 @@ import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import { Octokit } from "octokit";
 import SmeeClient from "smee-client";
-
 import path from "path";
 import "dotenv/config";
+import SequelizeStore from "connect-session-sequelize";
 
 const smee = new SmeeClient({
 	source: "https://smee.io/ZANskOOg1mKaAA0L",
@@ -47,7 +47,18 @@ const {
 	NODE_ENV,
 } = process.env;
 
+const sequelizeStore = SequelizeStore(session.Store);
+const store = new sequelizeStore({ db });
+
 const app = express();
+app.use(
+	session({
+		secret: "keyboard cat",
+		resave: false,
+		saveUninitialized: false,
+		store,
+	})
+);
 
 const server = createServer(app);
 const io = new Server(server);
@@ -65,9 +76,6 @@ app.use("/", express.static(__dirname + "/dist"));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-	session({ secret: "keyboard cat", resave: false, saveUninitialized: false })
-);
 
 const events = NODE_ENV === "development" && smee.start();
 app.use("/api/webhooks/github", githubWebhook);
@@ -77,9 +85,11 @@ NODE_ENV === "development" && events.close();
 // persistent login sessions (recommended).
 app.use(passport.initialize());
 app.use(passport.session());
-
-passport.serializeUser(function (user, done) {
-	done(null, user);
+app.use(passport.authenticate("session"));
+passport.serializeUser(function (user, cb) {
+	process.nextTick(function () {
+		cb(null, { id: user.id, username: user.username });
+	});
 });
 
 passport.deserializeUser(function (obj, done) {
@@ -259,6 +269,7 @@ app.get(
 
 app.get("/api/auth/logout", function (req, res) {
 	req.logout(function (err) {
+		req.session.destroy();
 		if (err) {
 			return next(err);
 		}
@@ -267,11 +278,9 @@ app.get("/api/auth/logout", function (req, res) {
 });
 
 app.get("/api/auth/me", function (req, res) {
-	console.log("req.user.id", req?.user?.id);
 	if (!req.user) {
 		return res.send({ isLoggedIn: false });
 	}
-	console.log({ isLoggedIn: true, info: req.user });
 	return res.send({ isLoggedIn: true, info: req.user });
 });
 

@@ -12,7 +12,7 @@ router.get("/", async (_req, res) => {
 });
 
 router.post("/:id/issues/:issueID/vote", async (_req, res) => {
-	console.log("---->", _req);
+	console.log("user voted", _req?.user.id);
 	try {
 		const bal = await getUserBalance(_req.user.id, _req.params.id);
 		const userData = await User.findOne({ where: { id: _req.user.id } });
