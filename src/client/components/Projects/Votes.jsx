@@ -113,7 +113,7 @@ export default function Votes() {
 								<div className="flex gap-[10px]">
 									<img className="w-[14px]" src={icon[project?.host]} />
 									<span className="dark:text-[#8B929F] text-[11px] text-left truncate overflow-hidden">
-										View #{issue?.number} {issue?.title} on {issue?.host}
+										View #{issue?.number} {issue?.title} on {project?.host}
 									</span>
 								</div>
 								<img src={dark ? darkExternalLink : ExternalLink} />
