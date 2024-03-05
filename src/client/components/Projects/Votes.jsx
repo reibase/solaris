@@ -98,12 +98,12 @@ export default function Votes() {
 		: "Vote yes to merge or vote No to close this pull request.";
 
 	const disabled = !issue?.mergeable ? true : issue?.user.voted ? true : false;
-
+	const host = project?.host[0].toUpperCase() + project?.host.slice(1);
 	return (
 		<div className="flex w-full h-full flex-col gap-[10px]">
 			<ProjectHeading project={project} />
 
-			{isFetching || isFetchingIssue ? (
+			{isFetching || !issue?.title ? (
 				<div className="p-4 block w-full h-full shadow-lg rounded-lg text-sm bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 					Loading
 				</div>
@@ -111,10 +111,10 @@ export default function Votes() {
 				<div className="p-4 block w-full h-full shadow-lg rounded-lg text-sm flex flex-col md:flex-row items-start bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] lg:justify-between overflow-auto">
 					<div className="flex h-content w-full lg:w-1/3 lg:h-full flex-col gap-6">
 						<div className="flex flex-col">
-							<span className="text-lg text-[#313131] dark:text-[#8B929F]">
+							<span className="text-[16px] tracking-wide dark:text-white mb-2">
 								#{issue?.number} {issue?.title}
 							</span>
-							<span className="text-gray-600 dark:text-[#8B929F] mt-1">
+							<span className="text-gray-600 dark:text-[#8B929F]">
 								Created on {formatDate(issue?.createdAt.slice(0, 10))} by{" "}
 								{issue?.author}
 							</span>
@@ -122,8 +122,8 @@ export default function Votes() {
 								<div className="flex border border-[#8D4D4D4] my-3 dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-full justify-between items-center">
 									<div className="flex gap-[10px]">
 										<img className="w-[14px]" src={icon[project?.host]} />
-										<span className="dark:text-[#8B929F] text-[11px] text-left truncate overflow-hidden">
-											View #{issue?.number} {issue?.title} on {project?.host}
+										<span className="dark:text-white text-[11px] w-[200px] text-left truncate overflow-hidden">
+											View #{issue?.number} {issue?.title} on {host}
 										</span>
 									</div>
 									<img src={dark ? darkExternalLink : ExternalLink} />
@@ -159,18 +159,19 @@ export default function Votes() {
 							</div>
 						</div>
 						<div className="p-4 w-full hidden md:flex md:flex-col rounded-lg bg-[#f8f8f9] dark:bg-[#171D2B] border border-1 border-[#D9D9D9] dark:border-[#373D47]">
-							<p className="text-[#919190] text-[10px]">
+							<p className="text-slate-500 text-[10px] mb-1">
 								Your amount of credits will be applied to the side you select.
-								When that side reaches a majority the pull request will be
-								either merged or closed automatically.
+								When a side reaches the minimum number of votes required to end
+								voting, the pull request will be either closed or merged
+								automatically.
 							</p>
-							<p className="text-[#919190] text-[10px]">
+							<p className="text-slate-500 text-[10px]">
 								You may only vote once per pull request. It can not be undone.
 							</p>
 						</div>
 					</div>
 
-					<div className="flex h-content w-full lg:px-10 lg:w-2/3 flex-col gap-[5px] text-[#8B929F]">
+					<div className="flex h-content w-full f-full lg:px-10 lg:w-2/3 flex-col gap-[5px] text-[#8B929F]">
 						<span>Voting Activity</span>
 						<ProgressBar
 							quorum={project?.quorum}
@@ -195,7 +196,7 @@ export default function Votes() {
 									<p className="dark:text-[#8B929F] text-[10px]">Age</p>
 								</div>
 							</div>
-							{issue?.voteData?.votes.length > 0 &&
+							{issue?.voteData?.votes.length > 0 ? (
 								issue?.voteData.votes.map((vote, index) => (
 									<div
 										key={index}
@@ -228,7 +229,12 @@ export default function Votes() {
 											</p>
 										</div>
 									</div>
-								))}
+								))
+							) : (
+								<span className="w-full h-full flex justify-center items-center">
+									No votes on this issue yet.
+								</span>
+							)}
 						</div>
 					</div>
 				</div>
