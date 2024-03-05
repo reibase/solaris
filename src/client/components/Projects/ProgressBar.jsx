@@ -16,15 +16,18 @@ const ProgressBar = ({
 			<div className="flex flex-start mb-1 items-center justify-between flex-row text-slate-400 md:items-start w-full rounded-md gap-[15px] md:gap-[5px]">
 				<div>
 					{" "}
-					<span className="text-[#20B176]">{totalYesVotes || 0}</span> -{" "}
-					<span className="text-red-400">{totalNoVotes || 0}</span>
+					<span className="text-[#20B176] text-[11px]">
+						{totalYesVotes || 0}
+					</span>{" "}
+					-{" "}
+					<span className="text-red-400 text-[11px]">{totalNoVotes || 0}</span>
 				</div>
 				<div>
-					<span className="text-slate-600">{quorum}</span>
+					<span className="text-slate-600 dark:text-[#8B929F]">{quorum}</span>
 				</div>
 			</div>
 			{/* Colored bars representing votes */}
-			<div className="flex w-full bg-slate-200 flex-col h-2 overflow-hidden">
+			<div className="flex w-full bg-slate-200 flex-col h-2 overflow-hidden dark:bg-[#373D47]">
 				<div style={{ width: `${yes}%` }} className={`bg-[#20B176] h-1`}></div>
 				<div style={{ width: `${no}%` }} className={`bg-red-500 h-1`}></div>
 			</div>

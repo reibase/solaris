@@ -42,7 +42,7 @@ export default function ProjectHeading({ project }) {
 								LIVE
 							</span>
 						) : (
-							<span className="flex items-center justify-center font-semibold bg-gray-100 text-[10px] px-[10px] h-[18px] rounded-md text-gray-500 dark:bg-[#185B2E] dark:text-[#7FEDA2]">
+							<span className="flex items-center justify-center font-semibold bg-gray-100 text-[10px] px-[10px] h-[18px] rounded-md text-gray-500 dark:bg-gray-900 dark:text-gray-200">
 								TEST
 							</span>
 						)}
@@ -63,7 +63,7 @@ export default function ProjectHeading({ project }) {
 						<div className="flex border border-[#8D4D4D4] dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-[180px] md:w-[240px] justify-between items-center cursor-pointer">
 							<div className="flex gap-[10px]">
 								<img className="w-[14px]" src={icon[project?.host]} />
-								<span className="dark:text-[#8B929F] text-[11px] w-[135px] text-left truncate overflow-hidden">
+								<span className="dark:text-white text-[11px] w-[135px] text-left truncate overflow-hidden">
 									{project?.identifier} on {project?.host}
 								</span>
 							</div>

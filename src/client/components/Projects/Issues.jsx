@@ -42,21 +42,20 @@ export default function Issues() {
 	let issueCategory = {
 		closed: [
 			"Closed",
-			"text-[#dd2a2a] bg-[#fee2e0] dark:text-[#dd2a2a] dark:bg-[#fee2e0]",
+			"text-[#dd2a2a] bg-[#fee2e0] dark:text-red-50 dark:bg-red-500",
 		],
 		merged: [
 			"Merged",
-			"text-[#7e3fec] bg-[#dbd3fb] dark:text-[#7e3fec] dark:bg-[#dbd3fb]",
+			"text-[#7e3fec] bg-[#dbd3fb] dark:text-violet-50 dark:bg-violet-600",
 		],
 		open: [
 			"Open",
-			"text-[#1C7737] bg-[#EEFDF2] dark:bg-[#185B2E] dark:text-[#7FEDA2]",
+			"text-[#1C7737] bg-[#EEFDF2] dark:text-emerald-50 dark:bg-emerald-800",
 		],
 	};
 	const handleCategoryClick = (category) => {
 		setCategory(category);
 	};
-	console.log(project);
 
 	const [category, setCategory] = useState("open");
 	if (isFetching) {
@@ -72,8 +71,8 @@ export default function Issues() {
 					<span
 						onClick={() => handleCategoryClick("open")}
 						className={` ${
-							category != "open" ? "opacity-50" : null
-						} cursor-pointer flex items-center justify-center font-semibold  text-[10px] px-[10px] h-[18px] rounded-md ${
+							category != "open" && "opacity-50"
+						} cursor-pointer flex items-center justify-center  text-[11px] px-[10px] h-[18px] rounded-md ${
 							issueCategory["open"][1]
 						}`}
 					>
@@ -82,8 +81,8 @@ export default function Issues() {
 					<span
 						onClick={() => handleCategoryClick("closed")}
 						className={` ${
-							category != "closed" ? "opacity-50" : null
-						} cursor-pointer  flex items-center justify-center font-semibold text-[10px] px-[10px] h-[18px] rounded-md text-[#dd2a2a] ${
+							category != "closed" && "opacity-50"
+						} cursor-pointer  flex items-center justify-center text-[11px] px-[10px] h-[18px] rounded-md text-[#dd2a2a] ${
 							issueCategory["closed"][1]
 						}`}
 					>
@@ -92,8 +91,8 @@ export default function Issues() {
 					<span
 						onClick={() => handleCategoryClick("merged")}
 						className={` ${
-							category != "merged" ? "opacity-50" : null
-						} cursor-pointer flex items-center justify-center font-semibold text-[10px] px-[10px] h-[18px] rounded-md ${
+							category != "merged" && "opacity-50"
+						} cursor-pointer flex items-center justify-center text-[11px] px-[10px] h-[18px] rounded-md ${
 							issueCategory["merged"][1]
 						}`}
 					>
@@ -112,7 +111,7 @@ export default function Issues() {
 												{pullRequest.title}
 											</h2>
 											<span
-												className={`flex items-center justify-center font-semibold text-[10px] px-[10px] h-[18px] rounded-md ${issueCategory[category][1]}`}
+												className={`ml-4 flex items-center justify-center text-[11px] px-[10px] h-[18px] rounded-md ${issueCategory[category][1]}`}
 											>
 												{issueCategory[category][0]}
 											</span>
@@ -129,7 +128,7 @@ export default function Issues() {
 										target="_blank"
 										className="cursor-pointer"
 									>
-										<div className="flex border border-[#D4D4D4] dark:border-[#8B929F] rounded-md text-[10px] px-[12px] w-[180px] md:w-[220px] justify-between items-center gap-[5px]">
+										<div className="flex border border-[#D4D4D4] dark:border-[#8B929F] rounded-md text-[11px] px-[12px] w-[180px] md:w-[220px] justify-between items-center gap-[5px]">
 											<div className="flex gap-[10px]">
 												<img className="w-[14px]" src={icon[project?.host]} />
 												<span className="font-semibold max-w-[125px] text-ellipsis overflow-hidden text-nowrap dark:text-white">
