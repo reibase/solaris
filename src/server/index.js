@@ -313,12 +313,12 @@ function ensureAuthenticated(req, res, next) {
 	res.redirect("/login");
 }
 
-app.use("/api/users", users);
-app.use("/api/projects", async function (req, res) {
+app.use("/api/users", ensureAuthenticated, users);
+app.use("/api/projects", ensureAuthenticated, async function (req, res) {
 	return projects(req, res);
 });
-app.use("/api/issues", issues);
-app.use("/api/installation", installation);
+app.use("/api/issues", ensureAuthenticated, issues);
+app.use("/api/installation", ensureAuthenticated, installation);
 
 app.use("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "/dist/index.html"));
