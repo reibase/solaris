@@ -55,6 +55,7 @@ export default function Votes() {
 		data: issue,
 		isFetching: isFetchingIssue,
 		refetch,
+		isRefetching: isRefetchingIssue,
 	} = useQuery({
 		queryKey: ["issue"],
 		queryFn: getIssue,
@@ -73,8 +74,8 @@ export default function Votes() {
 					{ withCredentials: true }
 				)
 				.then((res) => res);
-			socket.emit("vote cast", project?.id);
 			setVoting(false);
+			socket.emit("vote cast", project?.id);
 			return data;
 		} catch (error) {
 			setVoting(false);
@@ -101,7 +102,7 @@ export default function Votes() {
 	if (isFetching) {
 		return "Loading";
 	}
-	console.log(issue);
+
 	return (
 		<div className="flex w-full h-full flex-col gap-[10px]">
 			<ProjectHeading project={project} />
@@ -134,7 +135,7 @@ export default function Votes() {
 							{text}
 						</span>
 						<div className="flex w-full flex-row mb-4 items-center justify-center gap-[15px]">
-							{voting ? (
+							{voting || isRefetchingIssue ? (
 								"Loading"
 							) : (
 								<>
