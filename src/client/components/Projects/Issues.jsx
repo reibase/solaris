@@ -133,7 +133,7 @@ export default function Issues() {
 											target="_blank"
 											className="cursor-pointer lg:m-0 hidden lg:block"
 										>
-											<div className="flex border border-[#D4D4D4] dark:border-[#8B929F] rounded-md text-[11px] px-[12px] w-full justify-between items-center gap-[5px]">
+											<div className="flex border border-[#D4D4D4] dark:border-[#8B929F] rounded-md text-[11px] px-[12px] max-w-[300px] justify-between items-center gap-[5px]">
 												<div className="flex gap-[10px]">
 													<img className="w-[14px]" src={icon[project?.host]} />
 													<span className="text-ellipsis truncate overflow-hidden text-nowrap dark:text-white">
@@ -150,14 +150,16 @@ export default function Issues() {
 										</a>
 									</div>
 								</div>
-								<ProgressBar
-									quorum={project?.quorum}
-									totalYesVotes={pullRequest?.totalYesVotes}
-									totalNoVotes={pullRequest?.totalNoVotes}
-									yesPercent={pullRequest.totalYesPercent}
-									noPercent={pullRequest.totalNoPercent}
-									votesView={false}
-								/>
+								<div className="w-full lg:ml-8">
+									<ProgressBar
+										quorum={project?.quorum}
+										totalYesVotes={pullRequest?.totalYesVotes}
+										totalNoVotes={pullRequest?.totalNoVotes}
+										yesPercent={pullRequest.totalYesPercent}
+										noPercent={pullRequest.totalNoPercent}
+										votesView={false}
+									/>
+								</div>
 							</div>
 							<div className="w-14 flex justify-end">
 								<img

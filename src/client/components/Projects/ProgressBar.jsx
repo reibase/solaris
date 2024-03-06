@@ -23,7 +23,7 @@ const ProgressBar = ({
 					<span className="text-red-400 text-[11px]">{totalNoVotes || 0}</span>
 				</div>
 				<div>
-					<span className="text-slate-600 dark:text-[#8B929F]">{quorum}</span>
+					<span className="text-slate-400 dark:text-[#8B929F]">{quorum}</span>
 				</div>
 			</div>
 			{/* Colored bars representing votes */}
