@@ -12,7 +12,7 @@ const ProgressBar = ({
 	const no = noPercent * 100;
 
 	return (
-		<div className="flex w-full flex-col">
+		<div className="flex w-full flex-col h-full items-center justify-center">
 			<div className="flex flex-start mb-1 items-center justify-between flex-row text-slate-400 md:items-start w-full rounded-md gap-[15px] md:gap-[5px]">
 				<div>
 					{" "}
