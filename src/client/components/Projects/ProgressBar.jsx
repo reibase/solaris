@@ -10,9 +10,7 @@ const ProgressBar = ({
 }) => {
 	const yes = yesPercent * 100;
 	const no = noPercent * 100;
-	if (yes === 0 && no === 0) {
-		return;
-	}
+
 	return (
 		<div className="flex w-full flex-col h-full items-center justify-center">
 			<div className="flex flex-start mb-1 items-center justify-between flex-row text-slate-400 md:items-start w-full rounded-md gap-[15px] md:gap-[5px]">
@@ -29,13 +27,29 @@ const ProgressBar = ({
 				</div>
 			</div>
 			{/* Colored bars representing votes */}
-			<div className="flex w-full flex-col h-3 overflow-hidden ">
-				<div
-					style={{ width: `${yes}%` }}
-					className={`bg-[#20B176] h-[2px] border-white mb-[1px] dark:border-[#333]`}
-				></div>
-				<div style={{ width: `${no}%` }} className={`bg-red-500 h-[2px]`}></div>
-			</div>
+			{yes === 0 && no === 0 ? (
+				<div className="flex w-full flex-col h-3 overflow-hidden ">
+					<div
+						style={{ width: `100%` }}
+						className={`bg-slate-200 h-[2px] mb-[1px] `}
+					></div>
+					<div
+						style={{ width: `100%` }}
+						className={`bg-slate-200 h-[2px]`}
+					></div>
+				</div>
+			) : (
+				<div className="flex w-full flex-col h-3 overflow-hidden ">
+					<div
+						style={{ width: `${yes}%` }}
+						className={`bg-[#20B176] h-[2px] border-white mb-[1px] dark:border-[#333]`}
+					></div>
+					<div
+						style={{ width: `${no}%` }}
+						className={`bg-red-500 h-[2px]`}
+					></div>
+				</div>
+			)}
 		</div>
 	);
 };
