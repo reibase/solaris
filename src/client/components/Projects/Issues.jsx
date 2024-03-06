@@ -107,7 +107,14 @@ export default function Issues() {
 								<div className="flex flex-col gap-[25px]">
 									<div className="flex flex-col">
 										<div className="flex gap-[5px]">
-											<h2 className="font-semibold text-[14px] tracking-wide dark:text-white">
+											<h2
+												onClick={() =>
+													navigate(
+														`/projects/${project?.id}/issues/${pullRequest.number}`
+													)
+												}
+												className="font-semibold text-[14px] tracking-wide dark:text-white cursor-pointer"
+											>
 												{pullRequest.title}
 											</h2>
 											<span
