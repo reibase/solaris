@@ -181,7 +181,7 @@ export default function Votes() {
 							noPercent={issue?.voteData.totalNoPercent}
 							votesView={true}
 						/>
-						<div className="w-full">
+						<div className="w-full mt-4">
 							<div className=" grid grid-cols-4">
 								<div className="text-center ">
 									<p className="dark:text-[#8B929F] text-[10px]">User</p>

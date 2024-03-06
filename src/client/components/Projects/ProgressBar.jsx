@@ -27,9 +27,12 @@ const ProgressBar = ({
 				</div>
 			</div>
 			{/* Colored bars representing votes */}
-			<div className="flex w-full bg-slate-200 flex-col h-2 overflow-hidden dark:bg-[#373D47]">
-				<div style={{ width: `${yes}%` }} className={`bg-[#20B176] h-1`}></div>
-				<div style={{ width: `${no}%` }} className={`bg-red-500 h-1`}></div>
+			<div className="flex w-full bg-slate-200 flex-col h-1 overflow-hidden dark:bg-[#373D47]">
+				<div
+					style={{ width: `${yes}%` }}
+					className={`bg-[#20B176] h-[2px]`}
+				></div>
+				<div style={{ width: `${no}%` }} className={`bg-red-500 h-[2px]`}></div>
 			</div>
 		</div>
 	);
