@@ -112,7 +112,7 @@ export default function Issues() {
 													`/projects/${project?.id}/issues/${pullRequest.number}`
 												)
 											}
-											className="font-semibold lg:text-[14px] dark:text-white cursor-pointer"
+											className="font-semibold lg:text-[14px] max-w-[300px] text-left truncate overflow-hidden dark:text-white cursor-pointer"
 										>
 											{pullRequest.title}
 										</span>
