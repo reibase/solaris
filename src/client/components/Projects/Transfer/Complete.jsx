@@ -41,7 +41,7 @@ export default function Complete({
 			<p className="dark:text-white">
 				Transaction ID: {transferRes?.transactionID}
 			</p>
-			<div className="flex flex-row w-1/2 justify-between">
+			<div className="flex flex-row w-full lg:w-1/2 justify-between">
 				<div>
 					<button
 						onClick={() => setIndex(0)}

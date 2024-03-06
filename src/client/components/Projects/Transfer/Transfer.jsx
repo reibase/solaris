@@ -151,7 +151,7 @@ export default function Transfer() {
 			{/* header */}
 			<ProjectHeading project={project} />
 
-			<div className="w-full h-full items-center justify-center px-4 py-2 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+			<div className="w-full h-full items-center justify-center px-1 lg:px-4 py-2 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 				{transferComponentHandler()}
 				<ContinueTransferButton
 					clicked={clicked}

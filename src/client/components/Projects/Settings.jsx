@@ -72,7 +72,7 @@ export default function Settings() {
 	return (
 		<div className="w-full h-full">
 			<ProjectHeading project={project} />
-			<div className="w-[50%] p-4 shadow-lg rounded-lg text-sm flex flex-col items-left bg-white/90 dark:bg-[#202530] border border-1 dark:border-[#373D47] justify-between gap-[25px]">
+			<div className="w-full lg:w-[50%] p-4 shadow-lg rounded-lg text-sm flex flex-col items-left bg-white/90 dark:bg-[#202530] border border-1 dark:border-[#373D47] justify-between gap-[25px]">
 				<h2 className="text-[#313131] font-medium font-[12px] text-left dark:text-white">
 					Project Settings
 				</h2>

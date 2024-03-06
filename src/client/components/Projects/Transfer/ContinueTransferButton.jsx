@@ -45,7 +45,7 @@ export default function ContinueTransferButton({
 	}
 
 	return (
-		<div className="flex flex-row w-1/2 justify-between">
+		<div className="flex flex-row w-full lg:w-1/2 justify-between">
 			<div>
 				{index > 0 && (
 					<button

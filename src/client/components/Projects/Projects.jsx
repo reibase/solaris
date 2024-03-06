@@ -38,7 +38,7 @@ export default function Projects() {
 		return "Loading";
 	}
 	return (
-		<div className="w-full h-full justify-start items-start shadow-lg rounded-lg text-sm flex flex-col p-6 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] gap-[10px]">
+		<div className="w-full h-full justify-start items-start shadow-lg rounded-lg text-sm flex flex-col p-2 lg:p-6 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] gap-[10px]">
 			<div className="flex mb-6 flex-row w-full justify-between">
 				<h3 className="dark:text-white">My Projects</h3>
 				<h3
@@ -80,7 +80,7 @@ export default function Projects() {
 										<button className="flex border border-[#8D4D4D4] dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-[180px] md:w-[240px] justify-between items-center">
 											<div className="flex gap-[10px]">
 												<img className="w-[14px]" src={icon[project.host]} />
-												<span className="dark:text-[#8B929F] text-[11px] w-[135px] text-left truncate overflow-hidden">
+												<span className="text-[11px] w-[135px] text-left truncate overflow-hidden dark:text-white">
 													{project.identifier}
 												</span>
 											</div>
@@ -95,7 +95,7 @@ export default function Projects() {
 								</span>
 								<span
 									onClick={() => navigate(`/projects/${project.id}`)}
-									className="text-center my-auto border border-[#8B929F] dark:border-[#8B929F] rounded-md px-[10px] py-[3px] w-[125px] dark:text-white cursor-pointer"
+									className="text-center my-auto border border-[#8B929F] dark:border-[#8B929F] rounded-md py-1 px-3 lg:px-[10px] lg:py-[3px] lg:w-[125px] dark:text-white cursor-pointer"
 								>
 									View Project
 								</span>

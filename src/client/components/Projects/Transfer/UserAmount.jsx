@@ -40,7 +40,7 @@ export default function UserAmount({
 		changeHandler(e);
 	};
 	return (
-		<div className="w-1/2 flex h-[300px] flex-col justify-center items-center">
+		<div className="w-full lg:w-1/2 flex h-[300px] flex-col justify-center items-center">
 			<div className="w-full text-lg pb-4 dark:text-white">Transfer</div>
 			<div className="w-full flex flex-col gap-2">
 				<label

@@ -2,7 +2,7 @@ import React from "react";
 
 export default function Review({ transferData, setClicked }) {
 	return (
-		<div className="w-1/2 flex h-[300px] flex-col justify-center items-start">
+		<div className="w-full lg:w-1/2 flex h-[300px] flex-col justify-center items-start">
 			<div className="w-full text-lg dark:text-white">Transfer Summary:</div>
 			<div className="text-slate-400 mt-1 pb-4">
 				Please review before submiitting.
