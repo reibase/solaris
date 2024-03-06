@@ -66,7 +66,7 @@ export default function Issues() {
 		<div className="flex w-full h-full flex-col gap-[10px]">
 			<ProjectHeading project={project} />
 
-			<div className="w-full h-full p-1 lg:px-4 shadow-lg rounded-lg text-sm flex flex-col items-center bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] overflow-auto">
+			<div className="w-full h-full p-2 lg:px-4 shadow-lg rounded-lg text-sm flex flex-col items-center bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] overflow-auto">
 				<div className="flex w-full justify-start gap-[15px] py-[10px]">
 					<span
 						onClick={() => handleCategoryClick("open")}
@@ -102,71 +102,71 @@ export default function Issues() {
 
 				{project?.issues[category].length ? (
 					project?.issues[category].map((pullRequest, index) => (
-						<div className="flex flex-row w-full justify-between border-b border-[#D4D4D4] py-3 lg:px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]">
-							<div className="flex flex-row">
-								<div className="flex flex-col gap-[25px]">
-									<div className="flex flex-col">
-										<div className="flex gap-[5px]">
-											<span
-												onClick={() =>
-													navigate(
-														`/projects/${project?.id}/issues/${pullRequest.number}`
-													)
-												}
-												className="font-semibold lg:text-[14px] tracking-wide dark:text-white cursor-pointer"
-											>
-												{pullRequest.title}
-											</span>
-											<span
-												className={`ml-4 flex items-center justify-center text-[11px] px-[10px] h-[18px] rounded-md ${issueCategory[category][1]}`}
-											>
-												{issueCategory[category][0]}
-											</span>
-										</div>
-										<span className="text-slate-500 text-[11px] mt-2 dark:text-[#8B929F]">
-											#{pullRequest.number} opened on{" "}
-											{pullRequest.createdAt.slice(0, 10)} by{" "}
-											{pullRequest.author}
-										</span>
-									</div>
-
-									<a
-										href={pullRequest?.url}
-										target="_blank"
-										className="cursor-pointer"
-									>
-										<div className="flex border border-[#D4D4D4] dark:border-[#8B929F] rounded-md text-[11px] px-[12px] w-[180px] md:w-[220px] justify-between items-center gap-[5px]">
-											<div className="flex gap-[10px]">
-												<img className="w-[14px]" src={icon[project?.host]} />
-												<span className="font-semibold max-w-[125px] text-ellipsis overflow-hidden text-nowrap dark:text-white">
-													{pullRequest.title}
-												</span>
-											</div>
-											<img src={dark ? darkExternalLink : ExternalLink} />
-										</div>
-									</a>
-								</div>
-							</div>
-							<div className="flex justify-end items-center w-1/2 pl-4 flex-row gap-4 items-end lg:w-1/3">
-								<ProgressBar
-									quorum={project?.quorum}
-									totalYesVotes={pullRequest?.totalYesVotes}
-									totalNoVotes={pullRequest?.totalNoVotes}
-									yesPercent={pullRequest.totalYesPercent}
-									noPercent={pullRequest.totalNoPercent}
-									votesView={false}
-								/>
-								<span>
-									<img
+						<div className="w-full flex row border-b border-[#D4D4D4] py-3 lg:px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]">
+							<div className="flex flex-col w-5/6 justify-between">
+								<div className="flex flex-row w-full mb-1 lg:m-0">
+									<span
 										onClick={() =>
 											navigate(
 												`/projects/${project?.id}/issues/${pullRequest.number}`
 											)
 										}
-										src={Forward}
-										className="w-[14px] cursor-pointer"
-									/>
+										className="font-semibold lg:text-[14px] tracking-wide dark:text-white cursor-pointer"
+									>
+										{pullRequest.title}
+									</span>
+									<span
+										className={`ml-4 flex items-center justify-center text-[11px] px-[10px] h-[18px] rounded-md ${issueCategory[category][1]}`}
+									>
+										{issueCategory[category][0]}
+									</span>
+								</div>
+								<span className="text-slate-500 text-[11px] my-1 lg:my-2 dark:text-[#8B929F]">
+									#{pullRequest.number} opened on{" "}
+									{pullRequest.createdAt.slice(0, 10)} by {pullRequest.author}
 								</span>
+
+								<div className="w-full flex flex-row items-end align-baseline mb-3">
+									<span className="hidden lg:block w-full">
+										<a
+											href={pullRequest?.url}
+											target="_blank"
+											className="cursor-pointer lg:m-0 hidden lg:block"
+										>
+											<div className="flex border border-[#D4D4D4] dark:border-[#8B929F] rounded-md text-[11px] px-[12px] w-[120px] lg:w-[320px] justify-between items-center gap-[5px]">
+												<div className="flex gap-[10px]">
+													<img className="w-[14px]" src={icon[project?.host]} />
+													<span className="font-semibold text-ellipsis overflow-hidden text-nowrap dark:text-white">
+														View {pullRequest.title} on{" "}
+														{project?.host.slice(0, 1).toUpperCase() +
+															project?.host.slice(1)}
+													</span>
+												</div>
+												<img src={dark ? darkExternalLink : ExternalLink} />
+											</div>
+										</a>
+									</span>
+									<ProgressBar
+										quorum={project?.quorum}
+										totalYesVotes={pullRequest?.totalYesVotes}
+										totalNoVotes={pullRequest?.totalNoVotes}
+										yesPercent={pullRequest.totalYesPercent}
+										noPercent={pullRequest.totalNoPercent}
+										votesView={false}
+									/>
+								</div>
+							</div>
+
+							<div className="w-1/6 flex justify-end">
+								<img
+									onClick={() =>
+										navigate(
+											`/projects/${project?.id}/issues/${pullRequest.number}`
+										)
+									}
+									src={Forward}
+									className="w-[14px] cursor-pointer"
+								/>
 							</div>
 						</div>
 					))
