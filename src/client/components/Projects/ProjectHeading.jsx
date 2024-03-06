@@ -60,10 +60,10 @@ export default function ProjectHeading({ project }) {
 				{/* bottom row of header  */}
 				<div className="flex flex-row h-full items-end flex-wrap gap-[15px]">
 					<a href={project?.url} target="_blank" className="cursor-pointer">
-						<div className="flex border border-[#8D4D4D4] dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-[300px] lg:w-[180px] justify-between items-center cursor-pointer">
+						<div className="flex border border-[#8D4D4D4] dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-[300px] justify-between items-center cursor-pointer">
 							<div className="flex gap-[10px]">
 								<img className="w-[14px]" src={icon[project?.host]} />
-								<span className="dark:text-white text-[11px] w-full lg:w-[135px] text-left truncate overflow-hidden">
+								<span className="dark:text-white text-[11px] w-full text-left truncate overflow-hidden">
 									{project?.identifier} on{" "}
 									{project?.host.slice(0, 1).toUpperCase() +
 										project?.host.slice(1)}
