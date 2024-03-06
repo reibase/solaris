@@ -102,9 +102,16 @@ export default function Issues() {
 
 				{project?.issues[category].length ? (
 					project?.issues[category].map((pullRequest, index) => (
-						<div className="w-full flex row border-b border-[#D4D4D4] py-3 lg:px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]">
+						<div
+							onClick={() =>
+								navigate(
+									`/projects/${project?.id}/issues/${pullRequest.number}`
+								)
+							}
+							className="w-full flex row border-b border-[#D4D4D4] py-3 lg:px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]"
+						>
 							<div className="flex flex-col justify-between w-full lg:flex-row">
-								<div className="flex flex-col w-full justify-between">
+								<div className="flex flex-col items-stretch justify-items-stretch w-full justify-between">
 									<div className="flex flex-row w-full mb-1 lg:m-0">
 										<span
 											onClick={() =>
@@ -112,7 +119,7 @@ export default function Issues() {
 													`/projects/${project?.id}/issues/${pullRequest.number}`
 												)
 											}
-											className="font-semibold lg:text-[14px] dark:text-white cursor-pointer"
+											className="font-semibold lg:text-[14px] max-w-[200px] lg:max-w-[300px] text-left truncate text-ellipsis overflow-hidden dark:text-white cursor-pointer"
 										>
 											{pullRequest.title}
 										</span>
@@ -122,12 +129,12 @@ export default function Issues() {
 											{issueCategory[category][0]}
 										</span>
 									</div>
-									<span className="text-slate-500 text-[11px] my-1 lg:my-2 dark:text-[#8B929F]">
+									<span className="text-slate-500 text-[11px] my-1 dark:text-[#8B929F]">
 										#{pullRequest.number} opened on{" "}
 										{pullRequest.createdAt.slice(0, 10)} by {pullRequest.author}
 									</span>
 
-									<div className="w-full flex-row items-end align-baseline mb-3 hidden lg:flex">
+									<div className="w-full flex-row items-end align-baseline mt-3 hidden lg:flex">
 										<a
 											href={pullRequest?.url}
 											target="_blank"
@@ -147,7 +154,7 @@ export default function Issues() {
 										</a>
 									</div>
 								</div>
-								<div className="w-full lg:ml-14">
+								<div className="w-3/4 mt-2 lg:w-full lg:ml-14 lg:mt-0">
 									<ProgressBar
 										quorum={project?.quorum}
 										totalYesVotes={pullRequest?.totalYesVotes}
