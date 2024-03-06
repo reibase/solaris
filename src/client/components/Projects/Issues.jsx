@@ -102,7 +102,14 @@ export default function Issues() {
 
 				{project?.issues[category].length ? (
 					project?.issues[category].map((pullRequest, index) => (
-						<div className="w-full flex row border-b border-[#D4D4D4] py-3 lg:px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]">
+						<div
+							onClick={() =>
+								navigate(
+									`/projects/${project?.id}/issues/${pullRequest.number}`
+								)
+							}
+							className="w-full flex row border-b border-[#D4D4D4] py-3 lg:px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]"
+						>
 							<div className="flex flex-col justify-between w-full lg:flex-row">
 								<div className="flex flex-col w-full justify-between">
 									<div className="flex flex-row w-full mb-1 lg:m-0">
@@ -112,7 +119,7 @@ export default function Issues() {
 													`/projects/${project?.id}/issues/${pullRequest.number}`
 												)
 											}
-											className="font-semibold lg:text-[14px] max-w-[300px] text-left truncate overflow-hidden dark:text-white cursor-pointer"
+											className="font-semibold lg:text-[14px] max-w-[200px] lg:max-w-[300px] text-left truncate text-ellipsis overflow-hidden dark:text-white cursor-pointer"
 										>
 											{pullRequest.title}
 										</span>
