@@ -56,7 +56,10 @@ export default function Projects() {
 								<div className="flex flex-col gap-[15px]">
 									<div className="flex flex-col">
 										<div className="flex flex-row items-center gap-[14px]">
-											<span className="font-semibold text-[14px] dark:text-white tracking-wide">
+											<span
+												onClick={() => navigate(`/projects/${project.id}`)}
+												className="font-semibold text-[14px] dark:text-white tracking-wide cursor-pointer"
+											>
 												{project.identifier}
 											</span>
 											{project.live ? (

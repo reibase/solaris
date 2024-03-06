@@ -73,8 +73,11 @@ export default function ProjectHeading({ project }) {
 
 					<div className="flex items-center gap-[20px]">
 						<div className="flex gap-[7px]">
-							<img className="w-[20px]" src={dark ? darkGroup : Group} />
-							<p className="text-[#313131] dark:text-[#D9D9D9] text-[12px] font-medium">
+							<img
+								className="w-[20px] opacity-20 cursor-pointer"
+								src={dark ? darkGroup : Group}
+							/>
+							<p className="text-gray-300 dark:text-[#D9D9D9] text-[12px] font-medium cursor-pointer">
 								Community
 							</p>
 						</div>
