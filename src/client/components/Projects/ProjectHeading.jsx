@@ -26,23 +26,23 @@ export default function ProjectHeading({ project }) {
 
 	return (
 		<>
-			<div className="w-full h-50 items-start justify-start p-1 lg:px-4 py-2 shadow-md rounded-lg mb-2 text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+			<div className="w-full h-50 items-start justify-start p-2 lg:px-4 shadow-md rounded-lg mb-2 text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 				{/* top row of header */}
 				<div className="flex flex-row w-full justify-between">
 					{/* top left of header */}
-					<div className="flex flex-row items-center gap-[20px]">
+					<div className="flex flex-row items-center gap-[20px] w-5/6">
 						<span
 							onClick={() => navigate(`/projects/${id}`)}
-							className="font-semibold text-lg tracking-wide dark:text-white cursor-pointer"
+							className="font-semibold text-[14px] lg:text-lg tracking-wide dark:text-white cursor-pointer truncate overflow-hidden"
 						>
 							{project?.title}
 						</span>
 						{project?.live ? (
-							<span className="flex items-center justify-center font-semibold bg-[#EEFDF2] text-[10px] px-[10px] h-[18px] rounded-md text-[#1C7737] dark:bg-[#185B2E] dark:text-[#7FEDA2]">
+							<span className="flex items-center justify-center mx-2 font-semibold bg-[#EEFDF2] text-[10px] px-[10px] h-[18px] rounded-md text-[#1C7737] dark:bg-[#185B2E] dark:text-[#7FEDA2]">
 								LIVE
 							</span>
 						) : (
-							<span className="flex items-center justify-center font-semibold bg-gray-100 text-[10px] px-[10px] h-[18px] rounded-md text-gray-500 dark:bg-gray-900 dark:text-gray-200">
+							<span className="flex items-center justify-center mx-2 font-semibold bg-gray-100 text-[10px] px-[10px] h-[18px] rounded-md text-gray-500 dark:bg-gray-900 dark:text-gray-200">
 								TEST
 							</span>
 						)}
