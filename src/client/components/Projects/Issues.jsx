@@ -103,61 +103,63 @@ export default function Issues() {
 				{project?.issues[category].length ? (
 					project?.issues[category].map((pullRequest, index) => (
 						<div className="w-full flex row border-b border-[#D4D4D4] py-3 lg:px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]">
-							<div className="flex flex-col w-5/6 justify-between">
-								<div className="flex flex-row w-full mb-1 lg:m-0">
-									<span
-										onClick={() =>
-											navigate(
-												`/projects/${project?.id}/issues/${pullRequest.number}`
-											)
-										}
-										className="font-semibold lg:text-[14px] tracking-wide dark:text-white cursor-pointer"
-									>
-										{pullRequest.title}
+							<div className="flex flex-col justify-between w-full lg:flex-row">
+								<div className="flex flex-col w-full justify-between">
+									<div className="flex flex-row w-full mb-1 lg:m-0">
+										<span
+											onClick={() =>
+												navigate(
+													`/projects/${project?.id}/issues/${pullRequest.number}`
+												)
+											}
+											className="font-semibold lg:text-[14px] dark:text-white cursor-pointer"
+										>
+											{pullRequest.title}
+										</span>
+										<span
+											className={`ml-4 flex items-center justify-center text-[11px] px-[10px] h-[18px] rounded-md ${issueCategory[category][1]}`}
+										>
+											{issueCategory[category][0]}
+										</span>
+									</div>
+									<span className="text-slate-500 text-[11px] my-1 lg:my-2 dark:text-[#8B929F]">
+										#{pullRequest.number} opened on{" "}
+										{pullRequest.createdAt.slice(0, 10)} by {pullRequest.author}
 									</span>
-									<span
-										className={`ml-4 flex items-center justify-center text-[11px] px-[10px] h-[18px] rounded-md ${issueCategory[category][1]}`}
-									>
-										{issueCategory[category][0]}
-									</span>
-								</div>
-								<span className="text-slate-500 text-[11px] my-1 lg:my-2 dark:text-[#8B929F]">
-									#{pullRequest.number} opened on{" "}
-									{pullRequest.createdAt.slice(0, 10)} by {pullRequest.author}
-								</span>
 
-								<div className="w-full flex flex-row items-end align-baseline mb-3">
-									<span className="hidden lg:block w-full">
+									<div className="w-full flex-row items-end align-baseline mb-3 hidden lg:flex">
 										<a
 											href={pullRequest?.url}
 											target="_blank"
 											className="cursor-pointer lg:m-0 hidden lg:block"
 										>
-											<div className="flex border border-[#D4D4D4] dark:border-[#8B929F] rounded-md text-[11px] px-[12px] w-[120px] lg:w-[320px] justify-between items-center gap-[5px]">
+											<div className="flex border border-[#D4D4D4] dark:border-[#8B929F] rounded-md text-[11px] px-[12px] w-full justify-between items-center gap-[5px]">
 												<div className="flex gap-[10px]">
 													<img className="w-[14px]" src={icon[project?.host]} />
-													<span className="font-semibold text-ellipsis overflow-hidden text-nowrap dark:text-white">
+													<span className="text-ellipsis truncate overflow-hidden text-nowrap dark:text-white">
 														View {pullRequest.title} on{" "}
 														{project?.host.slice(0, 1).toUpperCase() +
 															project?.host.slice(1)}
 													</span>
 												</div>
-												<img src={dark ? darkExternalLink : ExternalLink} />
+												<img
+													className="mx-1"
+													src={dark ? darkExternalLink : ExternalLink}
+												/>
 											</div>
 										</a>
-									</span>
-									<ProgressBar
-										quorum={project?.quorum}
-										totalYesVotes={pullRequest?.totalYesVotes}
-										totalNoVotes={pullRequest?.totalNoVotes}
-										yesPercent={pullRequest.totalYesPercent}
-										noPercent={pullRequest.totalNoPercent}
-										votesView={false}
-									/>
+									</div>
 								</div>
+								<ProgressBar
+									quorum={project?.quorum}
+									totalYesVotes={pullRequest?.totalYesVotes}
+									totalNoVotes={pullRequest?.totalNoVotes}
+									yesPercent={pullRequest.totalYesPercent}
+									noPercent={pullRequest.totalNoPercent}
+									votesView={false}
+								/>
 							</div>
-
-							<div className="w-1/6 flex justify-end">
+							<div className="w-14 flex justify-end">
 								<img
 									onClick={() =>
 										navigate(
