@@ -66,7 +66,7 @@ export default function Issues() {
 		<div className="flex w-full h-full flex-col gap-[10px]">
 			<ProjectHeading project={project} />
 
-			<div className="w-full h-full px-4 shadow-lg rounded-lg text-sm flex flex-col items-center bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] overflow-auto">
+			<div className="w-full h-full p-1 lg:px-4 shadow-lg rounded-lg text-sm flex flex-col items-center bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] overflow-auto">
 				<div className="flex w-full justify-start gap-[15px] py-[10px]">
 					<span
 						onClick={() => handleCategoryClick("open")}
@@ -102,21 +102,21 @@ export default function Issues() {
 
 				{project?.issues[category].length ? (
 					project?.issues[category].map((pullRequest, index) => (
-						<div className="flex flex-row w-full justify-between border-b border-[#D4D4D4] py-3 px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]">
+						<div className="flex flex-row w-full justify-between border-b border-[#D4D4D4] py-3 lg:px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]">
 							<div className="flex flex-row">
 								<div className="flex flex-col gap-[25px]">
 									<div className="flex flex-col">
 										<div className="flex gap-[5px]">
-											<h2
+											<span
 												onClick={() =>
 													navigate(
 														`/projects/${project?.id}/issues/${pullRequest.number}`
 													)
 												}
-												className="font-semibold text-[14px] tracking-wide dark:text-white cursor-pointer"
+												className="font-semibold lg:text-[14px] tracking-wide dark:text-white cursor-pointer"
 											>
 												{pullRequest.title}
-											</h2>
+											</span>
 											<span
 												className={`ml-4 flex items-center justify-center text-[11px] px-[10px] h-[18px] rounded-md ${issueCategory[category][1]}`}
 											>

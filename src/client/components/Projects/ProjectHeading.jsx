@@ -26,7 +26,7 @@ export default function ProjectHeading({ project }) {
 
 	return (
 		<>
-			<div className="w-full h-50 items-start justify-start px-4 py-2 shadow-md rounded-lg mb-2 text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+			<div className="w-full h-50 items-start justify-start p-1 lg:px-4 py-2 shadow-md rounded-lg mb-2 text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 				{/* top row of header */}
 				<div className="flex flex-row w-full justify-between">
 					{/* top left of header */}
@@ -60,11 +60,13 @@ export default function ProjectHeading({ project }) {
 				{/* bottom row of header  */}
 				<div className="flex flex-row h-full items-end flex-wrap gap-[15px]">
 					<a href={project?.url} target="_blank" className="cursor-pointer">
-						<div className="flex border border-[#8D4D4D4] dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-[180px] md:w-[240px] justify-between items-center cursor-pointer">
+						<div className="flex border border-[#8D4D4D4] dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-[300px] lg:w-[180px] justify-between items-center cursor-pointer">
 							<div className="flex gap-[10px]">
 								<img className="w-[14px]" src={icon[project?.host]} />
-								<span className="dark:text-white text-[11px] w-[135px] text-left truncate overflow-hidden">
-									{project?.identifier} on {project?.host}
+								<span className="dark:text-white text-[11px] w-full lg:w-[135px] text-left truncate overflow-hidden">
+									{project?.identifier} on{" "}
+									{project?.host.slice(0, 1).toUpperCase() +
+										project?.host.slice(1)}
 								</span>
 							</div>
 							<img src={dark ? darkExternalLink : ExternalLink} />
