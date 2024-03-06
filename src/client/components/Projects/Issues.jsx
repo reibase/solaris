@@ -133,24 +133,21 @@ export default function Issues() {
 											target="_blank"
 											className="cursor-pointer lg:m-0 hidden lg:block"
 										>
-											<div className="flex border border-[#D4D4D4] dark:border-[#8B929F] rounded-md text-[11px] px-[12px] max-w-[300px] justify-between items-center gap-[5px]">
+											<div className="flex border border-[#8D4D4D4] dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-[300px] justify-between items-center cursor-pointer">
 												<div className="flex gap-[10px]">
 													<img className="w-[14px]" src={icon[project?.host]} />
-													<span className="text-ellipsis truncate overflow-hidden text-nowrap dark:text-white">
-														View {pullRequest.title} on{" "}
+													<span className="dark:text-white text-[11px] w-[200px] text-left truncate overflow-hidden">
+														{pullRequest?.title} on{" "}
 														{project?.host.slice(0, 1).toUpperCase() +
-															project?.host.slice(1)}
+															project?.host.slice(1)}{" "}
 													</span>
 												</div>
-												<img
-													className="mx-1"
-													src={dark ? darkExternalLink : ExternalLink}
-												/>
+												<img src={dark ? darkExternalLink : ExternalLink} />
 											</div>
 										</a>
 									</div>
 								</div>
-								<div className="w-full lg:ml-8">
+								<div className="w-full lg:ml-14">
 									<ProgressBar
 										quorum={project?.quorum}
 										totalYesVotes={pullRequest?.totalYesVotes}
