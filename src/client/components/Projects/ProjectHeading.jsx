@@ -3,26 +3,18 @@ import { useParams } from "react-router-dom";
 import { useStore } from "../../store.js";
 import { useNavigate } from "react-router-dom";
 
-import githubLogo from "../../assets/github.svg";
-import githubLogoDarkMode from "../../assets/github-darkmode.svg";
-import gitlabLogo from "../../assets/gitlab.svg";
-import ExternalLink from "../../assets/ExternalLink.svg";
 import darkDataTransfer from "../../assets/darkDataTransfer.svg";
 import darkGroup from "../../assets/darkGroup.svg";
 import darkSettings from "../../assets/darkSettings.svg";
-import darkExternalLink from "../../assets/darkExternalLink.svg";
 import Group from "../../assets/Group.svg";
+
+import CodeHostLink from "./CodeHostLink.jsx";
 
 export default function ProjectHeading({ project }) {
 	const navigate = useNavigate();
 
 	const { dark, user } = useStore();
 	let { id } = useParams();
-
-	const icon = {
-		github: dark ? githubLogoDarkMode : githubLogo,
-		gitlab: gitlabLogo,
-	};
 
 	return (
 		<>
@@ -53,26 +45,17 @@ export default function ProjectHeading({ project }) {
 					</span>
 				</div>
 
-				<span className="mt-1 mb-3 text-[#313131] dark:text-[#8B929F]">
+				<span className="mt-1 mb-3 text-[#313131] text-[11px] dark:text-[#8B929F]">
 					Added on {project?.createdAt.slice(0, 10)}
 				</span>
 
 				{/* bottom row of header  */}
 				<div className="flex flex-row h-full items-end flex-wrap gap-[15px]">
-					<a href={project?.url} target="_blank" className="cursor-pointer">
-						<div className="flex border border-[#8D4D4D4] dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-[300px] justify-between items-center cursor-pointer">
-							<div className="flex gap-[10px]">
-								<img className="w-[14px]" src={icon[project?.host]} />
-								<span className="dark:text-white text-[11px] w-full text-left truncate overflow-hidden">
-									{project?.identifier} on{" "}
-									{project?.host.slice(0, 1).toUpperCase() +
-										project?.host.slice(1)}
-								</span>
-							</div>
-							<img src={dark ? darkExternalLink : ExternalLink} />
-						</div>
-					</a>
-
+					<CodeHostLink
+						url={project?.url}
+						text={project?.identifier}
+						host={project?.host}
+					/>
 					<div className="flex items-center gap-[20px]">
 						<div className="flex gap-[7px]">
 							<img
