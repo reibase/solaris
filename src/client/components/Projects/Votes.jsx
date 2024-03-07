@@ -112,7 +112,7 @@ export default function Votes() {
 		<div className="flex w-full h-full flex-col gap-[10px]">
 			<ProjectHeading project={project} />
 
-			{isFetchingIssue ? (
+			{!issue?.title ? (
 				<div className="p-4 block w-full h-full shadow-lg rounded-lg text-sm bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 					Loading
 				</div>
