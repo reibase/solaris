@@ -31,18 +31,18 @@ const ProgressBar = ({
 				<div className="flex w-full flex-col h-3 overflow-hidden ">
 					<div
 						style={{ width: `100%` }}
-						className={`bg-slate-200 h-[2px] mb-[1px] `}
+						className={`bg-slate-200 dark:bg-slate-900 h-[2px] mb-[1px] `}
 					></div>
 					<div
 						style={{ width: `100%` }}
-						className={`bg-slate-200 h-[2px]`}
+						className={`bg-slate-200 dark:bg-slate-900 h-[2px]`}
 					></div>
 				</div>
 			) : (
-				<div className="flex w-full flex-col h-3 overflow-hidden ">
+				<div className="flex w-full flex-col h-[6px] gap-[2px] overflow-hidden ">
 					<div
 						style={{ width: `${yes}%` }}
-						className={`bg-[#20B176] h-[2px] border-white mb-[1px] dark:border-[#333]`}
+						className={`bg-[#20B176] h-[2px] border-white dark:border-[#333]`}
 					></div>
 					<div
 						style={{ width: `${no}%` }}
