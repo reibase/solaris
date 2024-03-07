@@ -4,8 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 
-import ExternalLink from "../../assets/ExternalLink.svg";
-import darkExternalLink from "../../assets/darkExternalLink.svg";
 import githubLogo from "../../assets/github.svg";
 import githubLogoDarkMode from "../../assets/github-darkmode.svg";
 import gitlabLogo from "../../assets/gitlab.svg";
@@ -14,6 +12,7 @@ import ProgressBar from "../Projects/ProgressBar.jsx";
 import { getDurationSince, formatDate } from "./formatting.js";
 import ProjectHeading from "./ProjectHeading.jsx";
 import socket from "../../socket.js";
+import CodeHostLink from "./CodeHostLink.jsx";
 
 export default function Votes() {
 	const [voting, setVoting] = useState(false);
@@ -114,21 +113,15 @@ export default function Votes() {
 							<span className="text-[16px] tracking-wide dark:text-white mb-2">
 								#{issue?.number} {issue?.title}
 							</span>
-							<span className="text-gray-600 dark:text-[#8B929F]">
+							<span className="text-gray-600 mb-2 text-[11px] dark:text-[#8B929F]">
 								Created on {formatDate(issue?.createdAt.slice(0, 10))} by{" "}
 								{issue?.author}
 							</span>
-							<a href={issue?.url} target="_blank" className="cursor-pointer">
-								<div className="flex border border-[#8D4D4D4] my-3 dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-full justify-between items-center">
-									<div className="flex gap-[10px]">
-										<img className="w-[14px]" src={icon[project?.host]} />
-										<span className="dark:text-white text-[11px] w-[200px] text-left truncate overflow-hidden">
-											View #{issue?.number} {issue?.title} on {host}
-										</span>
-									</div>
-									<img src={dark ? darkExternalLink : ExternalLink} />
-								</div>
-							</a>
+							<CodeHostLink
+								url={issue?.url}
+								host={project?.host}
+								text={"#" + " " + issue?.number + " " + issue?.title}
+							/>
 						</div>
 
 						<div className="flex self-center justify-center w-full flex-col items-center mb-6">

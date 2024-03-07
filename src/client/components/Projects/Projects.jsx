@@ -8,6 +8,7 @@ import darkExternalLink from "../../assets/darkExternalLink.svg";
 import githubLogo from "../../assets/github.svg";
 import githubLogoDarkMode from "../../assets/github-darkmode.svg";
 import gitlabLogo from "../../assets/gitlab.svg";
+import CodeHostLink from "./CodeHostLink.jsx";
 
 export default function Projects() {
 	const { dark, user } = useStore();
@@ -51,14 +52,14 @@ export default function Projects() {
 			<div className="h-5/6 pr-4 w-full">
 				{data?.length ? (
 					data?.map((project, index) => (
-						<div className="flex flex-row h-30 w-full justify-between border-b border-[#D4D4D4] dark:border-[#8B929F] pb-4 mb-2">
+						<div className="flex flex-row w-full h-[100px] my-3 pb-4 justify-between border-b border-[#D4D4D4] dark:border-[#8B929F]">
 							<div className="flex flex-row">
 								<div className="flex flex-col gap-[15px]">
 									<div className="flex flex-col">
 										<div className="flex flex-row items-center gap-[14px]">
 											<span
 												onClick={() => navigate(`/projects/${project.id}`)}
-												className="font-semibold text-[14px] dark:text-white tracking-wide cursor-pointer"
+												className="text-[15px] dark:text-white cursor-pointer"
 											>
 												{project.identifier}
 											</span>
@@ -76,17 +77,13 @@ export default function Projects() {
 											Added on {project.createdAt.slice(0, 10)}
 										</span>
 									</div>
-									<a href={project.url} target="_blank">
-										<button className="flex border border-[#8D4D4D4] dark:border-[#8B929F] rounded-md py-[2px] px-[12px] w-[180px] md:w-[240px] justify-between items-center">
-											<div className="flex gap-[10px]">
-												<img className="w-[14px]" src={icon[project.host]} />
-												<span className="text-[11px] w-[135px] text-left truncate overflow-hidden dark:text-white">
-													{project.identifier}
-												</span>
-											</div>
-											<img src={dark ? darkExternalLink : ExternalLink} />
-										</button>
-									</a>
+									<span className="hidden lg:block">
+										<CodeHostLink
+											url={project.url}
+											text={project.identifier}
+											host={project.host}
+										/>
+									</span>
 								</div>
 							</div>
 							<div className="flex flex-col justify-start md:gap-0 items-end md:justify-between ">
@@ -95,7 +92,7 @@ export default function Projects() {
 								</span>
 								<span
 									onClick={() => navigate(`/projects/${project.id}`)}
-									className="text-center my-auto border border-[#8B929F] dark:border-[#8B929F] rounded-md py-1 px-3 lg:px-[10px] lg:py-[3px] lg:w-[125px] dark:text-white cursor-pointer"
+									className="text-center my-auto border  border-[#8D4D4D4] hover:bg-[#E7F0FF] text-slate-800 dark:text-white dark:border-[#8B929F] dark:hover:bg-[#18181B]/75 rounded-md py-1 px-3 lg:px-[10px] lg:py-[3px] lg:w-[125px] dark:text-white cursor-pointer"
 								>
 									View Project
 								</span>
