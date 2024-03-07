@@ -352,6 +352,28 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 	}
 });
 
+router.get(
+	"/:id/projects/:projectID/issues/:issueID/mergeable",
+	async (_req, res) => {
+		try {
+			const project = await Project.findOne({
+				where: { id: _req.params.projectID },
+			});
+
+			const gitHubPullRequest = await getGitHubPullRequest(
+				project.identifier,
+				_req.params.issueID
+			);
+
+			let mergeable = gitHubPullRequest.data.mergeable;
+
+			return res.send({ status: 200, data: mergeable });
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
+
 router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 	try {
 		const project = await Project.findOne({
@@ -364,43 +386,17 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 			include: Vote,
 		});
 
-		const gitHubPullRequest = await getGitHubPullRequest(
-			project.identifier,
-			_req.params.issueID
-		);
-
 		const issueJson = JSON.stringify(issueData);
 		let issue = JSON.parse(issueJson, null, 2);
 
-		const transfersData = await project.getTransfers({
-			where: {
-				[Op.or]: [{ recipient: _req.params.id }, { sender: _req.params.id }],
-			},
-		});
-		const transfersJson = JSON.stringify(transfersData);
-		const transfers = JSON.parse(transfersJson);
-
-		const userID = parseInt(_req.params.id);
-
-		let balance = transfers.reduce((accum, cur) => {
-			if (cur.recipient === userID) {
-				accum = accum + cur.amount;
-			} else if (cur.sender === userID) {
-				accum = accum - cur.amount;
-			}
-			return accum;
-		}, 0);
-
 		let response = issue[0];
+
 		let userVoteData = {
 			voted: false,
 			side: null,
 			amount: 0,
 			createdAt: null,
-			balance: balance,
 		};
-
-		response.mergeable = gitHubPullRequest.data.mergeable;
 
 		issue[0]?.Votes.map((vote) => {
 			if (vote.UserId === parseInt(_req.params.id)) {

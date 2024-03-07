@@ -4,9 +4,6 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 
-import githubLogo from "../../assets/github.svg";
-import githubLogoDarkMode from "../../assets/github-darkmode.svg";
-import gitlabLogo from "../../assets/gitlab.svg";
 import { useStore } from "../../store.js";
 import ProgressBar from "../Projects/ProgressBar.jsx";
 import { getDurationSince, formatDate } from "./formatting.js";
@@ -16,12 +13,8 @@ import CodeHostLink from "./CodeHostLink.jsx";
 
 export default function Votes() {
 	const [voting, setVoting] = useState(false);
-	const { dark, user } = useStore();
+	const { user } = useStore();
 	let { id, issueID } = useParams();
-	const icon = {
-		github: dark ? githubLogoDarkMode : githubLogo,
-		gitlab: gitlabLogo,
-	};
 
 	const getProject = async () => {
 		try {
@@ -34,6 +27,29 @@ export default function Votes() {
 		}
 	};
 
+	const { data: project } = useQuery({
+		queryKey: ["projects"],
+		queryFn: getProject,
+	});
+
+	const getMergeableStatus = async () => {
+		try {
+			const { data } = await axios
+				.get(
+					`/api/users/${user.info.id}/projects/${id}/issues/${issueID}/mergeable`
+				)
+				.then((res) => res.data);
+			return data;
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const { data: mergeable, isFetching: isFetchingMergeableStatus } = useQuery({
+		queryKey: ["mergeable"],
+		queryFn: getMergeableStatus,
+	});
+
 	const getIssue = async () => {
 		try {
 			const { data } = await axios
@@ -45,16 +61,10 @@ export default function Votes() {
 		}
 	};
 
-	const { data: project, isFetching } = useQuery({
-		queryKey: ["projects"],
-		queryFn: getProject,
-	});
-
 	const {
 		data: issue,
 		isFetching: isFetchingIssue,
-		refetch,
-		isRefetching: isRefetchingIssue,
+		refetch: refetchIssue,
 	} = useQuery({
 		queryKey: ["issue"],
 		queryFn: getIssue,
@@ -84,33 +94,33 @@ export default function Votes() {
 
 	socket.on("vote received", (projectID) => {
 		if (projectID === project?.id) {
-			refetch();
+			refetchIssue();
 		}
 	});
 
 	const chosenSide = issue?.user.side === true ? "yes" : "no";
 
-	const text = !issue?.mergeable
-		? "This pull request is not voteable"
-		: issue?.user.voted
+	const text = issue?.user.voted
 		? `You voted ${chosenSide} on ${issue?.user.createdAt.slice(0, 10)}`
+		: !mergeable
+		? "This pull request is not voteable."
 		: "Vote yes to merge or vote No to close this pull request.";
 
-	const disabled = !issue?.mergeable ? true : issue?.user.voted ? true : false;
-	const host = project?.host[0].toUpperCase() + project?.host.slice(1);
+	const disabled = !mergeable ? true : issue?.user.voted ? true : false;
+
 	return (
 		<div className="flex w-full h-full flex-col gap-[10px]">
 			<ProjectHeading project={project} />
 
-			{isFetching || !issue?.title ? (
+			{isFetchingIssue ? (
 				<div className="p-4 block w-full h-full shadow-lg rounded-lg text-sm bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 					Loading
 				</div>
 			) : (
-				<div className="p-4 block w-full h-full shadow-lg rounded-lg text-sm flex flex-col md:flex-row items-start bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] lg:justify-between overflow-auto">
-					<div className="flex h-content w-full lg:w-1/3 lg:h-full flex-col gap-6">
+				<div className="p-4 block w-full h-full shadow-lg gap-10 rounded-lg text-sm flex flex-col md:flex-row items-start bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] lg:justify-between overflow-auto">
+					<div className="flex h-content w-full lg:w-[300px] lg:h-full flex-col gap-6">
 						<div className="flex flex-col">
-							<span className="text-[16px] tracking-wide dark:text-white mb-2">
+							<span className="text-[16px] dark:text-white mb-2">
 								#{issue?.number} {issue?.title}
 							</span>
 							<span className="text-gray-600 mb-2 text-[11px] dark:text-[#8B929F]">
@@ -124,12 +134,14 @@ export default function Votes() {
 							/>
 						</div>
 
-						<div className="flex self-center justify-center w-full flex-col items-center mb-6">
-							<span className="font-medium my-4 text-black dark:text-white">
-								{text}
+						<div className="flex self-center justify-center w-full flex-col items-center mb-6 w-[300px]">
+							<span className="font-medium text-center my-4 text-black dark:text-white">
+								{isFetchingMergeableStatus
+									? "Checking pull request status"
+									: text}
 							</span>
 							<div className="flex w-full flex-row mb-4 items-center justify-center gap-[15px]">
-								{voting || isRefetchingIssue ? (
+								{voting ? (
 									"Loading"
 								) : (
 									<>
@@ -151,21 +163,21 @@ export default function Votes() {
 								)}
 							</div>
 						</div>
-						<div className="p-4 w-full hidden md:flex md:flex-col rounded-lg bg-[#f8f8f9] dark:bg-[#171D2B] border border-1 border-[#D9D9D9] dark:border-[#373D47]">
-							<p className="text-slate-500 text-[10px] mb-1">
+
+						<div className="p-3 w-full hidden md:flex md:flex-col rounded-lg bg-[#f8f8f9] dark:bg-[#171D2B] border border-1 border-[#D9D9D9] dark:border-[#373D47]">
+							<p className="text-slate-600 dark:text-slate-300 text-[11px] mb-1">
 								Your amount of credits will be applied to the side you select.
 								When a side reaches the minimum number of votes required to end
 								voting, the pull request will be either closed or merged
 								automatically.
 							</p>
-							<p className="text-slate-500 text-[10px]">
+							<p className="text-slate-600 dark:text-slate-300 text-[11px]">
 								You may only vote once per pull request. It can not be undone.
 							</p>
 						</div>
 					</div>
 
-					<div className="flex h-content w-full f-full lg:px-10 lg:w-2/3 flex-col gap-[5px] text-[#8B929F]">
-						<span>Voting Activity</span>
+					<div className="flex h-content w-full flex-col text-[#8B929F]">
 						<ProgressBar
 							quorum={project?.quorum}
 							totalYesVotes={issue?.voteData.totalYesVotes}
@@ -224,8 +236,8 @@ export default function Votes() {
 									</div>
 								))
 							) : (
-								<span className="w-full h-full flex justify-center items-center">
-									No votes on this issue yet.
+								<span className="block text-slate-400 text-center w-full h-20 mt-10">
+									No one has voted on this pull request yet.
 								</span>
 							)}
 						</div>
