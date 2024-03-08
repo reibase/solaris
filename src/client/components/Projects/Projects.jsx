@@ -60,22 +60,22 @@ export default function Projects() {
 									{project?.user.balance} Credits
 								</span>
 							</div>
-							<span className="text-[11px] leading-6 text-[#8B929F]">
-								Added on {project.createdAt.slice(0, 10)}
-							</span>
 							<div className="flex flex-row items-start justify-between w-full">
 								<div className="flex flex-col justify-between w-1/2 lg:gap-2">
-									<div className="flex items-center h-6 mb-1">
-										{project.members.map((member, idx) => (
-											<img
-												key={member.id}
-												className={`w-6 h-6 rounded-xl border-2 border-white dark:border-[#202530]/75 absolute ml-${
-													idx * 4
-												}`}
-												src={member.avatar}
-												title={member.username}
-											/>
-										))}
+									<span className="text-[11px] leading-6 text-[#8B929F]">
+										Added on {project.createdAt.slice(0, 10)}
+									</span>
+									<div className="flex items-center h-5 mb-1">
+										{project.members.map((member, idx) => {
+											return (
+												<img
+													key={member.id}
+													className={`w-6 h-6 rounded-xl border-2 border-white dark:border-[#202530]/75`}
+													src={member.avatar}
+													title={member.username}
+												/>
+											);
+										})}
 									</div>
 									<span className="hidden lg:block">
 										<CodeHostLink
@@ -85,14 +85,13 @@ export default function Projects() {
 										/>
 									</span>
 								</div>
-								<div className="">
-									<button
-										type="button"
+								<div className="flex h-full py-3 lg:py-0 items-center">
+									<span
 										onClick={() => navigate(`/projects/${project.id}`)}
-										className="text-center my-auto w-[140px] h-8 border border-[#8D4D4D4] hover:bg-[#E7F0FF]/25 text-slate-800 dark:text-white dark:border-[#8B929F] dark:hover:bg-[#18181B]/75 rounded-md py-1 px-3 lg:px-[10px] lg:py-[3px] dark:text-white cursor-pointer"
+										className="text-center w-[120px] border border-[#8D4D4D4] hover:bg-[#E7F0FF]/25 text-slate-800 dark:text-white dark:border-[#8B929F] dark:hover:bg-[#18181B]/75 rounded-md py-1 px-2 dark:text-white cursor-pointer"
 									>
 										View Project
-									</button>
+									</span>
 								</div>
 							</div>
 						</div>
