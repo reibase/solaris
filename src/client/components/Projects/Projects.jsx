@@ -30,7 +30,7 @@ export default function Projects() {
 	if (isFetching) {
 		return "Loading";
 	}
-	console.log(data);
+
 	return (
 		<div className="w-full h-full justify-start items-start shadow-lg rounded-lg text-sm flex flex-col p-2 lg:p-6 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] gap-[10px]">
 			<div className="flex mb-6 flex-row w-full justify-between">
