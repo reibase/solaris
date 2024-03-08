@@ -30,7 +30,7 @@ export default function ProjectHeading({ project }) {
 						>
 							{project?.title}
 						</span>
-						<ModeBadge project={project?.live} />
+						<ModeBadge project={project} />
 					</div>
 					{/* top right of header */}
 					<span className="text-[12px] font-semibold text-slate-500 dark:text-[#DDDCDC] whitespace-nowrap">
