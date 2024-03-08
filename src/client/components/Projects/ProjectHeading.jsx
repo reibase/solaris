@@ -9,6 +9,7 @@ import darkSettings from "../../assets/darkSettings.svg";
 import Group from "../../assets/Group.svg";
 
 import CodeHostLink from "./CodeHostLink.jsx";
+import ModeBadge from "./ModeBadge.jsx";
 
 export default function ProjectHeading({ project }) {
 	const navigate = useNavigate();
@@ -29,15 +30,7 @@ export default function ProjectHeading({ project }) {
 						>
 							{project?.title}
 						</span>
-						{project?.live ? (
-							<span className="flex items-center justify-center mx-2 font-semibold bg-[#EEFDF2] text-[10px] px-[10px] h-[18px] rounded-md text-[#1C7737] dark:bg-[#185B2E] dark:text-[#7FEDA2]">
-								LIVE
-							</span>
-						) : (
-							<span className="flex items-center justify-center mx-2 font-semibold bg-gray-100 text-[10px] px-[10px] h-[18px] rounded-md text-gray-500 dark:bg-gray-900 dark:text-gray-200">
-								TEST
-							</span>
-						)}
+						<ModeBadge project={project?.live} />
 					</div>
 					{/* top right of header */}
 					<span className="text-[12px] font-semibold text-slate-500 dark:text-[#DDDCDC] whitespace-nowrap">

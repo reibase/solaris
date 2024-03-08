@@ -184,7 +184,8 @@ router.post("/:id/transfer", async (_req, res) => {
 
 		await transferData.setProject(_req.params.id);
 		await projectData.addMember(recipient);
-
+		const memberinos = await projectData.getMembers();
+		console.log(memberinos);
 		const transferRes = {
 			status: 200,
 			amount: transfer.amount,
