@@ -54,10 +54,10 @@ export default function Projects() {
 							</div>
 							<div className="flex flex-row items-start justify-between w-full">
 								<div className="flex flex-col justify-between w-1/2 lg:gap-2">
-									<span className="text-[11px] leading-6 text-[#8B929F]">
+									<span className="text-[11px] mt-1 text-[#8B929F]">
 										Added on {project.createdAt.slice(0, 10)}
 									</span>
-									<div className="flex items-center h-5">
+									<span className="flex items-center h-5 mb-1">
 										{project.members.map((member) => {
 											return (
 												<img
@@ -68,7 +68,7 @@ export default function Projects() {
 												/>
 											);
 										})}
-									</div>
+									</span>
 									<span className="hidden lg:block">
 										<CodeHostLink
 											url={project.url}
