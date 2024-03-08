@@ -371,7 +371,6 @@ router.get(
 			);
 
 			let mergeable = gitHubPullRequest.data.mergeable;
-
 			return res.send({ status: 200, data: mergeable });
 		} catch (error) {
 			console.log(error);

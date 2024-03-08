@@ -45,7 +45,7 @@ class HttpService {
 				.get(
 					`/users/${userID}/projects/${projectID}/issues/${issueID}/mergeable`
 				)
-				.then((res) => res.data);
+				.then(({ data }) => data);
 			return data;
 		} catch (error) {
 			console.log(error);

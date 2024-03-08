@@ -21,7 +21,7 @@ export default function Votes() {
 	const { data: mergeable, isFetching: isFetchingMergeableStatus } = useQuery({
 		queryKey: [
 			"mergeable",
-			{ userID: user?.info.id, projectID: id, issueID: id },
+			{ userID: user?.info.id, projectID: id, issueID: issueID },
 		],
 		queryFn: getMergeableStatus,
 	});
