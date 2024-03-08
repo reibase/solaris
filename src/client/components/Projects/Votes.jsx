@@ -10,63 +10,36 @@ import { getDurationSince, formatDate } from "./formatting.js";
 import ProjectHeading from "./ProjectHeading.jsx";
 import socket from "../../socket.js";
 import CodeHostLink from "./CodeHostLink.jsx";
+import httpService from "../../services/httpService.js";
 
 export default function Votes() {
+	const { getUserProject, getIssue, getMergeableStatus } = httpService();
 	const [voting, setVoting] = useState(false);
 	const { user } = useStore();
 	let { id, issueID } = useParams();
 
-	const getProject = async () => {
-		try {
-			const { data } = await axios
-				.get(`/api/users/${user.info.id}/projects/${id}`)
-				.then(({ data }) => data);
-			return data;
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	const { data: project } = useQuery({
-		queryKey: ["projects"],
-		queryFn: getProject,
-	});
-
-	const getMergeableStatus = async () => {
-		try {
-			const { data } = await axios
-				.get(
-					`/api/users/${user.info.id}/projects/${id}/issues/${issueID}/mergeable`
-				)
-				.then((res) => res.data);
-			return data;
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
 	const { data: mergeable, isFetching: isFetchingMergeableStatus } = useQuery({
-		queryKey: ["mergeable"],
+		queryKey: [
+			"mergeable",
+			{ userID: user?.info.id, projectID: id, issueID: id },
+		],
 		queryFn: getMergeableStatus,
 	});
 
-	const getIssue = async () => {
-		try {
-			const { data } = await axios
-				.get(`/api/users/${user.info.id}/projects/${id}/issues/${issueID}`)
-				.then(({ data }) => data);
-			return data;
-		} catch (error) {
-			console.log(error);
-		}
-	};
+	const { data: project } = useQuery(
+		["project", { userID: user?.info.id, projectID: id }],
+		getUserProject
+	);
 
 	const {
 		data: issue,
 		isFetching: isFetchingIssue,
 		refetch: refetchIssue,
 	} = useQuery({
-		queryKey: ["issue"],
+		queryKey: [
+			"issue",
+			{ userID: user.info?.id, projectID: id, issueID: issueID },
+		],
 		queryFn: getIssue,
 	});
 
@@ -205,7 +178,7 @@ export default function Votes() {
 								issue?.voteData.votes.map((vote, index) => (
 									<div
 										key={index}
-										class={` p-[1px] grid grid-cols-4 ${
+										className={` p-[1px] grid grid-cols-4 ${
 											index % 2 == 0 ? "bg-[#F9F9F9] dark:bg-[#171D2B]" : null
 										} `}
 									>

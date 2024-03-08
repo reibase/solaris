@@ -1,28 +1,17 @@
-import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useStore } from "../../store.js";
 
 import CodeHostLink from "./CodeHostLink.jsx";
 import ModeBadge from "./ModeBadge.jsx";
+import { useStore } from "../../store.js";
+import httpService from "../../services/httpService.js";
 
 export default function Projects() {
-	const { dark, user } = useStore();
+	const { user } = useStore();
+	const { getUserProjects } = httpService();
 	const navigate = useNavigate();
 
-	const getUserProjects = async () => {
-		try {
-			const { data } = await axios
-				.get(`/api/users/${user.info.id}/projects`)
-				.then(({ data }) => data);
-			return data;
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	const { data, isFetching } = useQuery({
+	const { data: projects, isFetching } = useQuery(["userID", user.info.id], {
 		queryKey: ["userprojects"],
 		queryFn: getUserProjects,
 	});
@@ -43,9 +32,12 @@ export default function Projects() {
 				</h3>
 			</div>
 			<div className="h-5/6 pr-2 w-full">
-				{data?.length ? (
-					data?.map((project, index) => (
-						<div className="flex flex-col w-full lg:h-[120px] my-2 pb-4 border-b border-[#D4D4D4] dark:border-[#8B929F]">
+				{projects?.length ? (
+					projects?.map((project, index) => (
+						<div
+							key={project.id}
+							className="flex flex-col w-full lg:h-[120px] my-2 pb-4 border-b border-[#D4D4D4] dark:border-[#8B929F]"
+						>
 							<div className="flex flex-row justify-between w-full">
 								<div className="flex flex-row justify-start max-w-[260px] gap-4 lg:max-w-full">
 									<span
@@ -62,10 +54,10 @@ export default function Projects() {
 							</div>
 							<div className="flex flex-row items-start justify-between w-full">
 								<div className="flex flex-col justify-between w-1/2 lg:gap-2">
-									<span className="text-[11px] leading-6 text-[#8B929F]">
+									<span className="text-[11px] mt-1 text-[#8B929F]">
 										Added on {project.createdAt.slice(0, 10)}
 									</span>
-									<div className="flex items-center h-5">
+									<span className="flex items-center h-5 mb-1">
 										{project.members.map((member) => {
 											return (
 												<img
@@ -76,7 +68,7 @@ export default function Projects() {
 												/>
 											);
 										})}
-									</div>
+									</span>
 									<span className="hidden lg:block">
 										<CodeHostLink
 											url={project.url}

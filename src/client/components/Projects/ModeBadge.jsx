@@ -1,7 +1,7 @@
 import React from "react";
 
 export default function ModeBadge({ project }) {
-	return project.live ? (
+	return project?.live ? (
 		<span className="flex items-center justify-center font-semibold bg-[#EEFDF2] text-[10px] px-[10px] h-[18px] rounded-md text-[#1C7737] ring-1 ring-inset ring-[#1C7737]/10 dark:bg-[#185B2E] dark:text-[#7FEDA2] dark:ring-[#7FEDA2]/50">
 			LIVE
 		</span>

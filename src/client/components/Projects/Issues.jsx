@@ -3,40 +3,24 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
-import githubLogo from "../../assets/github.svg";
-import githubLogoDarkMode from "../../assets/github-darkmode.svg";
-import gitlabLogo from "../../assets/gitlab.svg";
 import { useStore } from "../../store.js";
 import Forward from "../../assets/Forward.svg";
 import ProgressBar from "./ProgressBar.jsx";
 import ProjectHeading from "./ProjectHeading.jsx";
 import CodeHostLink from "./CodeHostLink.jsx";
+import httpService from "../../services/httpService.js";
 
 export default function Issues() {
-	const { dark, user } = useStore();
+	const { getUserProject } = httpService();
+	const { user } = useStore();
 	let { id } = useParams();
-	const icon = {
-		github: dark ? githubLogoDarkMode : githubLogo,
-		gitlab: gitlabLogo,
-	};
 	const navigate = useNavigate();
-	const getProject = async () => {
-		try {
-			const { data } = await axios
-				.get(`/api/users/${user.info.id}/projects/${id}`)
-				.then(({ data }) => data);
-			return data;
-		} catch (error) {
-			console.log(error);
-		}
-	};
 
-	const { data: project, isFetching } = useQuery({
-		queryKey: ["projects"],
-		queryFn: getProject,
-	});
+	const { data: project, isFetching } = useQuery(
+		["project", { userID: user?.info.id, projectID: id }],
+		getUserProject
+	);
 
 	let issueCategory = {
 		closed: [
@@ -63,7 +47,6 @@ export default function Issues() {
 	if (isFetching) {
 		return "Loading";
 	}
-
 	return (
 		<div className="flex w-full h-full flex-col gap-[10px]">
 			<ProjectHeading project={project} />
@@ -104,7 +87,10 @@ export default function Issues() {
 
 				{project?.issues[category].length ? (
 					project?.issues[category].map((pullRequest, index) => (
-						<div className="w-full flex row border-b border-[#D4D4D4] py-4 lg:px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]">
+						<div
+							key={pullRequest.id}
+							className="w-full flex row border-b border-[#D4D4D4] py-4 lg:px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]"
+						>
 							<div className="flex flex-col justify-between w-full lg:flex-row">
 								<div className="flex flex-col items-stretch justify-items-stretch w-full justify-between">
 									<div className="flex flex-row items-center w-full mb-1 lg:m-0">
