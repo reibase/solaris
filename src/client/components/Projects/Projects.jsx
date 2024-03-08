@@ -65,12 +65,12 @@ export default function Projects() {
 									<span className="text-[11px] leading-6 text-[#8B929F]">
 										Added on {project.createdAt.slice(0, 10)}
 									</span>
-									<div className="flex items-center h-5 mb-1">
-										{project.members.map((member, idx) => {
+									<div className="flex items-center h-5">
+										{project.members.map((member) => {
 											return (
 												<img
 													key={member.id}
-													className={`w-6 h-6 rounded-xl border-2 border-white dark:border-[#202530]/75`}
+													className={`w-5 h-5 rounded-xl border-2 border-white dark:border-[#202530]/75`}
 													src={member.avatar}
 													title={member.username}
 												/>
