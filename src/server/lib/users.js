@@ -61,14 +61,19 @@ router.get("/:id/projects", async (_req, res) => {
 		});
 		const json = JSON.stringify(data);
 		const user = JSON.parse(json, null, 2);
-		const projects = user.projects;
 
-		await Promise.all(
-			projects.map(async (project) => {
+		const projects = await Promise.all(
+			user.projects.map(async (project) => {
+				const data = await Project.findByPk(project.id, {
+					include: { model: User, as: "members" },
+				});
 				const bal = await getUserBalance(user.id, project.id);
 				project.user = { balance: bal };
+				project.members = data.members;
+				return project;
 			})
 		);
+
 		return res.send({ status: 200, data: projects });
 	} catch (error) {
 		console.log(error);

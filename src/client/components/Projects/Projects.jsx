@@ -3,21 +3,13 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useStore } from "../../store.js";
-import ExternalLink from "../../assets/ExternalLink.svg";
-import darkExternalLink from "../../assets/darkExternalLink.svg";
-import githubLogo from "../../assets/github.svg";
-import githubLogoDarkMode from "../../assets/github-darkmode.svg";
-import gitlabLogo from "../../assets/gitlab.svg";
+
 import CodeHostLink from "./CodeHostLink.jsx";
+import ModeBadge from "./ModeBadge.jsx";
 
 export default function Projects() {
 	const { dark, user } = useStore();
 	const navigate = useNavigate();
-
-	const icon = {
-		github: dark ? githubLogoDarkMode : githubLogo,
-		gitlab: gitlabLogo,
-	};
 
 	const getUserProjects = async () => {
 		try {
@@ -38,6 +30,7 @@ export default function Projects() {
 	if (isFetching) {
 		return "Loading";
 	}
+
 	return (
 		<div className="w-full h-full justify-start items-start shadow-lg rounded-lg text-sm flex flex-col p-2 lg:p-6 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] gap-[10px]">
 			<div className="flex mb-6 flex-row w-full justify-between">
@@ -49,33 +42,40 @@ export default function Projects() {
 					Create New Project
 				</h3>
 			</div>
-			<div className="h-5/6 pr-4 w-full">
+			<div className="h-5/6 pr-2 w-full">
 				{data?.length ? (
 					data?.map((project, index) => (
-						<div className="flex flex-row w-full h-[100px] my-3 pb-4 justify-between border-b border-[#D4D4D4] dark:border-[#8B929F]">
-							<div className="flex flex-row">
-								<div className="flex flex-col gap-[15px]">
-									<div className="flex flex-col">
-										<div className="flex flex-row items-center gap-[14px]">
-											<span
-												onClick={() => navigate(`/projects/${project.id}`)}
-												className="text-[15px] dark:text-white cursor-pointer"
-											>
-												{project.identifier}
-											</span>
-											{project.live ? (
-												<span className="flex items-center justify-center font-semibold bg-[#EEFDF2] text-[10px] px-[10px] h-[18px] rounded-md text-[#1C7737] dark:bg-[#185B2E] dark:text-[#7FEDA2]">
-													LIVE
-												</span>
-											) : (
-												<span className="flex items-center justify-center font-semibold bg-gray-100 text-[10px] px-[10px] h-[18px] rounded-md text-gray-500 dark:bg-[#185B2E] dark:text-[#7FEDA2]">
-													TEST
-												</span>
-											)}
-										</div>
-										<span className="text-[10px] leading-6 text-[#8B929F]">
-											Added on {project.createdAt.slice(0, 10)}
-										</span>
+						<div className="flex flex-col w-full lg:h-[120px] my-2 pb-4 border-b border-[#D4D4D4] dark:border-[#8B929F]">
+							<div className="flex flex-row justify-between w-full">
+								<div className="flex flex-row justify-start max-w-[260px] gap-4 lg:max-w-full">
+									<span
+										onClick={() => navigate(`/projects/${project.id}`)}
+										className="lg:text-[15px] max-w-[220px] lg:max-w-full truncate dark:text-white cursor-pointer"
+									>
+										{project.identifier}
+									</span>
+									<ModeBadge project={project} />
+								</div>
+								<span className="text-[10px] font-medium text-slate-500 dark:text-[#8B929F] w-2/6 text-right">
+									{project?.user.balance} Credits
+								</span>
+							</div>
+							<span className="text-[11px] leading-6 text-[#8B929F]">
+								Added on {project.createdAt.slice(0, 10)}
+							</span>
+							<div className="flex flex-row items-start justify-between w-full">
+								<div className="flex flex-col justify-between w-1/2 lg:gap-2">
+									<div className="flex items-center h-6 mb-1">
+										{project.members.map((member, idx) => (
+											<img
+												key={member.id}
+												className={`w-6 h-6 rounded-xl border-2 border-white dark:border-[#202530]/75 absolute ml-${
+													idx * 4
+												}`}
+												src={member.avatar}
+												title={member.username}
+											/>
+										))}
 									</div>
 									<span className="hidden lg:block">
 										<CodeHostLink
@@ -85,17 +85,15 @@ export default function Projects() {
 										/>
 									</span>
 								</div>
-							</div>
-							<div className="flex flex-col justify-start md:gap-0 items-end md:justify-between ">
-								<span className="text-[10px] font-medium dark:text-[#8B929F]">
-									{project?.user.balance} Credits
-								</span>
-								<span
-									onClick={() => navigate(`/projects/${project.id}`)}
-									className="text-center my-auto border  border-[#8D4D4D4] hover:bg-[#E7F0FF] text-slate-800 dark:text-white dark:border-[#8B929F] dark:hover:bg-[#18181B]/75 rounded-md py-1 px-3 lg:px-[10px] lg:py-[3px] lg:w-[125px] dark:text-white cursor-pointer"
-								>
-									View Project
-								</span>
+								<div className="">
+									<button
+										type="button"
+										onClick={() => navigate(`/projects/${project.id}`)}
+										className="text-center my-auto w-[140px] h-8 border border-[#8D4D4D4] hover:bg-[#E7F0FF]/25 text-slate-800 dark:text-white dark:border-[#8B929F] dark:hover:bg-[#18181B]/75 rounded-md py-1 px-3 lg:px-[10px] lg:py-[3px] dark:text-white cursor-pointer"
+									>
+										View Project
+									</button>
+								</div>
 							</div>
 						</div>
 					))
