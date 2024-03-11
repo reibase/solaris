@@ -32,6 +32,7 @@ router.post("/", async (_req, res) => {
 			baseRef: _req.body.pull_request.base.ref,
 			repoID: _req.body.pull_request.base.repo.id,
 			merged: _req.body.pull_request.merged,
+			url: _req.body.pull_request?.html_url,
 		});
 		const project = await Project.findOne({
 			where: { hostID: _req.body.pull_request.head.repo.id },

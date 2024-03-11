@@ -11,15 +11,37 @@ import Installation from "./installation.js";
  *
  *    BlogPost.belongsTo(User)
  */
-User.hasMany(Project);
-Project.belongsTo(User);
+
+// User.hasMany(Project);
+// Project.belongsTo(User);
+
+User.belongsToMany(Project, {
+	as: "projects",
+	foreignKey: "memberID",
+	otherKey: "projectID",
+	through: "Project_Members",
+});
+Project.belongsToMany(User, {
+	as: "members",
+	foreignKey: "projectID",
+	otherKey: "memberID",
+	through: "Project_Members",
+});
+
+User.hasMany(Vote);
+Vote.belongsTo(User);
+
 User.hasMany(Installation);
 Installation.belongsTo(User);
+
 Project.hasMany(Transfer);
 Transfer.belongsTo(Project);
-Project.hasMany(Issue);
+
 Issue.belongsTo(Project);
+Project.hasMany(Issue);
+
 Issue.hasMany(Vote);
+Vote.belongsTo(Issue);
 
 /**
  * We'll export all of our models here, so that any time a module needs a model,

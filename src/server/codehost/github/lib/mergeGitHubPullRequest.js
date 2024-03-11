@@ -1,4 +1,4 @@
-import httpClient from "../httpClient";
+import httpClient from "../httpClient.js";
 
 export default async function mergeGitHubPullRequest(
 	repoName,

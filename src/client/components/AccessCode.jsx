@@ -5,7 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useStore } from "../store.js";
 import Login from "./Login.jsx";
-const AccessCode = () => {
+
+const AccessCode = ({ loading }) => {
 	const [clicked, setClicked] = useState(false);
 	const [codeAccepted, setCodeAccepted] = useState(false);
 	const [code, setCode] = useState("");
@@ -41,9 +42,15 @@ const AccessCode = () => {
 		setCodeAccepted(false);
 		navigate("/login");
 	}
+
+	if (loading) {
+		return "Loading";
+	}
+
 	if (user.access) {
 		return <Login />;
 	}
+
 	return (
 		<>
 			<div className="mx-2 lg:mx-auto block h-[455px] shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-1/2 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">

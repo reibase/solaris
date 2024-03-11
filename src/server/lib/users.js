@@ -7,10 +7,12 @@ import {
 	Project,
 	Issue,
 	Transfer,
+	Vote,
 } from "../../db/models/index.js";
 import getGitHubInstallationRepos from "../codehost/github/getGitHubInstallationRepos.js";
 import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallationRepos.js";
 import getGitHubPullRequests from "../codehost/github/lib/getGitHubPullRequests.js";
+import getGitHubPullRequest from "../codehost/github/lib/getGitHubPullRequest.js";
 import getGitLabMergeRequests from "../codehost/gitlab/lib/getGitLabMergeRequests.js";
 import createGitLabWebhook from "../codehost/gitlab/lib/createGitLabWebhook.js";
 import getUserBalance from "./utils/getUserBalance.js";
@@ -32,18 +34,22 @@ router.get("/", async (_req, res) => {
 	res.status(200).json({ message: "Hello World!" });
 });
 
-// get a user
-router.get("/:id", async (_req, res) => {
+// find a user by a username
+router.get("/:username", async (_req, res) => {
+	const username = _req.params.username;
 	try {
-		const user = await User.findOne({
-			where: { id: _req.params.id },
-			include: Projects,
+		const userData = await User.findOne({
+			where: { username: username },
 		});
-		const json = JSON.stringify(user);
-		const res = JSON.parse(json, null, 2);
-		return { status: 200, user: res, message: "User deleted successfully." };
+		const userJSON = JSON.stringify(userData);
+		const user = JSON.parse(userJSON, null, 2);
+		if (user?.id) {
+			return res.send({ status: 200, user: user });
+		} else {
+			return res.send({ status: 404, user: "not found" });
+		}
 	} catch (error) {
-		return { status: 500, message: error.message };
+		return res.send({ status: 500, message: error.message });
 	}
 });
 
@@ -52,17 +58,20 @@ router.get("/:id/projects", async (_req, res) => {
 	try {
 		const data = await User.findOne({
 			where: { id: _req.params.id },
-			include: Project,
+			include: { model: Project, as: "projects" },
 		});
 		const json = JSON.stringify(data);
 		const user = JSON.parse(json, null, 2);
 
-		const projects = user.Projects;
-
-		await Promise.all(
-			projects.map(async (project) => {
+		const projects = await Promise.all(
+			user.projects.map(async (project) => {
+				const data = await Project.findByPk(project.id, {
+					include: { model: User, as: "members" },
+				});
 				const bal = await getUserBalance(user.id, project.id);
 				project.user = { balance: bal };
+				project.members = data.members;
+				return project;
 			})
 		);
 
@@ -115,7 +124,6 @@ router.post("/:id/installations", async (_req, res) => {
 					refreshToken: refreshToken,
 				},
 			});
-			console.log(dbCreated, _req.body.provider, dbInstallation.refreshToken);
 			installation = dbInstallation;
 			created = dbCreated;
 		} else if (_req.body.provider === "github") {
@@ -127,7 +135,6 @@ router.post("/:id/installations", async (_req, res) => {
 					installationID: _req.body.installationID,
 				},
 			});
-			console.log(dbCreated, _req.body.provider, dbInstallation.installationID);
 			installation = dbInstallation;
 			created = dbCreated;
 		}
@@ -167,9 +174,6 @@ router.get("/:id/github/installations/repos", async (_req, res) => {
 		const responseData = installationRepos.filter(
 			(installation) => installation.status === 200
 		);
-
-		console.log("installation repos:", installationRepos);
-		console.log("response data:", responseData);
 
 		return res.send({ status: 200, installations: responseData });
 	} catch (error) {
@@ -214,9 +218,11 @@ router.post("/:id/projects", async (_req, res) => {
 		clawBack,
 		isPrivate,
 	} = _req.body;
+	const owner = _req.params.id;
 	try {
 		const project = await Project.create({
 			title,
+			owner,
 			description,
 			identifier,
 			installationID,
@@ -227,11 +233,11 @@ router.post("/:id/projects", async (_req, res) => {
 			isPrivate,
 			creditAmount,
 		});
-		await project.setUser(_req.params.id);
+		await project.addMember(owner);
 
 		const initial = await Transfer.create({
-			sender: _req.params.id,
-			recipient: _req.params.id,
+			sender: owner,
+			recipient: owner,
 			amount: project.creditAmount,
 		});
 
@@ -242,7 +248,6 @@ router.post("/:id/projects", async (_req, res) => {
 
 			await Promise.all(
 				pulls.data.map(async (pull) => {
-					console.log(pull);
 					const pullRequest = await Issue.create({
 						number: pull.number,
 						hostID: pull.id,
@@ -336,6 +341,9 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 		project.issues = { open: [], merged: [], closed: [] };
 
 		issues.map((issue) => {
+			issue.totalYesPercent = issue.totalYesVotes / project.quorum;
+			issue.totalNoPercent = issue.totalNoVotes / project.quorum;
+
 			if (issue.state === "closed") {
 				if (issue.merged) {
 					project.issues.merged.push(issue);
@@ -353,13 +361,105 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 	}
 });
 
-router.delete("/:id/projects/:id", async (_req, res) => {
-	const { id } = _req.body;
+router.get(
+	"/:id/projects/:projectID/issues/:issueID/mergeable",
+	async (_req, res) => {
+		try {
+			const project = await Project.findOne({
+				where: { id: _req.params.projectID },
+			});
+
+			const gitHubPullRequest = await getGitHubPullRequest(
+				project.identifier,
+				_req.params.issueID
+			);
+
+			let mergeable = gitHubPullRequest.data.mergeable;
+			return res.send({ status: 200, data: mergeable });
+		} catch (error) {
+			console.log(error);
+		}
+	}
+);
+
+router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
+	try {
+		const project = await Project.findOne({
+			where: { id: _req.params.projectID },
+			include: Issue,
+		});
+
+		const issueData = await project.getIssues({
+			where: { number: _req.params.issueID },
+			include: Vote,
+		});
+
+		const issueJson = JSON.stringify(issueData);
+		let issue = JSON.parse(issueJson, null, 2);
+
+		let response = issue[0];
+
+		let userVoteData = {
+			voted: false,
+			side: null,
+			amount: 0,
+			createdAt: null,
+		};
+
+		issue[0]?.Votes.map((vote) => {
+			if (vote.UserId === parseInt(_req.params.id)) {
+				userVoteData.voted = true;
+				userVoteData.side = vote.side;
+				userVoteData.amount = vote.amount;
+				userVoteData.createdAt = vote.createdAt;
+			}
+		});
+
+		response.project = project;
+		response.user = userVoteData;
+
+		response.voteData = {
+			votes: issue[0].Votes,
+			totalYesVotes: issue[0].totalYesVotes,
+			totalNoVotes: issue[0].totalNoVotes,
+			totalYesPercent: response.totalYesVotes / project.quorum,
+			totalNoPercent: response.totalNoVotes / project.quorum,
+		};
+
+		return res.send({ status: 200, data: response });
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+router.put("/:id/projects/:projectID", async (_req, res) => {
+	const { live, creditAmount, quorum } = _req.body;
+	try {
+		const projectData = await Project.update(
+			{
+				live: live,
+				creditAmount: creditAmount,
+				quorum: quorum,
+			},
+			{ where: { id: _req.params.projectID } }
+		);
+
+		const json = JSON.stringify(projectData);
+		const project = JSON.parse(json);
+
+		return res.send({ status: 200, data: project });
+	} catch (error) {
+		console.log(error);
+	}
+});
+
+router.delete("/:id/projects/:projectID", async (_req, res) => {
+	const { id, projectID } = _req.params;
 	try {
 		const project = await Project.destroy({
-			where: { id: id },
+			where: { id: projectID },
 		});
-		res.status(200).json({ message: "project deleted successfully" });
+		return res.send({ status: 200 });
 	} catch (error) {
 		res.status(500).json(error.message);
 	}

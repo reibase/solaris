@@ -13,7 +13,7 @@ export default function DropDown() {
 	};
 
 	return (
-		<div class="relative inline-block text-left">
+		<div className="relative inline-block text-left">
 			<img
 				onClick={() => setVisible(!visible)}
 				type="button"
@@ -25,16 +25,16 @@ export default function DropDown() {
 			/>
 			{visible ? (
 				<div
-					class="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 dark:divide-[#0F172A] rounded-md bg-white dark:bg-[#373D47] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+					className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 dark:divide-[#0F172A] rounded-md bg-white dark:bg-[#373D47] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
 					role="menu"
 					aria-orientation="vertical"
 					aria-labelledby="menu-button"
 					tabindex="-1"
 				>
-					<div class="py-1" onClick={() => setVisible(false)} role="none">
+					<div className="py-1" onClick={() => setVisible(false)} role="none">
 						<Link
 							to="/projects"
-							class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
+							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
 							role="menuitem"
 							tabindex="-1"
 							id="menu-item-0"
@@ -43,7 +43,7 @@ export default function DropDown() {
 						</Link>
 						<Link
 							to="/create"
-							class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
+							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
 							role="menuitem"
 							tabindex="-1"
 							id="menu-item-1"
@@ -51,10 +51,10 @@ export default function DropDown() {
 							Create New Project
 						</Link>
 					</div>
-					<div class="py-1" onClick={() => setVisible(false)} role="none">
+					<div className="py-1" onClick={() => setVisible(false)} role="none">
 						<Link
 							to="/profile"
-							class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
+							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
 							role="menuitem"
 							tabindex="-1"
 							id="menu-item-2"
@@ -62,10 +62,21 @@ export default function DropDown() {
 							Profile
 						</Link>
 					</div>
-					<div class="py-1" onClick={(e) => logoutHandler(e)} role="none">
+					<div className="py-1" onClick={() => setVisible(false)} role="none">
+						<Link
+							to="https://discord.gg/K7NkjdDR22"
+							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
+							role="menuitem"
+							tabindex="-1"
+							id="menu-item-2"
+						>
+							Community on Discord
+						</Link>
+					</div>
+					<div className="py-1" onClick={(e) => logoutHandler(e)} role="none">
 						<a
 							href="/api/auth/logout"
-							class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
+							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
 							role="menuitem"
 							tabindex="-1"
 							id="menu-item-6"

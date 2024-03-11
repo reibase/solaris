@@ -41,7 +41,7 @@ const RequestAccess = () => {
 					SOLARIS
 				</h1>
 
-				<div class="flex flex-col gap-[20px]">
+				<div className="flex flex-col gap-[20px]">
 					{submitted ? (
 						<p className="mx-auto mt-16 font-inter w-5/6 leading-6 text-sm text-center dark:text-[#DDDCDC]">
 							Thank you for your interest in the Solaris technical preview. We
@@ -53,7 +53,7 @@ const RequestAccess = () => {
 								Request Access to Solaris Technical Preview
 							</p>
 							<form ref={form} onSubmit={submitHandler}>
-								<div class="w-[300px] flex flex-col gap-2  mb-4">
+								<div className="w-[300px] flex flex-col gap-2  mb-4">
 									<label
 										for="name"
 										className="font-inter text-sm dark:text-[#DDDCDC] text-gray-900"
@@ -69,7 +69,7 @@ const RequestAccess = () => {
 										required
 									/>
 								</div>
-								<div class="w-[300px] flex flex-col gap-2">
+								<div className="w-[300px] flex flex-col gap-2">
 									<label
 										for="email"
 										className="font-inter text-sm dark:text-[#DDDCDC] text-gray-900"

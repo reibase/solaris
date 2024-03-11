@@ -8,12 +8,9 @@ import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import { Octokit } from "octokit";
 import SmeeClient from "smee-client";
-
 import path from "path";
 import "dotenv/config";
-
-import db from "../db/index.js";
-import { User } from "../db/models/index.js";
+import SequelizeStore from "connect-session-sequelize";
 
 const smee = new SmeeClient({
 	source: "https://smee.io/ZANskOOg1mKaAA0L",
@@ -21,12 +18,18 @@ const smee = new SmeeClient({
 	logger: console,
 });
 
+import db from "../db/index.js";
+import { User, Transfer, Project } from "../db/models/index.js";
+
 import projects from "./lib/projects.js";
 import users from "./lib/users.js";
 import issues from "./lib/issues.js";
 import installation from "./lib/installation.js";
 import githubWebhook from "./webhooks/github/index.js";
 import gitlabWebhook from "./webhooks/gitlab/index.js";
+
+import { createServer } from "node:http";
+import { Server } from "socket.io";
 
 // Constants
 const port = process.env.PORT || 3001;
@@ -45,8 +48,29 @@ const {
 	NODE_ENV,
 } = process.env;
 
-// Create http server
+const sequelizeStore = SequelizeStore(session.Store);
+const store = new sequelizeStore({ db });
+
 const app = express();
+
+const server = createServer(app);
+const io = new Server(server);
+
+io.on("connection", (socket) => {
+	console.log("a user connected", socket.id);
+	socket.on("vote cast", (projectID) => {
+		socket.emit("vote received", projectID);
+	});
+});
+
+app.use(
+	session({
+		secret: "keyboard cat",
+		resave: false,
+		saveUninitialized: false,
+		store,
+	})
+);
 
 // body parsing middleware
 app.use(express.json());
@@ -54,9 +78,6 @@ app.use("/", express.static(__dirname + "/dist"));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-	session({ secret: "keyboard cat", resave: false, saveUninitialized: false })
-);
 
 const events = NODE_ENV === "development" && smee.start();
 app.use("/api/webhooks/github", githubWebhook);
@@ -67,14 +88,35 @@ app.use("/api/webhooks/gitlab", gitlabWebhook);
 // persistent login sessions (recommended).
 app.use(passport.initialize());
 app.use(passport.session());
-
-passport.serializeUser(function (user, done) {
-	done(null, user);
+app.use(passport.authenticate("session"));
+passport.serializeUser(function (user, cb) {
+	process.nextTick(function () {
+		cb(null, { id: user.id, username: user.username, avatar: user.avatar });
+	});
 });
 
 passport.deserializeUser(function (obj, done) {
 	done(null, obj);
 });
+
+const addToSandbox = async (userID) => {
+	const sandboxData = await Project.findOne({
+		where: { identifier: "reibase/solaris-sandbox" },
+	});
+	const sandboxJSON = JSON.stringify(sandboxData);
+	const sandbox = JSON.parse(sandboxJSON);
+	if (sandbox?.id) {
+		const transfer = await Transfer.create({
+			sender: 1,
+			recipient: userID,
+			project: sandbox.id,
+			amount: 5,
+		});
+		await transfer.setProject(sandbox.id);
+		await sandboxData.addMember(userID);
+		console.log("user added to sandbox");
+	}
+};
 
 passport.use(
 	new GitHubStrategy(
@@ -106,6 +148,10 @@ passport.use(
 					},
 				});
 
+				if (created) {
+					await addToSandbox(user.id);
+				}
+
 				return done(null, user);
 			});
 		}
@@ -119,7 +165,6 @@ passport.use(
 			clientSecret: GOOGLE_OAUTH_APP_CLIENT_SECRET,
 			callbackURL: GOOGLE_OAUTH_APP_CALLBACK_URL,
 			scope: ["https://www.googleapis.com/auth/userinfo.email"],
-			state: true,
 		},
 		async function (accessToken, refreshToken, profile, cb) {
 			const email = profile.emails[0].value;
@@ -134,6 +179,10 @@ passport.use(
 					verifiedThru: "google",
 				},
 			});
+			if (created) {
+				console.log("user id", user.id);
+				await addToSandbox(user.id);
+			}
 			return cb(null, user);
 		}
 	)
@@ -159,6 +208,10 @@ passport.use(
 						verifiedThru: "gitlab",
 					},
 				});
+
+				if (created) {
+					await addToSandbox(user.id);
+				}
 
 				return done(null, user);
 			});
@@ -211,6 +264,7 @@ app.get(
 		failureRedirect: "/login",
 	}),
 	function (req, res) {
+		console.log("final:", req.user);
 		// Successful authentication, redirect home.
 		res.redirect("/");
 	}
@@ -218,6 +272,7 @@ app.get(
 
 app.get("/api/auth/logout", function (req, res) {
 	req.logout(function (err) {
+		req.session.destroy();
 		if (err) {
 			return next(err);
 		}
@@ -229,7 +284,7 @@ app.get("/api/auth/me", function (req, res) {
 	if (!req.user) {
 		return res.send({ isLoggedIn: false });
 	}
-	return res.send({ ...req.user, isLoggedIn: true });
+	return res.send({ isLoggedIn: true, info: req.user });
 });
 
 // Route for when user clicks submit access code:
@@ -260,10 +315,12 @@ function ensureAuthenticated(req, res, next) {
 	res.redirect("/login");
 }
 
-app.use("/api/users", users);
-app.use("/api/projects", projects);
-app.use("/api/issues", issues);
-app.use("/api/installation", installation);
+app.use("/api/users", ensureAuthenticated, users);
+app.use("/api/projects", ensureAuthenticated, async function (req, res) {
+	return projects(req, res);
+});
+app.use("/api/issues", ensureAuthenticated, issues);
+app.use("/api/installation", ensureAuthenticated, installation);
 
 app.use("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "/dist/index.html"));
@@ -271,7 +328,7 @@ app.use("*", (req, res) => {
 
 // Connect to database
 const syncDB = async () => {
-	await db.sync({ force: true });
+	await db.sync();
 	console.log("All models were synchronized successfully.");
 };
 
@@ -288,6 +345,6 @@ syncDB();
 authenticateDB();
 
 // Start http server
-app.listen(port, () => {
+server.listen(port, () => {
 	console.log(`Server started at http://localhost:${port}`);
 });

@@ -29,7 +29,7 @@ const Profile = () => {
 					Profile
 				</h1>
 				<img
-					class="mb-[35px] w-28 h-28 rounded-full object-cover"
+					className="mb-[35px] w-28 h-28 rounded-full object-cover"
 					src={user.info.avatar}
 					alt="User avatar"
 				/>
@@ -44,7 +44,7 @@ const Profile = () => {
 					/>
 					{user.info.username}
 				</div>
-				<div class="flex flex-col gap-[20px]">
+				<div className="flex flex-col gap-[20px]">
 					<a
 						href="/api/auth/logout"
 						className="flex px-1 w-[150px] rounded-md border border-1 border-gray-500"
