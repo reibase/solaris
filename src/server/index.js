@@ -13,8 +13,8 @@ import "dotenv/config";
 import SequelizeStore from "connect-session-sequelize";
 
 const smee = new SmeeClient({
-	source: "https://smee.io/ZANskOOg1mKaAA0L",
-	target: "http://localhost:3001/api/webhooks/github",
+	source: "https://smee.io/HXzpMdreQh578AmR",
+	target: "http://localhost:3001/api/webhooks/gitlab",
 	logger: console,
 });
 
@@ -81,8 +81,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const events = NODE_ENV === "development" && smee.start();
 app.use("/api/webhooks/github", githubWebhook);
-NODE_ENV === "development" && events.close();
 app.use("/api/webhooks/gitlab", gitlabWebhook);
+NODE_ENV === "development" && events.close();
 
 // Initialize Passport!  Also use passport.session() middleware, to support
 // persistent login sessions (recommended).

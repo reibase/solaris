@@ -22,7 +22,6 @@ const httpClient = async (refreshToken) => {
 	const { data } = await axios
 		.post(`https://gitlab.com/oauth/token`, params.toString())
 		.then((res) => {
-			console.log(res);
 			return res;
 		})
 		.catch((err) => {

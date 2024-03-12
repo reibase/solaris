@@ -1,13 +1,14 @@
 import axios from "axios";
-import "dotenv/config";
 import url from "url";
 
 import { Installation } from "../../../../db/models/index.js";
 import httpClient from "../httpClient.js";
 
-export default async function createGitLabWebhook(projectID, ownerID) {
-	const { NODE_ENV } = process.env;
-
+export default async function mergeGitLabMergeRequest(
+	projectID,
+	number,
+	ownerID
+) {
 	const installation = await Installation.findOne({
 		where: { UserId: ownerID, provider: "gitlab" },
 	});
@@ -16,18 +17,14 @@ export default async function createGitLabWebhook(projectID, ownerID) {
 
 	const body = {
 		id: projectID,
-		url:
-			NODE_ENV === "development"
-				? "https://smee.io/HXzpMdreQh578AmR"
-				: "https://solaris.reibase.rs/api/webhooks/gitlab",
-		merge_requests_events: true,
+		merge_request_iid: number,
 		access_token: access_token,
 	};
 
 	const params = new url.URLSearchParams(body);
 
-	const { status, data } = await axios.post(
-		`https://gitlab.com/api/v4/projects/${projectID}/hooks`,
+	const { status, data } = await axios.put(
+		`https://gitlab.com/api/v4/projects/${projectID}/merge_requests/${number}/merge`,
 		params.toString()
 	);
 	return { status, data };
