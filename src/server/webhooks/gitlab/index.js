@@ -55,7 +55,7 @@ router.post("/", async (_req, res) => {
 					merged: false,
 					// mergedAt: _req.body.object_attributes.mergedAt,
 				},
-				{ where: { hostID: _req.body.hostID } }
+				{ where: { hostID: _req.body.object_attributes.id } }
 			);
 		}
 		if (_req.body?.object_attributes.action === "update") {
