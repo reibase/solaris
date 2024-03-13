@@ -4,6 +4,8 @@ import { Op } from "sequelize";
 import getUserBalance from "./utils/getUserBalance.js";
 import mergeGitHubPullRequest from "../codehost/github/lib/mergeGitHubPullRequest.js";
 import closeGitHubPullRequest from "../codehost/github/lib/closeGitHubPullRequest.js";
+import mergeGitLabMergeRequest from "../codehost/gitlab/lib/mergeGitLabMergeRequest.js";
+import closeGitLabMergeRequest from "../codehost/gitlab/lib/closeGitLabMergeRequest.js";
 
 const router = express.Router();
 //endpoint: api/projects
@@ -21,7 +23,11 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 		if (bal < 1) {
 			return res.send({ status: 401, data: "user is not authorized." });
 		} else {
-			const project = await Project.findOne({ where: { id: _req.params.id } });
+			const projectData = await Project.findOne({
+				where: { id: _req.params.id },
+			});
+			const projectJSON = JSON.stringify(projectData, null, 2);
+			const project = JSON.parse(projectJSON);
 			const issueData = await Issue.findOne({
 				where: {
 					ProjectId: _req.params.id,
@@ -77,7 +83,15 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 
 			if (yesTotals >= project.quorum) {
 				if (project.live) {
-					await mergeGitHubPullRequest(project.identifier, issue.number);
+					if (project.host === "github") {
+						await mergeGitHubPullRequest(project.identifier, issue.number);
+					} else if (project.host === "gitlab") {
+						await mergeGitLabMergeRequest(
+							project.hostID,
+							issue.number,
+							project.owner
+						);
+					}
 				} else {
 					//Artificially merge for testing purposes:
 					await Issue.update(
@@ -94,7 +108,15 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 				}
 			} else if (noTotals >= project.quorum) {
 				if (project.live) {
-					await closeGitHubPullRequest(project.identifier, issue.number);
+					if (project.host === "github") {
+						await closeGitHubPullRequest(project.identifier, issue.number);
+					} else if (project.host === "gitlab") {
+						await closeGitLabMergeRequest(
+							project.hostID,
+							issue.number,
+							project.owner
+						);
+					}
 				} else {
 					await Issue.update(
 						{

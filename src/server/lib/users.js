@@ -13,7 +13,9 @@ import getGitHubInstallationRepos from "../codehost/github/getGitHubInstallation
 import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallationRepos.js";
 import getGitHubPullRequests from "../codehost/github/lib/getGitHubPullRequests.js";
 import getGitHubPullRequest from "../codehost/github/lib/getGitHubPullRequest.js";
+import getGitLabMergeRequest from "../codehost/gitlab/lib/getGitLabMergeRequest.js";
 import getGitLabMergeRequests from "../codehost/gitlab/lib/getGitLabMergeRequests.js";
+import createGitLabWebhook from "../codehost/gitlab/lib/createGitLabWebhook.js";
 import getUserBalance from "./utils/getUserBalance.js";
 
 import "dotenv/config";
@@ -272,14 +274,13 @@ router.post("/:id/projects", async (_req, res) => {
 				hostID,
 				parseInt(_req.params.id)
 			);
-
 			await Promise.all(
 				pulls.data.map(async (pull) => {
 					const pullRequest = await Issue.create({
 						number: pull.iid,
 						url: pull.web_url,
 						hostID: pull.id,
-						state: pull.state,
+						state: pull.state === "opened" ? "open" : pull.state,
 						description: pull.description,
 						title: pull.title,
 						host: host,
@@ -295,6 +296,9 @@ router.post("/:id/projects", async (_req, res) => {
 					await pullRequest.setProject(project.id);
 				})
 			);
+
+			//create webhook
+			await createGitLabWebhook(hostID, parseInt(_req.params.id));
 		}
 
 		res.status(200).json({ project });
@@ -361,16 +365,28 @@ router.get(
 	"/:id/projects/:projectID/issues/:issueID/mergeable",
 	async (_req, res) => {
 		try {
+			let mergeable;
 			const project = await Project.findOne({
 				where: { id: _req.params.projectID },
 			});
+			if (project.host === "github") {
+				const gitHubPullRequest = await getGitHubPullRequest(
+					project.identifier,
+					_req.params.issueID
+				);
+				mergeable = gitHubPullRequest.data.mergeable;
+			} else if (project.host === "gitlab") {
+				const gitLabMergeRequest = await getGitLabMergeRequest(
+					project.hostID,
+					_req.params.issueID,
+					project.owner
+				);
+				mergeable =
+					gitLabMergeRequest.data.merge_status === "cannot_be_merged"
+						? false
+						: true;
+			}
 
-			const gitHubPullRequest = await getGitHubPullRequest(
-				project.identifier,
-				_req.params.issueID
-			);
-
-			let mergeable = gitHubPullRequest.data.mergeable;
 			return res.send({ status: 200, data: mergeable });
 		} catch (error) {
 			console.log(error);
