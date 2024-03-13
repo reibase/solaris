@@ -1,25 +1,18 @@
 import axios from "axios";
 import { Installation } from "../../../../db/models/index.js";
 import httpClient from "../httpClient.js";
-import url from "url";
 
 export default async function getGitLabMergeRequests(projectID, ownerID) {
+	console.log("called!");
 	const installation = await Installation.findOne({
 		where: { UserId: ownerID, provider: "gitlab" },
 	});
 	const refreshToken = installation.refreshToken;
 	const access_token = await httpClient(refreshToken);
-	const body = {
-		id: projectID,
-		state: "opened",
-		wip: "no",
-		access_token: access_token,
-	};
-	const params = new url.URLSearchParams(body);
-	console.log("params:", params.toString());
+
 	const { status, data } = await axios.get(
 		`https://gitlab.com/api/v4/projects/${projectID}/merge_requests?state=opened&wip=no`,
-		{ body: body, headers: { Authorization: `Bearer ${access_token}` } }
+		{ headers: { Authorization: `Bearer ${access_token}` } }
 	);
 	return { status, data };
 }

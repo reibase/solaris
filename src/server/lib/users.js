@@ -381,7 +381,6 @@ router.get(
 					_req.params.issueID,
 					project.owner
 				);
-				console.log("gitty", gitLabMergeRequest);
 				mergeable =
 					gitLabMergeRequest.data.merge_status === "cannot_be_merged"
 						? false

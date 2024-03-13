@@ -7,6 +7,15 @@ import { Issue, Project } from "../../../db/models/index.js";
 router.post("/", async (_req, res) => {
 	if (_req.body.object_kind === "merge_request") {
 		if (_req.body?.object_attributes.action === "open") {
+			const duplicateData = await Issue.findOne({
+				where: { hostID: _req.body.object_attributes.id },
+			});
+			const duplicateJSON = JSON.stringify(duplicateData, null, 2);
+			const duplicate = JSON.parse(duplicateJSON);
+
+			if (duplicate?.id) {
+				return;
+			}
 			const project = await Project.findOne({
 				where: { hostID: _req.body.project.id },
 			});
@@ -36,13 +45,12 @@ router.post("/", async (_req, res) => {
 			await issue.setProject(project.id);
 		}
 		if (_req.body?.object_attributes.action === "merge") {
-			console.log("merge webhook:");
 			await Issue.update(
 				{
 					state: "closed",
 					mergeable: false,
 					merged: true,
-					// mergedAt: _req.body.object_attributes.mergedAt,
+					mergedAt: _req.body.object_attributes.updated_at,
 				},
 				{ where: { hostID: _req.body.object_attributes.id } }
 			);
@@ -53,7 +61,7 @@ router.post("/", async (_req, res) => {
 					state: "closed",
 					mergeable: false,
 					merged: false,
-					// mergedAt: _req.body.object_attributes.mergedAt,
+					closedAt: _req.body.object_attributes.updated_at,
 				},
 				{ where: { hostID: _req.body.object_attributes.id } }
 			);
