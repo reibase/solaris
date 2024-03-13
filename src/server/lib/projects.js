@@ -64,7 +64,7 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 
 			let yesTotals = 0;
 			let noTotals = 0;
-			console.log("hosty", project.hostID);
+
 			votes.map((vote) => {
 				if (vote.side) {
 					yesTotals += vote.amount;
