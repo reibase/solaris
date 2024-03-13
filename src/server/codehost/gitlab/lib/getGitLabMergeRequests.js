@@ -3,7 +3,6 @@ import { Installation } from "../../../../db/models/index.js";
 import httpClient from "../httpClient.js";
 
 export default async function getGitLabMergeRequests(projectID, ownerID) {
-	console.log("called!");
 	const installation = await Installation.findOne({
 		where: { UserId: ownerID, provider: "gitlab" },
 	});
