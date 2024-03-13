@@ -235,7 +235,7 @@ router.post("/:id/projects", async (_req, res) => {
 			creditAmount,
 		});
 		await project.addMember(owner);
-		console.log(project);
+
 		const initial = await Transfer.create({
 			sender: owner,
 			recipient: owner,
