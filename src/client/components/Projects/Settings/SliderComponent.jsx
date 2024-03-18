@@ -13,8 +13,24 @@ export default function SliderComponent({
 	max,
 	value,
 	updatedProject,
-	changeHandler,
 }) {
+	const handleChange = (event, newValue) => {
+		let newQuorum = updatedProject.quorum;
+		if (event.target.name === "creditAmount") {
+			newQuorum = newValue / 2;
+			setUpdatedProject({
+				...updatedProject,
+				[event.target.name]: newValue,
+				quorum: newQuorum,
+			});
+		} else {
+			setUpdatedProject({
+				...updatedProject,
+				[event.target.name]: newValue,
+			});
+		}
+	};
+
 	return (
 		<div className="w-full flex flex-col mt-2 mb-1 ">
 			<span className="mb-1 text-[11px] text-[#313131] dark:text-white">
@@ -22,7 +38,7 @@ export default function SliderComponent({
 			</span>
 			<Box sx={{ width: "100%" }}>
 				<Slider
-					onChange={changeHandler}
+					onChange={handleChange}
 					name={name}
 					aria-label="Custom marks"
 					marks={marks}
@@ -31,7 +47,6 @@ export default function SliderComponent({
 					step={step}
 					min={min}
 					value={value}
-					id={"test"}
 				/>
 			</Box>
 		</div>

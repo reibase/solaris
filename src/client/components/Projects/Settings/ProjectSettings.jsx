@@ -7,25 +7,24 @@ export default function ProjectSettings({
 	changeHandler,
 	setUpdatedProject,
 }) {
-	const creditAmounts = [
-		{
-			value: 100,
-			label: "100",
-		},
-		{
-			value: 1000,
-			label: "1000",
-		},
-		{
-			value: 10_000,
-			label: "10,000",
-		},
-	];
+	// const creditAmounts = [
+	// 	{
+	// 		value: 100,
+	// 		label: "100",
+	// 	},
+	// 	{
+	// 		value: 1000,
+	// 		label: "1000",
+	// 	},
+	// 	{
+	// 		value: 10_000,
+	// 		label: "10,000",
+	// 	},
+	// ];
 	return (
-		<div className="w-full text-[#313131]">
+		<div className="w-full text-[#313131] dark:text-white">
 			<span className="text-[14px]">Project Settings</span>
-			<SliderComponent
-				changeHandler={changeHandler}
+			{/* <SliderComponent
 				title={"Total Project Credits:"}
 				updatedProject={updatedProject}
 				min={100}
@@ -35,9 +34,11 @@ export default function ProjectSettings({
 				step={null}
 				name="creditAmount"
 				value={updatedProject.creditAmount}
-			/>
+			/> */}
+			<div className="w-full text-[11px] my-3">
+				Total Project Credits: {updatedProject.creditAmount}
+			</div>
 			<SliderComponent
-				changeHandler={changeHandler}
 				updatedProject={updatedProject}
 				name="quorum"
 				setUpdatedProject={setUpdatedProject}

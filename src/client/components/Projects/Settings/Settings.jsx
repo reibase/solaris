@@ -40,13 +40,61 @@ export default function Settings() {
 	// 	queryKey: ["projects"],
 	// 	queryFn: getProject,
 	// });
+
 	const project = {
 		id: 1,
 		title: "jex441/demo",
-		creditAmount: 10000,
-		quorum: 5100,
+		creditAmount: 1000,
+		quorum: 510,
+		live: true,
 		createdAt: "20230303030303202",
+		members: [
+			{
+				id: 1,
+				username: "elheffe",
+				balance: 800,
+				verifiedThru: "github",
+				email: "el_jeffe@gmail.com",
+				avatar: "https://avatars.githubusercontent.com/u/75996017?v=4",
+			},
+			{
+				id: 2,
+				username: "user456",
+				balance: 100,
+				verifiedThru: "github",
+				email: "user456@example.com",
+				avatar: "https://avatars.githubusercontent.com/u/123456?v=4",
+			},
+			{
+				id: 3,
+				username: "dev789",
+				balance: 50,
+				verifiedThru: "github",
+				email: "dev789@test.com",
+				avatar: "https://avatars.githubusercontent.com/u/987654?v=4",
+			},
+			{
+				id: 4,
+				username: "coder1",
+				balance: 50,
+				verifiedThru: "github",
+				email: "coder1@github.com",
+				avatar: "https://avatars.githubusercontent.com/u/555555?v=4",
+			},
+		],
 	};
+
+	const [members, setMembers] = useState(project.members);
+
+	const [currentUser, setCurrentUser] = useState({
+		id: 1,
+		username: "elheffe",
+		balance: 800,
+		verifiedThru: "github",
+		email: "el_jeffe@gmail.com",
+		avatar: "https://avatars.githubusercontent.com/u/75996017?v=4",
+	});
+
 	const [updatedProject, setUpdatedProject] = useState(project);
 
 	const updateProject = async () => {
@@ -60,22 +108,7 @@ export default function Settings() {
 		}
 	};
 
-	const changeHandler = (event, newValue) => {
-		let newQuorum = updatedProject.quorum;
-		if (event.target.name === "creditAmount") {
-			newQuorum = newValue / 2;
-			setUpdatedProject({
-				...updatedProject,
-				[event.target.name]: newValue,
-				quorum: newQuorum,
-			});
-		} else {
-			setUpdatedProject({
-				...updatedProject,
-				[event.target.name]: newValue,
-			});
-		}
-	};
+	const changeHandler = (event, newValue) => {};
 	const submitHandler = (e) => {
 		e.preventDefault();
 		updateProject();
@@ -96,35 +129,48 @@ export default function Settings() {
 		}
 	};
 
-	console.log(updatedProject);
 	useEffect(() => {
-		if (updatedProject.creditAmount !== project.creditAmount) {
-			setUnsaved(true);
-		}
+		// if (updatedProject.creditAmount !== project.creditAmount) {
+		// 	setUnsaved(true);
+		// 	return;
+		// }
 		if (updatedProject.quorum !== project.quorum) {
 			setUnsaved(true);
+			return;
 		}
-		if (updatedProject.mode !== project.mode) {
+		if (updatedProject.live !== project.live) {
 			setUnsaved(true);
+			return;
 		} else {
 			setUnsaved(false);
 		}
 	}, [updatedProject]);
-	console.log(updatedProject);
+	const [newTotal, setNewTotal] = useState(0);
+
 	return (
-		<div className="w-full h-full">
+		<div className="w-full h-full flex flex-col">
 			<ProjectHeading project={project} />
-			<div className="w-full overflow-y-auto flex flex-row justify-between p-6 shadow-lg rounded-lg text-sm bg-white/90 dark:bg-[#202530] border border-1 dark:border-[#373D47] gap-12">
+			<div className="w-full h-full overflow-y-auto flex lg:flex-row flex-col justify-between p-4 shadow-lg rounded-lg text-sm bg-white/90 dark:bg-[#202530] border border-1 dark:border-[#373D47] gap-12">
 				<SettingsNav />
-				<div className="flex w-1/2 flex-col">
+				<div className="flex w-full lg:w-3/4 flex-col gap-6">
 					<ProjectSettings
 						changeHandler={changeHandler}
 						setUpdatedProject={setUpdatedProject}
 						updatedProject={updatedProject}
 					/>
-					{/* <MergeRequestBehavior />
-					<Community />
-					<CreditBehavior />*/}
+					{/* <MergeRequestBehavior /> */}
+					<Community
+						newTotal={newTotal}
+						setNewTotal={setNewTotal}
+						setMembers={setMembers}
+						members={members}
+						setCurrentUser={setCurrentUser}
+						currentUser={currentUser}
+						changeHandler={changeHandler}
+						setUpdatedProject={setUpdatedProject}
+						updatedProject={updatedProject}
+					/>
+					{/* 	<CreditBehavior />*/}
 					<Mode
 						updatedProject={updatedProject}
 						setUpdatedProject={setUpdatedProject}
@@ -134,7 +180,7 @@ export default function Settings() {
 				<div className="w-1/6 flex justify-center items-start">
 					<button
 						type="button"
-						className="border border-1 rounded-md px-5 py-1 border-[#313131] disabled:opacity-50"
+						className="border lg:fixed border-1 rounded-md px-5 py-1 border-[#313131] dark:border-white disabled:opacity-50 dark:text-white"
 						onClick={(e) => submitHandler(e)}
 						disabled={!unsaved}
 					>

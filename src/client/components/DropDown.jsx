@@ -3,9 +3,8 @@ import { useStore } from "../store";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-export default function DropDown() {
+export default function DropDown({ visible, setVisible }) {
 	const { dark, toggleDark, user } = useStore();
-	const [visible, setVisible] = useState(false);
 
 	const logoutHandler = () => {
 		localStorage.removeItem("user");
