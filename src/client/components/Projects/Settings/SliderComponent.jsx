@@ -32,7 +32,7 @@ export default function SliderComponent({
 	};
 
 	return (
-		<div className="w-full flex flex-col mt-2 mb-1 ">
+		<div className="w-full flex flex-col mt-2">
 			<span className="mb-1 text-[11px] text-[#313131] dark:text-white">
 				{title} {value}
 			</span>

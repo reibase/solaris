@@ -45,13 +45,13 @@ export default function UserDropDown() {
 					</div>
 					<div className="py-1" onClick={() => setVisible(false)} role="none">
 						<Link
-							to="/profile"
-							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
+							to="/"
+							className="opacity-50 cursor-auto text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
 							role="menuitem"
 							tabindex="-1"
 							id="menu-item-2"
 						>
-							Profile
+							Profile - coming soon
 						</Link>
 					</div>
 				</div>

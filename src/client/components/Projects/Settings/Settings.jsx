@@ -20,15 +20,21 @@ export default function Settings() {
 	const { dark, user } = useStore();
 	const [unsaved, setUnsaved] = useState(false);
 	const { getUserProject } = httpService();
-
-	const { data: project, isFetching } = useQuery(
-		["project", { userID: user?.info.id, projectID: id }],
-		getUserProject
-	);
-
+	const [errorText, setErrorText] = useState("");
 	const [updatedProject, setUpdatedProject] = useState({});
 	const [currentUser, setCurrentUser] = useState({});
 	const [members, setMembers] = useState([]);
+	const [ownerBalance, setOwnerBalance] = useState(0);
+	const [balances, setBalances] = useState({});
+
+	const {
+		data: project,
+		isFetching,
+		refetch: refetchProject,
+	} = useQuery(
+		["project", { userID: user?.info.id, projectID: id }],
+		getUserProject
+	);
 
 	useEffect(() => {
 		setUpdatedProject(project);
@@ -36,17 +42,33 @@ export default function Settings() {
 		setCurrentUser(project?.user);
 	}, [project]);
 
-	console.log("proj", project);
-	const [ownerBalance, setOwnerBalance] = useState(0);
-
-	const [balances, setBalances] = useState({});
+	useEffect(() => {
+		let obj = {};
+		updatedProject?.members &&
+			updatedProject.members.forEach((mem) => {
+				if (mem.id !== currentUser.id) {
+					obj[mem.id] = mem.balance;
+				}
+			});
+		setBalances(obj);
+	}, [updatedProject]);
 
 	const updateProject = async () => {
 		try {
-			await axios.put(`/api/users/${id}/projects/${project?.id}`, {
-				...updatedProject,
-				balances,
-			});
+			await axios
+				.put(`/api/users/${id}/projects/${project?.id}`, {
+					...updatedProject,
+					balances,
+				})
+				.then((res) => {
+					console.log(res);
+					if (res.data.status === 200) {
+						refetchProject();
+					}
+					if (res.status === 500) {
+						setErrorText("There was an error:", res.error);
+					}
+				});
 		} catch (error) {
 			console.log(error);
 		}
@@ -87,7 +109,7 @@ export default function Settings() {
 			setUnsaved(true);
 			return;
 		}
-		if (ownerBalance !== currentUser?.balance) {
+		if (ownerBalance !== currentUser?.balance && ownerBalance > 0) {
 			setUnsaved(true);
 			return;
 		} else {
@@ -98,9 +120,9 @@ export default function Settings() {
 	return (
 		<div className="w-full h-full flex flex-col">
 			<ProjectHeading project={project} />
-			<div className="w-full h-full overflow-y-auto flex lg:flex-row flex-col justify-between p-4 shadow-lg rounded-lg text-sm bg-white/90 dark:bg-[#202530] border border-1 dark:border-[#373D47] gap-12">
+			<div className="w-full p-6 h-full overflow-y-auto flex flex-col lg:flex-row p-4 shadow-lg rounded-lg text-sm bg-white/90 dark:bg-[#202530] border border-1 dark:border-[#373D47]">
 				<SettingsNav />
-				<div className="flex w-full lg:w-3/4 flex-col gap-6">
+				<div className="flex w-full mr-4 flex-col gap-2">
 					<ProjectSettings
 						changeHandler={changeHandler}
 						setUpdatedProject={setUpdatedProject}
@@ -121,21 +143,24 @@ export default function Settings() {
 						updatedProject={updatedProject}
 					/>
 					{/* 	<CreditBehavior />*/}
+					<div className="w-content flex items-start">
+						<button
+							type="button"
+							className="border border-1 rounded-md px-5 py-1 border-[#313131] dark:border-white disabled:opacity-50 dark:text-white"
+							onClick={(e) => submitHandler(e)}
+							disabled={!unsaved}
+						>
+							Save
+						</button>
+						<span className="text-red-500 mx-2">
+							{errorText !== "" && errorText}
+						</span>
+					</div>
 					<Mode
 						updatedProject={updatedProject}
 						setUpdatedProject={setUpdatedProject}
 						deleteHandler={deleteHandler}
 					/>
-				</div>
-				<div className="w-1/6 flex justify-center items-start">
-					<button
-						type="button"
-						className="border lg:fixed border-1 rounded-md px-5 py-1 border-[#313131] dark:border-white disabled:opacity-50 dark:text-white"
-						onClick={(e) => submitHandler(e)}
-						disabled={!unsaved}
-					>
-						Save
-					</button>
 				</div>
 			</div>
 		</div>

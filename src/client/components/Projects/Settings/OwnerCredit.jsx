@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useState } from "react";
 import Slider from "@mui/material/Slider";
 import { useStore } from "../../../store.js";
 import verified from "../../../assets/verified.png";
@@ -11,7 +10,6 @@ export default function OwnerCredit({
 	setOwnerBalance,
 }) {
 	const { dark, user } = useStore();
-
 	useEffect(() => {
 		let int = 0;
 		for (let key in balances) {
@@ -37,7 +35,9 @@ export default function OwnerCredit({
 						<img className="h-4 mx-2" src={verified} />
 					</span>
 				</span>
-				<span className={ownerBalance < 0 && "text-red-500"}>
+				<span
+					className={`dark:text-white ${ownerBalance < 0 && "text-red-500"}`}
+				>
 					{ownerBalance < 0 ? "Insufficient credits" : ownerBalance}
 				</span>
 			</span>
@@ -46,13 +46,6 @@ export default function OwnerCredit({
 				disabled={true}
 				aria-label="Custom marks"
 				size="small"
-				marks={[
-					{ value: 0, label: 0 },
-					{ value: 250, label: 250 },
-					{ value: 500, label: 500 },
-					{ value: 750, label: 750 },
-					{ value: 1000, label: 1000 },
-				]}
 				max={1000}
 				step={10}
 				value={ownerBalance}

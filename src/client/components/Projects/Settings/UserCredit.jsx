@@ -16,12 +16,9 @@ export default function UserCredit({
 
 	const handleChange = (event, newValue) => {
 		setBalance(newValue);
+		setBalances({ ...balances, [member.id]: newValue });
 	};
 
-	useEffect(() => {
-		setBalances({ ...balances, [member.id]: balance });
-	}, [balance]);
-	console.log(balances);
 	return (
 		<div className="my-4">
 			<span className="flex my-1 flex-row justify-between gap-1">
@@ -32,9 +29,7 @@ export default function UserCredit({
 					<span className="text-[#313131] dark:text-white">
 						{member.username}
 					</span>
-					<span>
-						<UserDropDown />
-					</span>
+					<UserDropDown />
 				</span>
 				<span>{balance}</span>
 			</span>

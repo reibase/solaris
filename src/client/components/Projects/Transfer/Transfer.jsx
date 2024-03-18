@@ -4,9 +4,6 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
-import githubLogo from "../../../assets/github.svg";
-import githubLogoDarkMode from "../../../assets/github-darkmode.svg";
-import gitlabLogo from "../../../assets/gitlab.svg";
 import { useStore } from "../../../store.js";
 import Complete from "./Complete.jsx";
 import UserAmount from "./UserAmount.jsx";
@@ -51,7 +48,6 @@ export default function Transfer() {
 		try {
 			await axios.get(`/api/users/${recipientName.current}`).then((res) => {
 				if (res.data.status === 200) {
-					console.log(res.data);
 					setTransferData({
 						...transferData,
 						recipient: res.data.user.id,

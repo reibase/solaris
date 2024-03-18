@@ -7,10 +7,10 @@ export default function Mode({
 	changeHandler,
 }) {
 	return (
-		<div className="w-full my-5 h-content">
+		<div className="w-full m-5 p-5 border border-1 border-red-500 rounded-md">
 			<div className="flex justify-start items-start flex-col">
 				<span className="text-[#313131] dark:text-white font-[14px]">
-					Mode:
+					Change Mode:
 				</span>
 				<div className="flex">
 					<div className="flex flex-col items-center gap-[10px]">

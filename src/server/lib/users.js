@@ -460,7 +460,6 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 
 router.put("/:id/projects/:projectID", async (_req, res) => {
 	const { live, creditAmount, quorum, balances } = _req.body;
-	console.log(balances);
 	try {
 		const projectData = await Project.update(
 			{
@@ -476,27 +475,25 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 
 		for (let key in balances) {
 			let bal = await getUserBalance(parseInt(key), _req.params.projectID);
+			let newBal = balances[key];
+			console.log(newBal, bal);
 			let transfer;
-			if (bal === balances[key]) {
-				return;
-			} else {
-				if (bal > balances[key]) {
-					transfer = await Transfer.create({
-						sender: _req.user.id,
-						recipient: key,
-						amount: balances[key] - bal,
-					});
-					await transfer.setProject(parseInt(_req.params.projectID));
-				} else if (bal < balances[key]) {
-					transfer = await Transfer.create({
-						sender: key,
-						recipient: _req.user.id,
-						amount: bal - balances[key],
-					});
-					await transfer.setProject(parseInt(_req.params.projectID));
-				}
+			if (bal > newBal) {
+				transfer = await Transfer.create({
+					sender: key,
+					recipient: _req.user.id,
+					amount: bal - newBal,
+				});
+				await transfer.setProject(parseInt(_req.params.projectID));
+			} else if (bal < newBal) {
+				transfer = await Transfer.create({
+					sender: _req.user.id,
+					recipient: key,
+					amount: newBal - bal,
+				});
+				await transfer.setProject(parseInt(_req.params.projectID));
 			}
-			console.log(transfer);
+			console.log("transfe:", transfer);
 		}
 		return res.send({ status: 200, data: project });
 	} catch (error) {

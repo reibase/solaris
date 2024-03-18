@@ -1,32 +1,28 @@
 import React from "react";
+import { useState } from "react";
 import SliderComponent from "./SliderComponent";
+import { useStore } from "../../../store.js";
 
+import AddUser from "./AddUser.jsx";
 export default function ProjectSettings({
 	updatedProject,
 	project,
 	changeHandler,
 	setUpdatedProject,
 }) {
-	// const creditAmounts = [
-	// 	{
-	// 		value: 100,
-	// 		label: "100",
-	// 	},
-	// 	{
-	// 		value: 1000,
-	// 		label: "1000",
-	// 	},
-	// 	{
-	// 		value: 10_000,
-	// 		label: "10,000",
-	// 	},
-	// ];
+	const { dark, user } = useStore();
+
+	const [errorText, setErrorText] = useState("");
+
 	if (!updatedProject?.creditAmount) {
 		return "loading";
 	}
 	return (
-		<div className="w-full text-[#313131] dark:text-white">
-			<span className="text-[14px]">Project Settings</span>
+		<div className="w-full text-[#313131] dark:text-white mb-2">
+			<div className="w-full flex flex-col justify-start mb-1 lg:flex-row lg:justify-between lg:items-center">
+				<span className="text-[14px]">Project Settings</span>
+				<AddUser />
+			</div>
 			{/* <SliderComponent
 				title={"Total Project Credits:"}
 				updatedProject={updatedProject}
@@ -38,29 +34,21 @@ export default function ProjectSettings({
 				name="creditAmount"
 				value={updatedProject.creditAmount}
 			/> */}
-			<div className="w-full text-[11px] my-3">Total Project Credits: 1000</div>
 			<SliderComponent
 				updatedProject={updatedProject}
 				name="quorum"
 				setUpdatedProject={setUpdatedProject}
 				title={"Minimum required to close voting:"}
 				value={updatedProject?.quorum}
-				min={updatedProject.creditAmount / 100}
+				min={0}
 				step={updatedProject.creditAmount / 100}
 				max={updatedProject?.creditAmount}
 				marks={[
-					{
-						value: updatedProject.creditAmount / 100,
-						label: updatedProject.creditAmount / 100,
-					},
-					{
-						value: updatedProject.creditAmount / 2,
-						label: updatedProject.creditAmount / 2,
-					},
-					{
-						value: updatedProject?.creditAmount,
-						label: updatedProject?.creditAmount,
-					},
+					{ value: 0, label: 0 },
+					{ value: 250, label: 250 },
+					{ value: 500, label: 500 },
+					{ value: 750, label: 750 },
+					{ value: 1000, label: 1000 },
 				]}
 			/>
 		</div>
