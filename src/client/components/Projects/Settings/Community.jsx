@@ -13,17 +13,17 @@ export default function Community({
 	setCurrentUser,
 	setMembers,
 	members,
-	newTotal,
-	setNewTotal,
+	balances,
+	setBalances,
+	setOwnerBalance,
+	ownerBalance,
 }) {
 	const { dark, user } = useStore();
 	const [errorText, setErrorText] = useState("");
-	const [balances, setBalances] = useState({});
 
 	useEffect(() => {
 		const obj = {};
 		updatedProject?.members.forEach((mem) => {
-			console.log(mem.username);
 			if (mem.id !== currentUser.id) {
 				obj[mem.username] = mem.balance;
 			}
@@ -61,6 +61,8 @@ export default function Community({
 			</span>
 			<div>
 				<OwnerCredit
+					setOwnerBalance={setOwnerBalance}
+					ownerBalance={ownerBalance}
 					owner={true}
 					member={currentUser}
 					updatedProject={updatedProject}
@@ -73,8 +75,6 @@ export default function Community({
 					?.filter((member) => member.id !== user.info.id)
 					.map((member) => (
 						<UserCredit
-							newTotal={newTotal}
-							setNewTotal={setNewTotal}
 							setMembers={setMembers}
 							members={members}
 							key={member.id}
@@ -88,14 +88,6 @@ export default function Community({
 						/>
 					))}
 			</div>
-			<span>
-				<button
-					type="button"
-					className="border border-1 rounded-md py-1 px-3 border-[#313131] dark:border-white disabled:opacity-50 dark:text-white"
-				>
-					Save Changes
-				</button>
-			</span>
 		</div>
 	);
 }

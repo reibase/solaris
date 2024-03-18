@@ -2,28 +2,24 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import Slider from "@mui/material/Slider";
 import { useStore } from "../../../store.js";
-import more from "../../../assets/more.png";
-import moredarkmode from "../../../assets/moredarkmode.png";
 import verified from "../../../assets/verified.png";
 
 export default function OwnerCredit({
 	currentUser,
-	setCurrentUser,
 	balances,
-	disabled = false,
+	ownerBalance,
+	setOwnerBalance,
 }) {
 	const { dark, user } = useStore();
-	const [val, setVal] = useState(currentUser.balance);
 
 	useEffect(() => {
 		let int = 0;
 		for (let key in balances) {
 			int += balances[key];
-			console.log("int", int);
 		}
-		setVal(1000 - int);
+		setOwnerBalance(1000 - int);
 	}, [balances]);
-	console.log("val", val);
+
 	return (
 		<div className="my-4">
 			<span className="flex my-1 flex-row justify-between gap-1">
@@ -38,17 +34,25 @@ export default function OwnerCredit({
 						<img className="h-4 mx-2" src={verified} />
 					</span>
 				</span>
-				<span>{currentUser.balance}</span>
+				<span className={ownerBalance < 0 && "text-red-500"}>
+					{ownerBalance < 0 ? "Insufficient credits" : ownerBalance}
+				</span>
 			</span>
+
 			<Slider
 				disabled={true}
 				aria-label="Custom marks"
-				// marks={marks}
 				size="small"
+				marks={[
+					{ value: 0, label: 0 },
+					{ value: 250, label: 250 },
+					{ value: 500, label: 500 },
+					{ value: 750, label: 750 },
+					{ value: 1000, label: 1000 },
+				]}
 				max={1000}
 				step={10}
-				min={10}
-				value={val}
+				value={ownerBalance}
 			/>
 		</div>
 	);

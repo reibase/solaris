@@ -6,15 +6,7 @@ import { useStore } from "../../../store.js";
 import UserDropDown from "./UserDropDown.jsx";
 
 export default function UserCredit({
-	updatedProject,
-	setUpdatedProject,
 	member,
-	currentUser,
-	setCurrentUser,
-	members,
-	setMembers,
-	newTotal,
-	setNewTotal,
 	setBalances,
 	balances,
 	disabled = false,
@@ -50,13 +42,6 @@ export default function UserCredit({
 				disabled={disabled}
 				onChange={handleChange}
 				aria-label="Custom marks"
-				marks={[
-					{ value: 0, label: 0 },
-					{ value: 250, label: 250 },
-					{ value: 500, label: 500 },
-					{ value: 750, label: 750 },
-					{ value: 1000, label: 1000 },
-				]}
 				valueLabelDisplay="auto"
 				size="small"
 				max={1000}

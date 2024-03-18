@@ -97,18 +97,22 @@ export default function Settings() {
 
 	const [updatedProject, setUpdatedProject] = useState(project);
 
+	const [ownerBalance, setOwnerBalance] = useState(currentUser.balance);
+	const [balances, setBalances] = useState({});
+
 	const updateProject = async () => {
 		try {
-			await axios.put(
-				`/api/users/${id}/projects/${project?.id}`,
-				updatedProject
-			);
+			await axios.put(`/api/users/${id}/projects/${project?.id}`, {
+				...updatedProject,
+				balances,
+			});
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
 	const changeHandler = (event, newValue) => {};
+
 	const submitHandler = (e) => {
 		e.preventDefault();
 		updateProject();
@@ -128,7 +132,7 @@ export default function Settings() {
 			console.log(error);
 		}
 	};
-
+	console.log(ownerBalance, currentUser.balance);
 	useEffect(() => {
 		// if (updatedProject.creditAmount !== project.creditAmount) {
 		// 	setUnsaved(true);
@@ -141,11 +145,14 @@ export default function Settings() {
 		if (updatedProject.live !== project.live) {
 			setUnsaved(true);
 			return;
+		}
+		if (ownerBalance !== currentUser.balance) {
+			setUnsaved(true);
+			return;
 		} else {
 			setUnsaved(false);
 		}
-	}, [updatedProject]);
-	const [newTotal, setNewTotal] = useState(0);
+	}, [ownerBalance, updatedProject]);
 
 	return (
 		<div className="w-full h-full flex flex-col">
@@ -160,8 +167,10 @@ export default function Settings() {
 					/>
 					{/* <MergeRequestBehavior /> */}
 					<Community
-						newTotal={newTotal}
-						setNewTotal={setNewTotal}
+						ownerBalance={ownerBalance}
+						setOwnerBalance={setOwnerBalance}
+						setBalances={setBalances}
+						balances={balances}
 						setMembers={setMembers}
 						members={members}
 						setCurrentUser={setCurrentUser}
