@@ -12,92 +12,33 @@ import MergeRequestBehavior from "./MergeRequestBehavior.jsx";
 import ProjectSettings from "./ProjectSettings.jsx";
 import Community from "./Community.jsx";
 import SettingsNav from "./SettingsNav.jsx";
+import httpService from "../../../services/httpService.js";
 
 export default function Settings() {
 	let { id } = useParams();
 	const navigate = useNavigate();
 	const { dark, user } = useStore();
 	const [unsaved, setUnsaved] = useState(false);
+	const { getUserProject } = httpService();
 
-	// const getProject = async () => {
-	// 	try {
-	// 		const { data } = await axios
-	// 			.get(`/api/users/${user.info.id}/projects/${id}`)
-	// 			.then(({ data }) => data);
-	// 		return {
-	// 			id: 1,
-	// 			title: "jex441/demo",
-	// 			creditAmount: 10000,
-	// 			quorum: 5001,
-	// 			createdAt: "20230303030303202",
-	// 		};
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-	// };
+	const { data: project, isFetching } = useQuery(
+		["project", { userID: user?.info.id, projectID: id }],
+		getUserProject
+	);
 
-	// const { data: project, isFetching } = useQuery({
-	// 	queryKey: ["projects"],
-	// 	queryFn: getProject,
-	// });
+	const [updatedProject, setUpdatedProject] = useState({});
+	const [currentUser, setCurrentUser] = useState({});
+	const [members, setMembers] = useState([]);
 
-	const project = {
-		id: 1,
-		title: "jex441/demo",
-		creditAmount: 1000,
-		quorum: 510,
-		live: true,
-		createdAt: "20230303030303202",
-		members: [
-			{
-				id: 1,
-				username: "elheffe",
-				balance: 800,
-				verifiedThru: "github",
-				email: "el_jeffe@gmail.com",
-				avatar: "https://avatars.githubusercontent.com/u/75996017?v=4",
-			},
-			{
-				id: 2,
-				username: "user456",
-				balance: 100,
-				verifiedThru: "github",
-				email: "user456@example.com",
-				avatar: "https://avatars.githubusercontent.com/u/123456?v=4",
-			},
-			{
-				id: 3,
-				username: "dev789",
-				balance: 50,
-				verifiedThru: "github",
-				email: "dev789@test.com",
-				avatar: "https://avatars.githubusercontent.com/u/987654?v=4",
-			},
-			{
-				id: 4,
-				username: "coder1",
-				balance: 50,
-				verifiedThru: "github",
-				email: "coder1@github.com",
-				avatar: "https://avatars.githubusercontent.com/u/555555?v=4",
-			},
-		],
-	};
+	useEffect(() => {
+		setUpdatedProject(project);
+		setMembers(project?.members);
+		setCurrentUser(project?.user);
+	}, [project]);
 
-	const [members, setMembers] = useState(project.members);
+	console.log("proj", project);
+	const [ownerBalance, setOwnerBalance] = useState(0);
 
-	const [currentUser, setCurrentUser] = useState({
-		id: 1,
-		username: "elheffe",
-		balance: 800,
-		verifiedThru: "github",
-		email: "el_jeffe@gmail.com",
-		avatar: "https://avatars.githubusercontent.com/u/75996017?v=4",
-	});
-
-	const [updatedProject, setUpdatedProject] = useState(project);
-
-	const [ownerBalance, setOwnerBalance] = useState(currentUser.balance);
 	const [balances, setBalances] = useState({});
 
 	const updateProject = async () => {
@@ -132,21 +73,21 @@ export default function Settings() {
 			console.log(error);
 		}
 	};
-	console.log(ownerBalance, currentUser.balance);
+
 	useEffect(() => {
 		// if (updatedProject.creditAmount !== project.creditAmount) {
 		// 	setUnsaved(true);
 		// 	return;
 		// }
-		if (updatedProject.quorum !== project.quorum) {
+		if (updatedProject?.quorum !== project?.quorum) {
 			setUnsaved(true);
 			return;
 		}
-		if (updatedProject.live !== project.live) {
+		if (updatedProject?.live !== project?.live) {
 			setUnsaved(true);
 			return;
 		}
-		if (ownerBalance !== currentUser.balance) {
+		if (ownerBalance !== currentUser?.balance) {
 			setUnsaved(true);
 			return;
 		} else {

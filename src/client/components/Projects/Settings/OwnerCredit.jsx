@@ -20,6 +20,9 @@ export default function OwnerCredit({
 		setOwnerBalance(1000 - int);
 	}, [balances]);
 
+	if (!currentUser?.avatar) {
+		return "loading";
+	}
 	return (
 		<div className="my-4">
 			<span className="flex my-1 flex-row justify-between gap-1">

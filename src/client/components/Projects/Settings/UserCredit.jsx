@@ -19,9 +19,9 @@ export default function UserCredit({
 	};
 
 	useEffect(() => {
-		setBalances({ ...balances, [member.username]: balance });
+		setBalances({ ...balances, [member.id]: balance });
 	}, [balance]);
-
+	console.log(balances);
 	return (
 		<div className="my-4">
 			<span className="flex my-1 flex-row justify-between gap-1">

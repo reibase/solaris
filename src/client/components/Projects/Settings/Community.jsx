@@ -23,11 +23,12 @@ export default function Community({
 
 	useEffect(() => {
 		const obj = {};
-		updatedProject?.members.forEach((mem) => {
-			if (mem.id !== currentUser.id) {
-				obj[mem.username] = mem.balance;
-			}
-		});
+		updatedProject?.members &&
+			updatedProject.members.forEach((mem) => {
+				if (mem.id !== currentUser.id) {
+					obj[mem.username] = mem.balance;
+				}
+			});
 		setBalances(obj);
 	}, []);
 

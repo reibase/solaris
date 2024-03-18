@@ -21,6 +21,9 @@ export default function ProjectSettings({
 	// 		label: "10,000",
 	// 	},
 	// ];
+	if (!updatedProject?.creditAmount) {
+		return "loading";
+	}
 	return (
 		<div className="w-full text-[#313131] dark:text-white">
 			<span className="text-[14px]">Project Settings</span>
@@ -35,9 +38,7 @@ export default function ProjectSettings({
 				name="creditAmount"
 				value={updatedProject.creditAmount}
 			/> */}
-			<div className="w-full text-[11px] my-3">
-				Total Project Credits: {updatedProject.creditAmount}
-			</div>
+			<div className="w-full text-[11px] my-3">Total Project Credits: 1000</div>
 			<SliderComponent
 				updatedProject={updatedProject}
 				name="quorum"
