@@ -454,7 +454,6 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 router.put("/:id/projects/:projectID", async (_req, res) => {
 	const { live, creditAmount, quorum, balances, newMember, removeMember } =
 		_req.body;
-	console.log(balances);
 	try {
 		const projectData = await Project.update(
 			{
@@ -502,7 +501,6 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 				amount: bal,
 				ProjectId: parseInt(_req.params.projectID),
 			});
-			console.log(removeMember.id, bal);
 			const proj = await Project.findByPk(parseInt(_req.params.projectID));
 			await proj.removeMember(removeMember.id);
 		}

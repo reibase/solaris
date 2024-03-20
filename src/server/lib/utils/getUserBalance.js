@@ -12,7 +12,6 @@ const getUserBalance = async (userID, projectID) => {
 	const transfers = JSON.parse(transfersJson);
 
 	let balance = transfers.reduce((accum, cur) => {
-		console.log(cur);
 		if (cur.recipient === userID) {
 			accum = accum + cur.amount;
 		} else if (cur.sender === userID) {
