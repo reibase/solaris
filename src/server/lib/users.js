@@ -312,11 +312,13 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 	try {
 		const data = await Project.findOne({
 			where: { id: _req.params.projectID },
-			include: Issue,
+			include: [{ model: Issue }, { model: User, as: "members" }],
 		});
 		const json = JSON.stringify(data);
 		const project = JSON.parse(json, null, 2);
-
+		const userData = await User.findByPk(_req.params.id);
+		const userJSON = JSON.stringify(userData);
+		const user = JSON.parse(userJSON);
 		const transfersData = await data.getTransfers({
 			where: {
 				[Op.or]: [{ recipient: _req.params.id }, { sender: _req.params.id }],
@@ -327,16 +329,14 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 
 		const userID = parseInt(_req.params.id);
 
-		let balance = transfers.reduce((accum, cur) => {
-			if (cur.recipient === userID) {
-				accum = accum + cur.amount;
-			} else if (cur.sender === userID) {
-				accum = accum - cur.amount;
-			}
-			return accum;
-		}, 0);
+		let balance = await getUserBalance(userID, project.id);
 
-		project.user = { balance: balance };
+		project.user = {
+			balance: balance,
+			username: user.username,
+			id: user.id,
+			avatar: user.avatar,
+		};
 		const issues = project.Issues;
 		project.issues = { open: [], merged: [], closed: [] };
 
@@ -355,6 +355,13 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 			}
 		});
 
+		await Promise.all(
+			project.members.map(async (member) => {
+				let bal;
+				bal = await getUserBalance(member.id, project.id);
+				member.balance = bal;
+			})
+		);
 		return res.send({ status: 200, data: project });
 	} catch (error) {
 		console.log(error);
@@ -445,7 +452,8 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 });
 
 router.put("/:id/projects/:projectID", async (_req, res) => {
-	const { live, creditAmount, quorum } = _req.body;
+	const { live, creditAmount, quorum, balances, newMember, removeMember } =
+		_req.body;
 	try {
 		const projectData = await Project.update(
 			{
@@ -458,6 +466,44 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 
 		const json = JSON.stringify(projectData);
 		const project = JSON.parse(json);
+
+		for (let key in balances) {
+			let bal = await getUserBalance(parseInt(key), _req.params.projectID);
+			let newBal = balances[key];
+			let transfer;
+			if (bal > newBal) {
+				transfer = await Transfer.create({
+					sender: key,
+					recipient: _req.user.id,
+					amount: bal - newBal,
+				});
+				await transfer.setProject(parseInt(_req.params.projectID));
+			} else if (bal < newBal) {
+				transfer = await Transfer.create({
+					sender: _req.user.id,
+					recipient: key,
+					amount: newBal - bal,
+				});
+				await transfer.setProject(parseInt(_req.params.projectID));
+			}
+		}
+
+		if (newMember?.id) {
+			const proj = await Project.findByPk(parseInt(_req.params.projectID));
+			await proj.addMember(newMember.id);
+		}
+
+		if (removeMember?.id) {
+			let bal = await getUserBalance(removeMember.id, _req.params.projectID);
+			const transfer = await Transfer.create({
+				sender: removeMember.id,
+				recipient: _req.user.id,
+				amount: bal,
+				ProjectId: parseInt(_req.params.projectID),
+			});
+			const proj = await Project.findByPk(parseInt(_req.params.projectID));
+			await proj.removeMember(removeMember.id);
+		}
 
 		return res.send({ status: 200, data: project });
 	} catch (error) {

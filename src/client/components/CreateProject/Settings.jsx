@@ -15,6 +15,7 @@ export default function Settings({ project, setProject }) {
 					<div className="flex mt-2 h-8 flex-row gap-5">
 						<span>
 							<input
+								disabled
 								className="mr-2"
 								name="creditAmount"
 								value={100}
@@ -27,11 +28,12 @@ export default function Settings({ project, setProject }) {
 						</span>
 						<span>
 							<input
+								disabled
 								className="mr-2"
 								name="creditAmount"
 								value={1000}
 								type="radio"
-								checked={project.creditAmount === 1000}
+								checked={true}
 								onChange={(e) => changeHandler(e)}
 							/>
 							<label htmlFor="1000" />
@@ -39,6 +41,7 @@ export default function Settings({ project, setProject }) {
 						</span>
 						<span>
 							<input
+								disabled
 								className="mr-2"
 								name="creditAmount"
 								value={10000}
@@ -64,6 +67,7 @@ export default function Settings({ project, setProject }) {
 																										}`}
 							type="number"
 							name="quorum"
+							disabled
 							value={project.quorum}
 							onChange={(e) => changeHandler(e)}
 						/>

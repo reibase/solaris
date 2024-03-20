@@ -18,7 +18,7 @@ import Create from "./components/CreateProject/Create.jsx";
 import Issues from "./components/Projects/Issues.jsx";
 import Votes from "./components/Projects/Votes.jsx";
 import Transfer from "./components/Projects/Transfer/Transfer.jsx";
-import Settings from "./components/Projects/Settings.jsx";
+import Settings from "./components/Projects/Settings/Settings.jsx";
 
 function App() {
 	const { user, setUserInfo } = useStore();
