@@ -329,14 +329,7 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 
 		const userID = parseInt(_req.params.id);
 
-		let balance = transfers.reduce((accum, cur) => {
-			if (cur.recipient === userID) {
-				accum = accum + cur.amount;
-			} else if (cur.sender === userID) {
-				accum = accum - cur.amount;
-			}
-			return accum;
-		}, 0);
+		let balance = await getUserBalance(userID, project.id);
 
 		project.user = {
 			balance: balance,
@@ -461,6 +454,7 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 router.put("/:id/projects/:projectID", async (_req, res) => {
 	const { live, creditAmount, quorum, balances, newMember, removeMember } =
 		_req.body;
+	console.log(balances);
 	try {
 		const projectData = await Project.update(
 			{
@@ -508,6 +502,7 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 				amount: bal,
 				ProjectId: parseInt(_req.params.projectID),
 			});
+			console.log(removeMember.id, bal);
 			const proj = await Project.findByPk(parseInt(_req.params.projectID));
 			await proj.removeMember(removeMember.id);
 		}

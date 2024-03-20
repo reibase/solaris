@@ -13,7 +13,7 @@ export default function Mode({
 
 	return (
 		<>
-			<div className="w-full my-4 border-t" id="de">
+			<div className="w-full my-4 border-t dark:border-[#919190]">
 				<div className="flex my-4 justify-start items-start flex-col">
 					<span className="text-[#313131] mb-2 dark:text-white font-[14px]">
 						Project Mode:
@@ -81,7 +81,7 @@ export default function Mode({
 						</div>
 					</div>
 				</div>
-				<div className="flex w-full h-20 my-4 items-center border-t">
+				<div className="flex w-full h-20 my-4 items-center border-t dark:border-[#919190]">
 					<span
 						onClick={() =>
 							setModalOptions({

@@ -16,15 +16,9 @@ export default function UserDropDown({
 
 	const removeHandler = (e) => {
 		e.preventDefault();
-		setUpdatedProject({ ...updatedProject, removeMember: { id: member.id } });
+		updateProject({ ...updatedProject, removeMember: { id: member.id } });
 		setVisible(false);
 	};
-
-	useEffect(() => {
-		if (updatedProject?.removeMember?.id) {
-			updateProject();
-		}
-	}, [updatedProject]);
 
 	return (
 		<div className="relative inline-block text-left">

@@ -35,7 +35,7 @@ export default function Settings() {
 		["project", { userID: user?.info.id, projectID: id }],
 		getUserProject
 	);
-	console.log(project);
+
 	useEffect(() => {
 		setUpdatedProject(project);
 		setMembers(project?.members);
@@ -54,29 +54,19 @@ export default function Settings() {
 		setBalances(obj);
 	}, [project]);
 
-	const updateProject = async (body = { ...updatedProject, balances }) => {
+	const updateProject = async (body = updatedProject) => {
 		try {
 			await axios
 				.put(`/api/users/${id}/projects/${project?.id}`, body)
 				.then((res) => {
-					console.log(res);
 					if (res.data.status === 200) {
 						refetchProject();
 					}
-					if (res.status === 500) {
-						setErrorText("There was an error:", res.error);
-					}
-				});
+				})
+				.catch((err) => setErrorText("There was an error:", err));
 		} catch (error) {
 			console.log(error);
 		}
-	};
-
-	const changeHandler = (event, newValue) => {};
-
-	const submitHandler = (e) => {
-		e.preventDefault();
-		updateProject();
 	};
 
 	const deleteHandler = async (e) => {
@@ -95,10 +85,6 @@ export default function Settings() {
 	};
 
 	useEffect(() => {
-		// if (updatedProject.creditAmount !== project.creditAmount) {
-		// 	setUnsaved(true);
-		// 	return;
-		// }
 		if (updatedProject?.quorum !== project?.quorum) {
 			setUnsaved(true);
 			return;
@@ -143,7 +129,7 @@ export default function Settings() {
 						<button
 							type="button"
 							className="border border-1 rounded-md px-5 py-1 border-[#313131] dark:border-white disabled:opacity-50 dark:text-white"
-							onClick={(e) => submitHandler(e)}
+							onClick={() => updateProject({ ...updatedProject, balances })}
 							disabled={!unsaved}
 						>
 							Save
