@@ -28,17 +28,6 @@ export default function ProjectSettings({
 					updatedProject={updatedProject}
 				/>
 			</div>
-			{/* <SliderComponent
-				title={"Total Project Credits:"}
-				updatedProject={updatedProject}
-				min={100}
-				max={10_000}
-				setUpdatedProject={setUpdatedProject}
-				marks={creditAmounts}
-				step={null}
-				name="creditAmount"
-				value={updatedProject.creditAmount}
-			/> */}
 			<div className="text-gray-500 text-[11px] dark:text-gray-300 mb-1">
 				Total Project Credits:{" "}
 				<span className="text-gray-800 dark:text-white">
