@@ -5,6 +5,7 @@ import { useStore } from "../../../store.js";
 
 import AddUser from "./AddUser.jsx";
 export default function ProjectSettings({
+	updateProject,
 	updatedProject,
 	project,
 	changeHandler,
@@ -18,10 +19,14 @@ export default function ProjectSettings({
 		return "loading";
 	}
 	return (
-		<div className="w-full text-[#313131] dark:text-white mb-2">
-			<div className="w-full flex flex-col justify-start mb-1 lg:flex-row lg:justify-between lg:items-center">
+		<div className="w-full justify-between text-[#313131] dark:text-white mb-1">
+			<div className="w-full flex mb-1 flex-row justify-between">
 				<span className="text-[14px]">Project Settings</span>
-				<AddUser />
+				<AddUser
+					updateProject={updateProject}
+					setUpdatedProject={setUpdatedProject}
+					updatedProject={updatedProject}
+				/>
 			</div>
 			{/* <SliderComponent
 				title={"Total Project Credits:"}
@@ -34,6 +39,12 @@ export default function ProjectSettings({
 				name="creditAmount"
 				value={updatedProject.creditAmount}
 			/> */}
+			<div className="text-gray-500 text-[11px] dark:text-gray-300 mb-1">
+				Total Project Credits:{" "}
+				<span className="text-gray-800 dark:text-white">
+					{updatedProject?.creditAmount}
+				</span>
+			</div>
 			<SliderComponent
 				updatedProject={updatedProject}
 				name="quorum"

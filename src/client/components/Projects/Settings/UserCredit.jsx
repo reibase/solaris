@@ -9,6 +9,9 @@ export default function UserCredit({
 	member,
 	setBalances,
 	balances,
+	updateProject,
+	setUpdatedProject,
+	updatedProject,
 	disabled = false,
 }) {
 	const { dark, user } = useStore();
@@ -20,7 +23,7 @@ export default function UserCredit({
 	};
 
 	return (
-		<div className="my-4">
+		<div className="my-1">
 			<span className="flex my-1 flex-row justify-between gap-1">
 				<span className="w-content flex items-center flex-row gap-1">
 					<span className="">
@@ -29,9 +32,16 @@ export default function UserCredit({
 					<span className="text-[#313131] dark:text-white">
 						{member.username}
 					</span>
-					<UserDropDown />
+					<UserDropDown
+						updateProject={updateProject}
+						setUpdatedProject={setUpdatedProject}
+						updatedProject={updatedProject}
+						member={member}
+					/>
+					<span className="mx-2 text-gray-500 dark:text-gray-300">
+						{balance} credits
+					</span>
 				</span>
-				<span>{balance}</span>
 			</span>
 			<Slider
 				disabled={disabled}

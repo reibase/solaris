@@ -459,7 +459,8 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 });
 
 router.put("/:id/projects/:projectID", async (_req, res) => {
-	const { live, creditAmount, quorum, balances } = _req.body;
+	const { live, creditAmount, quorum, balances, newMember, removeMember } =
+		_req.body;
 	try {
 		const projectData = await Project.update(
 			{
@@ -476,7 +477,6 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 		for (let key in balances) {
 			let bal = await getUserBalance(parseInt(key), _req.params.projectID);
 			let newBal = balances[key];
-			console.log(newBal, bal);
 			let transfer;
 			if (bal > newBal) {
 				transfer = await Transfer.create({
@@ -493,8 +493,25 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 				});
 				await transfer.setProject(parseInt(_req.params.projectID));
 			}
-			console.log("transfe:", transfer);
 		}
+
+		if (newMember?.id) {
+			const proj = await Project.findByPk(parseInt(_req.params.projectID));
+			await proj.addMember(newMember.id);
+		}
+
+		if (removeMember?.id) {
+			let bal = await getUserBalance(removeMember.id, _req.params.projectID);
+			const transfer = await Transfer.create({
+				sender: removeMember.id,
+				recipient: _req.user.id,
+				amount: bal,
+				ProjectId: parseInt(_req.params.projectID),
+			});
+			const proj = await Project.findByPk(parseInt(_req.params.projectID));
+			await proj.removeMember(removeMember.id);
+		}
+
 		return res.send({ status: 200, data: project });
 	} catch (error) {
 		console.log(error);

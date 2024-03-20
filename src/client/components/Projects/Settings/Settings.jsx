@@ -35,31 +35,29 @@ export default function Settings() {
 		["project", { userID: user?.info.id, projectID: id }],
 		getUserProject
 	);
-
+	console.log(project);
 	useEffect(() => {
 		setUpdatedProject(project);
 		setMembers(project?.members);
 		setCurrentUser(project?.user);
+		setOwnerBalance(project?.user?.balance);
 	}, [project]);
 
 	useEffect(() => {
 		let obj = {};
-		updatedProject?.members &&
-			updatedProject.members.forEach((mem) => {
-				if (mem.id !== currentUser.id) {
+		project?.members.length &&
+			project.members.forEach((mem) => {
+				if (mem.id !== user.info.id) {
 					obj[mem.id] = mem.balance;
 				}
 			});
 		setBalances(obj);
-	}, [updatedProject]);
+	}, [project]);
 
-	const updateProject = async () => {
+	const updateProject = async (body = { ...updatedProject, balances }) => {
 		try {
 			await axios
-				.put(`/api/users/${id}/projects/${project?.id}`, {
-					...updatedProject,
-					balances,
-				})
+				.put(`/api/users/${id}/projects/${project?.id}`, body)
 				.then((res) => {
 					console.log(res);
 					if (res.data.status === 200) {
@@ -82,11 +80,11 @@ export default function Settings() {
 	};
 
 	const deleteHandler = async (e) => {
-		e.preventDefault();
 		try {
 			await axios
 				.delete(`/api/users/${user.info.id}/projects/${id}`)
 				.then((res) => {
+					console.log(res);
 					if (res.data.status === 200) {
 						navigate("/");
 					}
@@ -105,10 +103,6 @@ export default function Settings() {
 			setUnsaved(true);
 			return;
 		}
-		if (updatedProject?.live !== project?.live) {
-			setUnsaved(true);
-			return;
-		}
 		if (ownerBalance !== currentUser?.balance && ownerBalance > 0) {
 			setUnsaved(true);
 			return;
@@ -120,10 +114,11 @@ export default function Settings() {
 	return (
 		<div className="w-full h-full flex flex-col">
 			<ProjectHeading project={project} />
-			<div className="w-full p-6 h-full overflow-y-auto flex flex-col lg:flex-row p-4 shadow-lg rounded-lg text-sm bg-white/90 dark:bg-[#202530] border border-1 dark:border-[#373D47]">
+			<div className="w-full h-full overflow-y-auto flex flex-col lg:flex-row p-4 shadow-lg rounded-lg text-sm bg-white/90 dark:bg-[#202530] border border-1 dark:border-[#373D47]">
 				<SettingsNav />
-				<div className="flex w-full mr-4 flex-col gap-2">
+				<div className="flex w-full lg:mx-4 flex-col gap-1">
 					<ProjectSettings
+						updateProject={updateProject}
 						changeHandler={changeHandler}
 						setUpdatedProject={setUpdatedProject}
 						updatedProject={updatedProject}
@@ -141,9 +136,10 @@ export default function Settings() {
 						changeHandler={changeHandler}
 						setUpdatedProject={setUpdatedProject}
 						updatedProject={updatedProject}
+						updateProject={updateProject}
 					/>
 					{/* 	<CreditBehavior />*/}
-					<div className="w-content flex items-start">
+					<div className="w-full flex items-start">
 						<button
 							type="button"
 							className="border border-1 rounded-md px-5 py-1 border-[#313131] dark:border-white disabled:opacity-50 dark:text-white"
@@ -152,11 +148,12 @@ export default function Settings() {
 						>
 							Save
 						</button>
-						<span className="text-red-500 mx-2">
+						<span className="text-red-500 ml-2">
 							{errorText !== "" && errorText}
 						</span>
 					</div>
 					<Mode
+						updateProject={updateProject}
 						updatedProject={updatedProject}
 						setUpdatedProject={setUpdatedProject}
 						deleteHandler={deleteHandler}

@@ -32,9 +32,9 @@ export default function SliderComponent({
 	};
 
 	return (
-		<div className="w-full flex flex-col mt-2">
-			<span className="mb-1 text-[11px] text-[#313131] dark:text-white">
-				{title} {value}
+		<div className="w-full flex flex-col">
+			<span className="mb-1 text-[11px] text-gray-500 dark:text-gray-300">
+				{title} <span className="text-gray-800 dark:text-white">{value}</span>
 			</span>
 			<Box sx={{ width: "100%" }}>
 				<Slider

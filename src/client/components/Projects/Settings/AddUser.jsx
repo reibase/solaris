@@ -4,13 +4,16 @@ import axios from "axios";
 import add from "../../../assets/add.png";
 import adddarkmode from "../../../assets/adddarkmode.png";
 import { useStore } from "../../../store.js";
+import Alert from "@mui/material/Alert";
 
-export default function AddUser() {
+export default function AddUser({
+	updateProject,
+	setUpdatedProject,
+	updatedProject,
+}) {
 	const { dark, toggleDark, user } = useStore();
 	const recipientName = useRef("");
-	const [recipientErrorText, setRecipientErrorText] = useState(false);
-	const [recipientError, setRecipientError] = useState(false);
-	const [errorText, setErrorText] = useState("");
+	const [recipientErrorText, setRecipientErrorText] = useState("");
 
 	const [recipientData, setRecipientData] = useState({
 		recipient: null,
@@ -19,23 +22,22 @@ export default function AddUser() {
 
 	const findRecipient = async () => {
 		try {
+			setRecipientErrorText("");
+			setRecipientData({ recipientFound: false });
 			await axios.get(`/api/users/${recipientName.current}`).then((res) => {
 				if (res.data.status === 200) {
-					console.log(res.data);
 					setRecipientData({
 						recipient: res.data.user.id,
 						recipientName: res.data.user.username,
 						recipientFound: true,
 					});
-					setErrorText(true);
-					setRecipientError(true);
-					setRecipientErrorText(true);
-					setRecipientData({ recipientFound: false });
+					setRecipientErrorText("");
+					setUpdatedProject({
+						...updatedProject,
+						newMember: { id: res.data.user.id },
+					});
 				} else {
-					console.log(res.data);
-					setErrorText(true);
-					setRecipientError(true);
-					setRecipientErrorText(true);
+					setRecipientErrorText("User not found");
 					setRecipientData({ recipientFound: false });
 				}
 			});
@@ -46,36 +48,45 @@ export default function AddUser() {
 
 	const handleSearch = (e) => {
 		recipientName.current = e.target.value;
-		console.log(e.target.value);
-
 		if (recipientName.current.length > 3) {
 			findRecipient();
 		}
 	};
-	console.log(recipientName.current);
+
 	return (
-		<span className="flex flex-row items-center gap-2">
-			<span className="text-[11px]  text-[#313131] dark:text-white">
-				Invite a member:
+		<div className="flex flex-col justify-between">
+			<span className="flex flex-row items-center justify-end gap-1 w-full">
+				<span className="text-[11px] text-[#313131] dark:text-white">
+					Add a new member:
+				</span>
+				<span className="">
+					<input
+						id="recipientName"
+						type="text"
+						placeholder="username"
+						onChange={(e) => handleSearch(e)}
+						className={`w-full p-1 rounded-md border dark:bg-[#202530] dark:text-white dark:border-[#373D47] dark:focus:border-indigo-400
+					${
+						recipientErrorText !== "" &&
+						"border-red-500 text-red-500 dark:border-red-500"
+					}`}
+					/>
+				</span>
+				<span
+					className=""
+					onClick={() => {
+						updateProject();
+					}}
+				>
+					<img
+						className="h-5 ml-1 cursor-pointer"
+						src={dark ? adddarkmode : add}
+					/>
+				</span>
 			</span>
-			<span className="">
-				<input
-					id="recipientName"
-					type="text"
-					onChange={(e) => handleSearch(e)}
-					className={`w-full p-1 rounded-md border dark:bg-[#202530] dark:text-white dark:border-[#373D47] dark:focus:border-indigo-400
-					${errorText !== "" && "border-red-500 text-red-500 dark:border-red-500"}`}
-				/>
-			</span>
-			<span className="w-content">
-				<img
-					className="h-5 ml-1 cursor-pointer"
-					src={dark ? adddarkmode : add}
-				/>
-			</span>
-			<div className="h-6 mb-2 text-sm text-red-500">
-				{recipientError && recipientErrorText}
+			<div className="h-4 text-sm text-red-500">
+				{recipientErrorText !== "" && recipientErrorText}
 			</div>
-		</span>
+		</div>
 	);
 }

@@ -22,7 +22,7 @@ export default function OwnerCredit({
 		return "loading";
 	}
 	return (
-		<div className="my-4">
+		<div className="my-1">
 			<span className="flex my-1 flex-row justify-between gap-1">
 				<span className="w-content flex items-center flex-row gap-1">
 					<span className="flex flex-row gap-1">
@@ -32,13 +32,17 @@ export default function OwnerCredit({
 						{currentUser.username}
 					</span>
 					<span>
-						<img className="h-4 mx-2" src={verified} />
+						<img className="h-4 mx-1" src={verified} />
 					</span>
-				</span>
-				<span
-					className={`dark:text-white ${ownerBalance < 0 && "text-red-500"}`}
-				>
-					{ownerBalance < 0 ? "Insufficient credits" : ownerBalance}
+					<span
+						className={`text-gray-500 dark:text-gray-300 ${
+							ownerBalance < 0 && "text-red-500"
+						}`}
+					>
+						{ownerBalance < 0
+							? "Insufficient credits"
+							: `${ownerBalance} credits`}
+					</span>
 				</span>
 			</span>
 

@@ -14,6 +14,7 @@ export default function Community({
 	setBalances,
 	setOwnerBalance,
 	ownerBalance,
+	updateProject,
 }) {
 	const { dark, user } = useStore();
 	return (
@@ -44,6 +45,7 @@ export default function Community({
 							setCurrentUser={setCurrentUser}
 							balances={balances}
 							setBalances={setBalances}
+							updateProject={updateProject}
 						/>
 					))}
 			</div>
