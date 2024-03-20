@@ -105,7 +105,6 @@ export default function Settings() {
 				<div className="flex w-full lg:mx-4 flex-col gap-1">
 					<ProjectSettings
 						updateProject={updateProject}
-						changeHandler={changeHandler}
 						setUpdatedProject={setUpdatedProject}
 						updatedProject={updatedProject}
 					/>
@@ -119,7 +118,6 @@ export default function Settings() {
 						members={members}
 						setCurrentUser={setCurrentUser}
 						currentUser={currentUser}
-						changeHandler={changeHandler}
 						setUpdatedProject={setUpdatedProject}
 						updatedProject={updatedProject}
 						updateProject={updateProject}
