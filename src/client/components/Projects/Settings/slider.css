@@ -1,0 +1,26 @@
+.slider .MuiSlider-track {
+    color: #3B82F6;
+}
+
+.sliderDark .MuiSlider-track {
+    color: #3B82F6;
+}
+
+.sliderDark .MuiSlider-markLabel {
+    font-size: 11px;
+    color: #FFF;
+}
+
+.slider .MuiSlider-markLabel {
+    font-size: 11px;
+    color: #313131;
+}
+
+.sliderDark .MuiSlider-markLabel {
+    font-size: 11px;
+    color: #FFF;
+}
+
+.slider .MuiSlider-track {
+    color: #3B82F6;
+}

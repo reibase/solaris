@@ -1,6 +1,8 @@
 import React from "react";
 import Slider from "@mui/material/Slider";
 import { Box } from "@mui/material";
+import "./slider.css";
+import { useStore } from "../../../store.js";
 
 export default function SliderComponent({
 	title,
@@ -14,6 +16,7 @@ export default function SliderComponent({
 	value,
 	updatedProject,
 }) {
+	const { dark } = useStore();
 	const handleChange = (event, newValue) => {
 		let newQuorum = updatedProject.quorum;
 		if (event.target.name === "creditAmount") {
@@ -47,6 +50,7 @@ export default function SliderComponent({
 					step={step}
 					min={min}
 					value={value}
+					className={dark ? "sliderDark" : "slider"}
 				/>
 			</Box>
 		</div>

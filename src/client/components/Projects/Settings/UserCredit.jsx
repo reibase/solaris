@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import Slider from "@mui/material/Slider";
 import { useStore } from "../../../store.js";
-
+import "./slider.css";
 import UserDropDown from "./UserDropDown.jsx";
 
 export default function UserCredit({
@@ -53,6 +53,7 @@ export default function UserCredit({
 				step={10}
 				min={0}
 				value={balance}
+				className={dark ? "sliderDark" : "slider"}
 			/>
 		</div>
 	);
