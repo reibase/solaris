@@ -312,6 +312,7 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 	try {
 		const data = await Project.findOne({
 			where: { id: _req.params.projectID },
+			order: [[Issue, "updatedAt", "DESC"]],
 			include: [{ model: Issue }, { model: User, as: "members" }],
 		});
 		const json = JSON.stringify(data);
@@ -319,13 +320,6 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 		const userData = await User.findByPk(_req.params.id);
 		const userJSON = JSON.stringify(userData);
 		const user = JSON.parse(userJSON);
-		const transfersData = await data.getTransfers({
-			where: {
-				[Op.or]: [{ recipient: _req.params.id }, { sender: _req.params.id }],
-			},
-		});
-		const transfersJson = JSON.stringify(transfersData);
-		const transfers = JSON.parse(transfersJson);
 
 		const userID = parseInt(_req.params.id);
 
@@ -337,7 +331,9 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 			id: user.id,
 			avatar: user.avatar,
 		};
+
 		const issues = project.Issues;
+
 		project.issues = { open: [], merged: [], closed: [] };
 
 		issues.map((issue) => {
@@ -410,6 +406,7 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 
 		const issueData = await project.getIssues({
 			where: { number: _req.params.issueID },
+			order: [[Vote, "createdAt", "DESC"]],
 			include: Vote,
 		});
 
