@@ -23,8 +23,7 @@ import { User, Transfer, Project } from "../db/models/index.js";
 
 import projects from "./lib/projects.js";
 import users from "./lib/users.js";
-import issues from "./lib/issues.js";
-import installation from "./lib/installation.js";
+// import installation from "./lib/installation.js";
 import githubWebhook from "./webhooks/github/index.js";
 import gitlabWebhook from "./webhooks/gitlab/index.js";
 
@@ -319,8 +318,7 @@ app.use("/api/users", ensureAuthenticated, users);
 app.use("/api/projects", ensureAuthenticated, async function (req, res) {
 	return projects(req, res);
 });
-app.use("/api/issues", ensureAuthenticated, issues);
-app.use("/api/installation", ensureAuthenticated, installation);
+// app.use("/api/installation", ensureAuthenticated, installation);
 
 app.use("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "/dist/index.html"));
