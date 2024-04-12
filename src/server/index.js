@@ -15,7 +15,7 @@ import { createServer } from "node:http";
 import { Server } from "socket.io";
 
 import db from "../db/index.js";
-import { User, Transfer, Project } from "../db/models/index.js";
+import { User } from "../db/models/index.js";
 
 import projects from "./lib/projects.js";
 import users from "./lib/users.js";
@@ -23,7 +23,7 @@ import users from "./lib/users.js";
 import githubWebhook from "./webhooks/github/index.js";
 import gitlabWebhook from "./webhooks/gitlab/index.js";
 
-// Constants:
+import addToSandbox from "./lib/utils/addToSandbox.js";
 
 /* For testing webhooks in dev environment: */
 const smee = new SmeeClient({
@@ -84,8 +84,8 @@ app.use("/api/webhooks/github", githubWebhook);
 app.use("/api/webhooks/gitlab", gitlabWebhook);
 NODE_ENV === "development" && events.close();
 
-// Initialize Passport!  Also use passport.session() middleware, to support
-// persistent login sessions (recommended).
+/* Initialize Passport!  Also use passport.session() middleware, to support
+persistent login sessions (recommended). */
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.authenticate("session"));
@@ -94,30 +94,9 @@ passport.serializeUser(function (user, cb) {
 		cb(null, { id: user.id, username: user.username, avatar: user.avatar });
 	});
 });
-
 passport.deserializeUser(function (obj, done) {
 	done(null, obj);
 });
-
-/* Function which adds a new user to the sandbox project with 10 credits. */
-const addToSandbox = async (userID) => {
-	const sandboxData = await Project.findOne({
-		where: { identifier: "reibase/solaris-sandbox" },
-	});
-	const sandboxJSON = JSON.stringify(sandboxData);
-	const sandbox = JSON.parse(sandboxJSON);
-	if (sandbox?.id) {
-		const transfer = await Transfer.create({
-			sender: 1,
-			recipient: userID,
-			project: sandbox.id,
-			amount: 5,
-		});
-		await transfer.setProject(sandbox.id);
-		await sandboxData.addMember(userID);
-		console.log("user added to sandbox");
-	}
-};
 
 passport.use(
 	new GitHubStrategy(
