@@ -11,26 +11,27 @@ import SmeeClient from "smee-client";
 import path from "path";
 import "dotenv/config";
 import SequelizeStore from "connect-session-sequelize";
-
-const smee = new SmeeClient({
-	source: "https://smee.io/HXzpMdreQh578AmR",
-	target: "http://localhost:3001/api/webhooks/gitlab",
-	logger: console,
-});
+import { createServer } from "node:http";
+import { Server } from "socket.io";
 
 import db from "../db/index.js";
 import { User, Transfer, Project } from "../db/models/index.js";
 
 import projects from "./lib/projects.js";
 import users from "./lib/users.js";
-// import installation from "./lib/installation.js";
+
 import githubWebhook from "./webhooks/github/index.js";
 import gitlabWebhook from "./webhooks/gitlab/index.js";
 
-import { createServer } from "node:http";
-import { Server } from "socket.io";
+// Constants:
 
-// Constants
+/* For testing webhooks in dev environment: */
+const smee = new SmeeClient({
+	source: "https://smee.io/HXzpMdreQh578AmR",
+	target: "http://localhost:3001/api/webhooks/gitlab",
+	logger: console,
+});
+
 const port = process.env.PORT || 3001;
 const __dirname = path.resolve();
 
@@ -98,6 +99,7 @@ passport.deserializeUser(function (obj, done) {
 	done(null, obj);
 });
 
+/* Function which adds a new user to the sandbox project with 10 credits. */
 const addToSandbox = async (userID) => {
 	const sandboxData = await Project.findOne({
 		where: { identifier: "reibase/solaris-sandbox" },
@@ -218,26 +220,20 @@ passport.use(
 	)
 );
 
-app.get("/api/test", function (req, res) {
-	return res.send(200);
-});
-
+/* Routes for when user clicks Login with <Auth Provider>: */
 app.get(
 	"/api/auth/github",
 	passport.authenticate("github", { scope: ["user:email"] })
 );
-
 app.get("/api/auth/google", passport.authenticate("google"));
-
 app.get("/api/auth/gitlab", passport.authenticate("gitlab"));
 
-// GET /auth/github/callback
 //   Use passport.authenticate() as route middleware to authenticate the
 //   request.  If authentication fails, the user will be redirected back to the
 //   login page.  Otherwise, the primary route function will be called,
 //   which, in this example, will redirect the user to the home page.
 
-// Route for when user clicks Login with Github:
+/* Routes which the auth provider redirects to after successful authentication: */
 app.get(
 	"/api/auth/github/callback",
 	passport.authenticate("github", { failureRedirect: "/login" }),
@@ -245,7 +241,6 @@ app.get(
 		res.redirect("/");
 	}
 );
-
 app.get(
 	"/api/auth/google/callback",
 	passport.authenticate("google", {
@@ -256,15 +251,12 @@ app.get(
 		res.redirect("/");
 	}
 );
-
 app.get(
 	"/api/auth/gitlab/callback",
 	passport.authenticate("gitlab", {
 		failureRedirect: "/login",
 	}),
 	function (req, res) {
-		console.log("final:", req.user);
-		// Successful authentication, redirect home.
 		res.redirect("/");
 	}
 );
@@ -279,6 +271,7 @@ app.get("/api/auth/logout", function (req, res) {
 	});
 });
 
+/* Endpoint the client queries to establish if the user is logged in or not  */
 app.get("/api/auth/me", function (req, res) {
 	if (!req.user) {
 		return res.send({ isLoggedIn: false });
@@ -286,7 +279,7 @@ app.get("/api/auth/me", function (req, res) {
 	return res.send({ isLoggedIn: true, info: req.user });
 });
 
-// Route for when user clicks submit access code:
+/* Route for when user clicks submit access code. Not in use currently: */
 app.post("/api/auth/access-code", function (req, res) {
 	const accessCodes = [
 		process.env.ACCESS_CODE_1,
@@ -302,11 +295,11 @@ app.post("/api/auth/access-code", function (req, res) {
 	}
 });
 
-// Simple route middleware to ensure user is authenticated.
-//   Use this route middleware on any resource that needs to be protected.  If
-//   the request is authenticated (typically via a persistent login session),
-//   the request will proceed.  Otherwise, the user will be redirected to the
-//   login page.
+/* Simple route middleware to ensure user is authenticated.
+   Use this route middleware on any resource that needs to be protected.  If
+   the request is authenticated (typically via a persistent login session),
+   the request will proceed.  Otherwise, the user will be redirected to the
+   login page. */
 function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
 		return next();
@@ -318,7 +311,6 @@ app.use("/api/users", ensureAuthenticated, users);
 app.use("/api/projects", ensureAuthenticated, async function (req, res) {
 	return projects(req, res);
 });
-// app.use("/api/installation", ensureAuthenticated, installation);
 
 app.use("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "/dist/index.html"));

@@ -1,6 +1,5 @@
 import express from "express";
 import { Project, Issue, Vote, User, Transfer } from "../../db/models/index.js";
-import { Op } from "sequelize";
 import getUserBalance from "./utils/getUserBalance.js";
 import mergeGitHubPullRequest from "../codehost/github/lib/mergeGitHubPullRequest.js";
 import closeGitHubPullRequest from "../codehost/github/lib/closeGitHubPullRequest.js";
