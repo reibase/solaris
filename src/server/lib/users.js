@@ -426,7 +426,7 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 			createdAt: null,
 		};
 
-		/* This is used for rendering whether or not a user has voted, and if so, what the details of that vote were. */
+		/* This is used for rendering whether or not the current user has voted, and if so, what the details of that vote were. */
 		issue[0]?.Votes.map((vote) => {
 			if (vote.UserId === parseInt(_req.params.id)) {
 				userVoteData.voted = true;
