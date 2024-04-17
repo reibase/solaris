@@ -1,8 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { useStore } from "../../store.js";
 import ProgressBar from "../Projects/ProgressBar.jsx";
@@ -13,8 +12,10 @@ import CodeHostLink from "./CodeHostLink.jsx";
 import httpService from "../../services/httpService.js";
 
 export default function Votes() {
-	const { getUserProject, getIssue, getMergeableStatus } = httpService();
+	const { getUserProject, getIssue, getMergeableStatus, postVote } =
+		httpService();
 	const [voting, setVoting] = useState(false);
+	const side = useRef(null);
 	const { user } = useStore();
 	let { id, issueID } = useParams();
 
@@ -43,30 +44,39 @@ export default function Votes() {
 		queryFn: getIssue,
 	});
 
-	const postVote = async (chosenSide) => {
+	const {
+		data: votingData,
+		isFetching: isVoting,
+		isFetched: voteCast,
+	} = useQuery({
+		queryKey: [
+			"vote",
+			{
+				userID: user.info?.id,
+				projectID: id,
+				issueID: issueID,
+				side: side.current,
+				setVoting: setVoting,
+			},
+		],
+		queryFn: postVote,
+		enabled: voting,
+		manual: true,
+	});
+
+	const voteHandler = async (chosenSide) => {
+		side.current = chosenSide;
 		setVoting(true);
-		try {
-			const { data, status } = await axios
-				.post(
-					`/api/projects/${id}/issues/${issueID}/vote`,
-					{
-						user: user.info.id,
-						side: chosenSide,
-					},
-					{ withCredentials: true }
-				)
-				.then((res) => res);
-			setVoting(false);
-			socket.emit("vote cast", project?.id);
-			return data;
-		} catch (error) {
-			setVoting(false);
-			console.log(error);
-		}
 	};
 
+	useEffect(() => {
+		if (voteCast) {
+			socket.emit("vote cast", id);
+		}
+	}, [voteCast]);
+
 	socket.on("vote received", (projectID) => {
-		if (projectID === project?.id) {
+		if (projectID === id) {
 			refetchIssue();
 		}
 	});
@@ -119,14 +129,14 @@ export default function Votes() {
 								) : (
 									<>
 										<button
-											onClick={() => postVote(true)}
+											onClick={() => voteHandler(true)}
 											className="bg-[#20B176] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white disabled:opacity-50"
 											disabled={disabled}
 										>
 											VOTE YES
 										</button>
 										<button
-											onClick={() => postVote(false)}
+											onClick={() => voteHandler(false)}
 											className="bg-[#DC2626] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white disabled:opacity-50"
 											disabled={disabled}
 										>
