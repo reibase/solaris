@@ -1,5 +1,7 @@
 import express from "express";
-import { Op } from "sequelize";
+import "dotenv/config";
+import axios from "axios";
+import url from "url";
 
 import {
 	User,
@@ -18,24 +20,16 @@ import getGitLabMergeRequests from "../codehost/gitlab/lib/getGitLabMergeRequest
 import createGitLabWebhook from "../codehost/gitlab/lib/createGitLabWebhook.js";
 import getUserBalance from "./utils/getUserBalance.js";
 
-import "dotenv/config";
-import axios from "axios";
 const {
 	GITLAB_APP_CLIENT_ID,
 	GITLAB_APP_CLIENT_SECRET,
 	GITLAB_APP_REDIRECT_URI,
 } = process.env;
-import url from "url";
 
 const router = express.Router();
-//endpoint: /users
 
-//get users.. needed?
-router.get("/", async (_req, res) => {
-	res.status(200).json({ message: "Hello World!" });
-});
+/* Endpoint: /users */
 
-// find a user by a username
 router.get("/:username", async (_req, res) => {
 	const username = _req.params.username;
 	try {
@@ -54,7 +48,7 @@ router.get("/:username", async (_req, res) => {
 	}
 });
 
-//get user projects
+/* Get user's projects by user id */
 router.get("/:id/projects", async (_req, res) => {
 	try {
 		const data = await User.findOne({
@@ -83,12 +77,9 @@ router.get("/:id/projects", async (_req, res) => {
 	}
 });
 
-// update user, profile etc
-router.put("/:id", async (_req, res) => {
-	res.status(200).json({ message: "Hello World!" });
-});
-
-// create codehost app installation id
+/* This endpoint is called when a user is creating a new project and is redirected from GitHub. GitHub supplies an installation id
+	 in the URL params and the client immediately sends it here. We create a new entry in our database that a user is associated
+	 with a new installation id for future reference. */
 router.post("/:id/installations", async (_req, res) => {
 	try {
 		if (!_req.body.installationID || !_req.body.provider || !_req.params.id) {
@@ -152,6 +143,11 @@ router.post("/:id/installations", async (_req, res) => {
 	}
 });
 
+/* We use this endpoint to take every installation id associated with a user and return the repos each has access to.
+	This permits a single user having Solaris installed on multiple GitHub organizations they belong to.
+	
+	We then query GitHub for the repos associated with each installation id and return them to the client so they
+	can select one to create a new project with. */
 router.get("/:id/github/installations/repos", async (_req, res) => {
 	try {
 		const user = await User.findOne({ where: { id: _req.params.id } });
@@ -182,6 +178,8 @@ router.get("/:id/github/installations/repos", async (_req, res) => {
 	}
 });
 
+/* Same as above but for Gitlab. Are we able to have multiple orgs associated to one user here? It appears to use only one
+installation id. */
 router.get("/:id/gitlab/installations/repos", async (_req, res) => {
 	try {
 		const data = await Installation.findOne({
@@ -204,6 +202,7 @@ router.get("/:id/gitlab/installations/repos", async (_req, res) => {
 	}
 });
 
+/* Create project */
 router.post("/:id/projects", async (_req, res) => {
 	const {
 		title,
@@ -214,9 +213,7 @@ router.post("/:id/projects", async (_req, res) => {
 		installationID,
 		creditAmount,
 		url,
-		live,
 		quorum,
-		clawBack,
 		isPrivate,
 	} = _req.body;
 	const owner = _req.params.id;
@@ -236,14 +233,16 @@ router.post("/:id/projects", async (_req, res) => {
 		});
 		await project.addMember(owner);
 
+		/* Create a transfer entry which is the initial balance, credited to the maintainer. */
 		const initial = await Transfer.create({
 			sender: owner,
 			recipient: owner,
 			amount: project.creditAmount,
 		});
-
+		/* Associate the initial balance with the newly created project. */
 		await initial.setProject(project.id);
 
+		/* Get all currently open pull requests and create new entries in our database for them. */
 		if (host === "github") {
 			const pulls = await getGitHubPullRequests(identifier, "open");
 
@@ -297,7 +296,8 @@ router.post("/:id/projects", async (_req, res) => {
 				})
 			);
 
-			//create webhook
+			/* Create a webhook to listen for events from the repo on Gitlab. New merge requests will then make POST requests
+			to our database. This is done for GitHub automatically based on the GitHub App configuration. */
 			await createGitLabWebhook(hostID, parseInt(_req.params.id));
 		}
 
@@ -334,6 +334,7 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 
 		const issues = project.Issues;
 
+		/* Sort a project's issues into categories for pagination. */
 		project.issues = { open: [], merged: [], closed: [] };
 
 		issues.map((issue) => {
@@ -364,6 +365,9 @@ router.get("/:id/projects/:projectID", async (_req, res) => {
 	}
 });
 
+/* Check whether or not a pull request is mergeable. This occurs on the single PR/voting view. As mergeability is prone to change, 
+it is necessary to check it each time a user visits the view before allowing them to vote on it because we don't want users to 
+be able to vote on pull requests which are not mergeable. */
 router.get(
 	"/:id/projects/:projectID/issues/:issueID/mergeable",
 	async (_req, res) => {
@@ -422,6 +426,7 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 			createdAt: null,
 		};
 
+		/* This is used for rendering whether or not the current user has voted, and if so, what the details of that vote were. */
 		issue[0]?.Votes.map((vote) => {
 			if (vote.UserId === parseInt(_req.params.id)) {
 				userVoteData.voted = true;
@@ -448,7 +453,10 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 	}
 });
 
+/* Update a project's configuration. Total credit amount is fixed at 1000 right now. It is not editable. */
 router.put("/:id/projects/:projectID", async (_req, res) => {
+	/* Balances will be an object of user ids and that user's new balance. It is used for toggling a user's
+	credit balance. */
 	const { live, creditAmount, quorum, balances, newMember, removeMember } =
 		_req.body;
 	try {
@@ -464,6 +472,8 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 		const json = JSON.stringify(projectData);
 		const project = JSON.parse(json);
 
+		/* We loop through the balances, determine if it is a deposit or a withdrawl, and create a transfer
+		entry for each one. */
 		for (let key in balances) {
 			let bal = await getUserBalance(parseInt(key), _req.params.projectID);
 			let newBal = balances[key];
@@ -484,12 +494,12 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 				await transfer.setProject(parseInt(_req.params.projectID));
 			}
 		}
-
+		/* Logic for adding a new member to the project based on their id */
 		if (newMember?.id) {
 			const proj = await Project.findByPk(parseInt(_req.params.projectID));
 			await proj.addMember(newMember.id);
 		}
-
+		/* Remove user based on their id. Their credits go back to the maintainer. */
 		if (removeMember?.id) {
 			let bal = await getUserBalance(removeMember.id, _req.params.projectID);
 			const transfer = await Transfer.create({
@@ -508,6 +518,7 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 	}
 });
 
+/* Delete single project */
 router.delete("/:id/projects/:projectID", async (_req, res) => {
 	const { id, projectID } = _req.params;
 	try {
@@ -520,7 +531,7 @@ router.delete("/:id/projects/:projectID", async (_req, res) => {
 	}
 });
 
-// delete user
+/* Delete single user */
 router.delete("/:id", async (_req, res) => {
 	try {
 		const user = await User.delete({ where: { id: _req.params.id } });
@@ -529,4 +540,5 @@ router.delete("/:id", async (_req, res) => {
 		return { status: 500, message: error.message };
 	}
 });
+
 export default router;

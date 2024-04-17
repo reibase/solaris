@@ -1,6 +1,5 @@
 import express from "express";
 import { Project, Issue, Vote, User, Transfer } from "../../db/models/index.js";
-import { Op } from "sequelize";
 import getUserBalance from "./utils/getUserBalance.js";
 import mergeGitHubPullRequest from "../codehost/github/lib/mergeGitHubPullRequest.js";
 import closeGitHubPullRequest from "../codehost/github/lib/closeGitHubPullRequest.js";
@@ -8,11 +7,11 @@ import mergeGitLabMergeRequest from "../codehost/gitlab/lib/mergeGitLabMergeRequ
 import closeGitLabMergeRequest from "../codehost/gitlab/lib/closeGitLabMergeRequest.js";
 
 const router = express.Router();
-//endpoint: api/projects
-router.get("/", async (_req, res) => {
-	res.status(200).json({ message: "Hello World!" });
-});
 
+/* Endpoint: api/projects */
+
+/* Vote. Creates a new vote entry in the database. It then checks the totals and if the new total votes exceeds the quorum,
+it makes the API call to the codehost to merge or close the merge request. */
 router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 	console.log("user voted", _req?.user.id);
 	try {
@@ -93,7 +92,7 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 						);
 					}
 				} else {
-					//Artificially merge for testing purposes:
+					/* Artificially merge for testing purposes if the project's mode is set to 'demo': */
 					await Issue.update(
 						{
 							state: "closed",
@@ -145,6 +144,8 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 	}
 });
 
+/* This creates a new transfer entry. Users do not have a fixed balance, but a balance which is the
+sum of their entire ingoing/outgoing transfers in a given project. */
 router.post("/:id/transfer", async (_req, res) => {
 	try {
 		const { amount, sender, recipient } = _req.body;
@@ -223,39 +224,6 @@ router.post("/:id/transfer", async (_req, res) => {
 	} catch (error) {
 		console.log(error);
 		return res.send({ status: 500, data: error.message });
-	}
-});
-
-router.get("/:id", async (_req, res) => {
-	try {
-		const data = await Project.findOne({
-			where: { id: _req.params.id },
-			include: Issue,
-		});
-		const json = JSON.stringify(data);
-		const project = JSON.parse(json, null, 2);
-
-		const transfers = await Project.getTransfers({
-			where: {
-				[Op.or]: [{ recipient: _req.params.id }, { sender: _req.params.id }],
-			},
-		});
-
-		let balance = transfers.reduce((accum, cur) => {
-			if (cur.recipient === _req.user.id) {
-				accum = accum + cur.amount;
-			} else if (cur.sender === _req.user.id) {
-				accum = accum - cur.amount;
-			}
-			return accum;
-		}, 0);
-
-		project.user = { balance: balance };
-
-		console.log(project);
-		return res.send({ status: 200, data: project });
-	} catch (error) {
-		console.log(error);
 	}
 });
 
