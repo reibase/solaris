@@ -51,6 +51,26 @@ class HttpService {
 			console.log(error);
 		}
 	};
+	postVote = async ({ queryKey }) => {
+		const [_, args] = queryKey;
+		const { projectID, issueID, userID, side, setVoting } = args;
+		try {
+			const data = await apiClient
+				.post(`/projects/${projectID}/issues/${issueID}/vote`, {
+					user: userID,
+					side: side,
+				})
+				.then(({ data }) => {
+					return data;
+				})
+				.catch((err) => err.message);
+			setVoting(false);
+			return data;
+		} catch (error) {
+			setVoting(false);
+			console.log(error);
+		}
+	};
 }
 
 const httpService = () => new HttpService();
