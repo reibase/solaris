@@ -34,6 +34,15 @@ const User = db.define("User", {
 	avatar: {
 		type: DataTypes.STRING,
 	},
+	customerId: {
+		type: DataTypes.STRING,
+	},
+	subscriptionID: {
+		type: DataTypes.STRING,
+	},
+	plan: {
+		type: DataTypes.STRING,
+	},
 });
 
 export default User;

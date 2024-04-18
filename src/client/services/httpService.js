@@ -71,6 +71,30 @@ class HttpService {
 			console.log(error);
 		}
 	};
+	createCheckoutSession = async ({ queryKey }) => {
+		const [_, args] = queryKey;
+		const { userID, plan, mode, setClicked } = args;
+		try {
+			const data = await apiClient
+				.post(`/create-checkout-session`, {
+					body: { userID: userID, plan: plan, mode: mode },
+					headers: {
+						"Content-Type": "application/json",
+					},
+				})
+				.then((res) => {
+					console.log(res.data.url);
+					window.location.href = res.data.url;
+					return res;
+				})
+				.catch((err) => err.message);
+			setClicked(false);
+			return { status: 200 };
+		} catch (error) {
+			setClicked(false);
+			console.log(error);
+		}
+	};
 }
 
 const httpService = () => new HttpService();

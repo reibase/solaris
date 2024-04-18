@@ -13,6 +13,8 @@ import "dotenv/config";
 import SequelizeStore from "connect-session-sequelize";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
+import Stripe from "stripe";
+import cors from "cors";
 
 import db from "../db/index.js";
 import { User } from "../db/models/index.js";
@@ -24,6 +26,10 @@ import githubWebhook from "./webhooks/github/index.js";
 import gitlabWebhook from "./webhooks/gitlab/index.js";
 
 import addToSandbox from "./lib/utils/addToSandbox.js";
+
+const stripe = new Stripe(
+	"sk_test_51P6a4eRqpFR5AlPColHJ7UpH5Nbtfr5wHbCobBLUhmrgxQCREgMijjcQJ2rNoaHF8Fdb1hcaaKXhbshiJqaIaSQm00Gb1KedmV"
+);
 
 /* For testing webhooks in dev environment: */
 const smee = new SmeeClient({
@@ -52,6 +58,7 @@ const sequelizeStore = SequelizeStore(session.Store);
 const store = new sequelizeStore({ db });
 
 const app = express();
+app.use(cors());
 
 const server = createServer(app);
 const io = new Server(server);
@@ -289,6 +296,24 @@ function ensureAuthenticated(req, res, next) {
 app.use("/api/users", ensureAuthenticated, users);
 app.use("/api/projects", ensureAuthenticated, async function (req, res) {
 	return projects(req, res);
+});
+
+app.post("/api/create-checkout-session", async (req, res) => {
+	const { mode, plan } = req.body;
+	console.log(req.body);
+	const session = await stripe.checkout.sessions.create({
+		line_items: [
+			{
+				price: "price_1P6x4URqpFR5AlPC9DPyDeyD",
+				quantity: 1,
+			},
+		],
+		mode: "subscription",
+		success_url: `http://localhost:3001/success`,
+		cancel_url: `http://localhost:3001/plans`,
+	});
+	console.log(session.url);
+	return res.json({ url: session.url });
 });
 
 app.use("*", (req, res) => {

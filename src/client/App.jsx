@@ -19,6 +19,8 @@ import Issues from "./components/Projects/Issues.jsx";
 import Votes from "./components/Projects/Votes.jsx";
 import Transfer from "./components/Projects/Transfer/Transfer.jsx";
 import Settings from "./components/Projects/Settings/Settings.jsx";
+import Plans from "./Checkout/Plans.jsx";
+import Success from "./Checkout/Success.jsx";
 
 function App() {
 	const { user, setUserInfo } = useStore();
@@ -92,6 +94,16 @@ function App() {
 							errorElement: <ErrorBoundary />,
 						},
 						{
+							path: "/plans",
+							element: <Plans />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/success",
+							element: <Success />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
 							path: "/requestaccess",
 							element: <Profile />,
 							errorElement: <ErrorBoundary />,
@@ -131,6 +143,7 @@ function App() {
 							element: <Settings />,
 							errorElement: <ErrorBoundary />,
 						},
+
 						{
 							path: "/create",
 							element: <Create />,
