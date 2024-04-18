@@ -147,7 +147,7 @@ export default function Votes() {
 							</div>
 						</div>
 
-						<div className="p-3 w-full hidden md:flex md:flex-col rounded-lg bg-[#f8f8f9] dark:bg-[#171D2B] border border-1 border-[#D9D9D9] dark:border-[#373D47]">
+						<div className="p-4 w-full hidden md:flex md:flex-col rounded-lg bg-[#f8f8f9] dark:bg-[#171D2B] border border-1 border-transparent dark:border-[#373D47]">
 							<p className="text-slate-600 dark:text-slate-300 text-[11px] mb-1">
 								Your amount of credits will be applied to the side you select.
 								When a side reaches the minimum number of votes required to end

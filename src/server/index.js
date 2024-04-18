@@ -59,7 +59,6 @@ const io = new Server(server);
 io.on("connection", (socket) => {
 	console.log("a user connected", socket.id);
 	socket.on("vote cast", (projectID) => {
-		console.log("voted:", projectID);
 		socket.emit("vote received", projectID);
 	});
 });
