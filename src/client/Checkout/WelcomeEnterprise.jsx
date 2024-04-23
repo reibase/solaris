@@ -7,7 +7,7 @@ import { useStore } from "../store.js";
 import httpService from "../services/httpService.js";
 import check from "../assets/check.png";
 
-export default function Success() {
+export default function WelcomeEnterprise() {
 	const { user, setUserInfo } = useStore();
 	const { getUser } = httpService();
 	const navigate = useNavigate();
@@ -16,9 +16,8 @@ export default function Success() {
 		queryKey: ["user", { userID: user?.info.id }],
 		queryFn: getUser,
 	});
-	useEffect(() => {
-		console.log(userData);
 
+	useEffect(() => {
 		if (userData?.user) {
 			let data = { isLoggedIn: true, info: userData?.user };
 			setUserInfo(data);
@@ -28,14 +27,13 @@ export default function Success() {
 
 	return (
 		<div className="flex w-full h-full flex items-center justify-center">
-			<div className="p-10 flex w-1/2 h-4/6 gap-5 shadow-lg rounded-lg text-sm flex flex-col items-center bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+			<div className="p-10 flex w-2/3 h-5/6 gap-5 shadow-lg rounded-lg text-sm flex flex-col items-center bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 				<div className="flex flex-col items-center">
 					<img src={check} className="h-14 w-14" />
-					<span className="text-gray-600 text-[14px] font-light mt-2  dark:text-gray-300">
-						Subscribed to{" "}
-						{userData?.user.plan[0].toUpperCase() +
-							userData?.user.plan.slice(1)}{" "}
-						Tier
+					<span className="text-gray-600 leading-6 text-center text-[14px] font-light mt-2  dark:text-gray-300">
+						Your request for Enterprise Access has been submitted and we will be
+						in touch shortly. For now, enjoy the Free Tier while we process your
+						request.
 					</span>
 				</div>
 				<div className="text-[30px] font-light my-3 text-gray-500 dark:text-white">

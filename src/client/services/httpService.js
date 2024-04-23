@@ -1,8 +1,21 @@
 import apiClient from "./apiClient";
 
 class HttpService {
+	getUser = async ({ queryKey }) => {
+		const [_, args] = queryKey;
+		const { userID } = args;
+		try {
+			const { data } = await apiClient.get(`/users/${userID}`).then((res) => {
+				return res;
+			});
+			return data;
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	getUserProjects = async ({ queryKey }) => {
-		const [_, userID] = queryKey;
+		const [_, args] = queryKey;
+		const { userID } = args;
 		try {
 			const { data } = await apiClient
 				.get(`/users/${userID}/projects`)
@@ -75,15 +88,17 @@ class HttpService {
 		const [_, args] = queryKey;
 		const { userID, plan, mode, setClicked } = args;
 		try {
+			console.log(plan);
 			const data = await apiClient
 				.post(`/create-checkout-session`, {
-					body: { userID: userID, plan: plan, mode: mode },
+					userID: userID,
+					plan: plan,
+					mode: mode,
 					headers: {
 						"Content-Type": "application/json",
 					},
 				})
 				.then((res) => {
-					console.log(res.data.url);
 					window.location.href = res.data.url;
 					return res;
 				})

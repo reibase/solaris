@@ -34,7 +34,7 @@ const User = db.define("User", {
 	avatar: {
 		type: DataTypes.STRING,
 	},
-	customerId: {
+	customerID: {
 		type: DataTypes.STRING,
 	},
 	subscriptionID: {
@@ -42,6 +42,7 @@ const User = db.define("User", {
 	},
 	plan: {
 		type: DataTypes.STRING,
+		defaultValue: "n/a",
 	},
 });
 

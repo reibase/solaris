@@ -21,6 +21,7 @@ import Transfer from "./components/Projects/Transfer/Transfer.jsx";
 import Settings from "./components/Projects/Settings/Settings.jsx";
 import Plans from "./Checkout/Plans.jsx";
 import Success from "./Checkout/Success.jsx";
+import WelcomeEnterprise from "./Checkout/WelcomeEnterprise.jsx";
 
 function App() {
 	const { user, setUserInfo } = useStore();
@@ -58,7 +59,7 @@ function App() {
 				? [
 						{
 							index: true,
-							element: <Login loading={loading} />,
+							element: <Login />,
 							errorElement: <ErrorBoundary />,
 						},
 						{
@@ -101,6 +102,11 @@ function App() {
 						{
 							path: "/success",
 							element: <Success />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/welcomeenterprise",
+							element: <WelcomeEnterprise />,
 							errorElement: <ErrorBoundary />,
 						},
 						{

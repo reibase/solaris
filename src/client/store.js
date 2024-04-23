@@ -13,6 +13,7 @@ const initialState = {
 					avatar: "",
 					verifiedThru: "",
 					email: "",
+					plan: "n/a",
 				},
 		  },
 };

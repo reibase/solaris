@@ -24,6 +24,7 @@ import users from "./lib/users.js";
 
 import githubWebhook from "./webhooks/github/index.js";
 import gitlabWebhook from "./webhooks/gitlab/index.js";
+import stripeWebhook from "./webhooks/stripe/index.js";
 
 import addToSandbox from "./lib/utils/addToSandbox.js";
 
@@ -89,6 +90,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const events = NODE_ENV === "development" && smee.start();
 app.use("/api/webhooks/github", githubWebhook);
 app.use("/api/webhooks/gitlab", gitlabWebhook);
+app.use("/api/webhooks/stripe", stripeWebhook);
 NODE_ENV === "development" && events.close();
 
 /* Initialize Passport!  Also use passport.session() middleware, to support
@@ -98,7 +100,13 @@ app.use(passport.session());
 app.use(passport.authenticate("session"));
 passport.serializeUser(function (user, cb) {
 	process.nextTick(function () {
-		cb(null, { id: user.id, username: user.username, avatar: user.avatar });
+		cb(null, {
+			id: user.id,
+			username: user.username,
+			avatar: user.avatar,
+			plan: user.plan,
+			email: user.email,
+		});
 	});
 });
 passport.deserializeUser(function (obj, done) {
@@ -299,21 +307,39 @@ app.use("/api/projects", ensureAuthenticated, async function (req, res) {
 });
 
 app.post("/api/create-checkout-session", async (req, res) => {
-	const { mode, plan } = req.body;
-	console.log(req.body);
-	const session = await stripe.checkout.sessions.create({
-		line_items: [
-			{
-				price: "price_1P6x4URqpFR5AlPC9DPyDeyD",
-				quantity: 1,
-			},
-		],
-		mode: "subscription",
-		success_url: `http://localhost:3001/success`,
-		cancel_url: `http://localhost:3001/plans`,
-	});
-	console.log(session.url);
-	return res.json({ url: session.url });
+	const { mode, plan, userID } = req.body;
+
+	const userData = await User.findByPk(userID);
+	const userJSON = JSON.stringify(userData, null, 2);
+	const user = JSON.parse(userJSON);
+
+	if (plan === "free") {
+		await User.update({ plan: plan }, { where: { id: userID } });
+		return res.json({ url: "/success" });
+	}
+
+	if (plan === "enterprise") {
+		await User.update({ plan: "free" }, { where: { id: userID } });
+		return res.json({ url: "/welcomeenterprise" });
+	}
+
+	if (plan === "premium") {
+		await User.update({ plan: "premium" }, { where: { id: userID } });
+
+		const session = await stripe.checkout.sessions.create({
+			line_items: [
+				{
+					price: "price_1P6x4URqpFR5AlPC9DPyDeyD",
+					quantity: 1,
+				},
+			],
+			mode: "subscription",
+			customer_email: user.email,
+			success_url: `http://localhost:3001/success`,
+			cancel_url: `http://localhost:3001/plans`,
+		});
+		return res.json({ url: session.url });
+	}
 });
 
 app.use("*", (req, res) => {
@@ -322,7 +348,7 @@ app.use("*", (req, res) => {
 
 // Connect to database
 const syncDB = async () => {
-	await db.sync();
+	await db.sync({ force: true });
 	console.log("All models were synchronized successfully.");
 };
 

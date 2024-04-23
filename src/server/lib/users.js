@@ -29,6 +29,21 @@ const {
 const router = express.Router();
 
 /* Endpoint: /users */
+router.get("/:id", async (_req, res) => {
+	const id = _req.params.id;
+	try {
+		const userData = await User.findByPk(parseInt(id));
+		const userJSON = JSON.stringify(userData);
+		const user = JSON.parse(userJSON, null, 2);
+		if (user?.id) {
+			return res.send({ status: 200, user: user });
+		} else {
+			return res.send({ status: 404, user: "not found" });
+		}
+	} catch (error) {
+		return res.send({ status: 500, message: error.message });
+	}
+});
 
 router.get("/:username", async (_req, res) => {
 	const username = _req.params.username;

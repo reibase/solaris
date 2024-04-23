@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
+import Plans from "../../Checkout/Plans.jsx";
 import CodeHostLink from "./CodeHostLink.jsx";
 import ModeBadge from "./ModeBadge.jsx";
 import { useStore } from "../../store.js";
@@ -11,13 +12,17 @@ export default function Projects() {
 	const { getUserProjects } = httpService();
 	const navigate = useNavigate();
 
-	const { data: projects, isFetching } = useQuery(["userID", user.info.id], {
-		queryKey: ["userprojects"],
+	const { data: projects, isFetching } = useQuery({
+		queryKey: ["userprojects", { userID: user?.info.id }],
 		queryFn: getUserProjects,
 	});
 
 	if (isFetching) {
 		return "Loading";
+	}
+
+	if (user.info.plan === "n/a") {
+		return <Plans />;
 	}
 
 	return (
