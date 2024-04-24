@@ -49,6 +49,15 @@ router.post(
 					{ where: { email: event.data.object.email } }
 				);
 				break;
+			case "customer.subscription.updated":
+				console.log(event);
+				// await User.update(
+				// 	{
+				// 		customerID: event.data.object.id,
+				// 	},
+				// 	{ where: { email: event.data.object.email } }
+				// );
+				break;
 			default:
 				console.log(`Unhandled event type ${event.type}.`);
 		}

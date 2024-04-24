@@ -19,6 +19,7 @@ import getGitLabMergeRequest from "../codehost/gitlab/lib/getGitLabMergeRequest.
 import getGitLabMergeRequests from "../codehost/gitlab/lib/getGitLabMergeRequests.js";
 import createGitLabWebhook from "../codehost/gitlab/lib/createGitLabWebhook.js";
 import getUserBalance from "./utils/getUserBalance.js";
+import checkSubscription from "./utils/checkSubscription.js";
 
 const {
 	GITLAB_APP_CLIENT_ID,
@@ -73,6 +74,10 @@ router.get("/:id/projects", async (_req, res) => {
 		const json = JSON.stringify(data);
 		const user = JSON.parse(json, null, 2);
 
+		if (user.subscriptionID) {
+			const sub = await checkSubscription(user.subscriptionID);
+			console.log(sub);
+		}
 		const projects = await Promise.all(
 			user.projects.map(async (project) => {
 				const data = await Project.findByPk(project.id, {
@@ -233,6 +238,18 @@ router.post("/:id/projects", async (_req, res) => {
 	} = _req.body;
 	const owner = _req.params.id;
 	try {
+		const checkPlan = async (owner) => {
+			const userData = await User.findByPk(owner, {
+				include: { model: Projects },
+			});
+			const userJSON = JSON.stringify(userData);
+			const user = JSON.parse(userJSON);
+			if (user.plan === "free") {
+				if (user.projects.length >= 3) {
+					return { status: 401, message: "Project limit for plan reached." };
+				}
+			}
+		};
 		const project = await Project.create({
 			title,
 			owner,

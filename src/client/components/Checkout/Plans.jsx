@@ -2,15 +2,17 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { useStore } from "../store.js";
-import httpService from "../services/httpService.js";
+import { useStore } from "../../store.js";
+import httpService from "../../services/httpService.js";
 import Plan from "./Plan.jsx";
 
 export default function Votes() {
 	const { createCheckoutSession } = httpService();
 	const { user } = useStore();
 	const [clicked, setClicked] = useState(false);
-	const [selected, setSelected] = useState("free");
+	const [selected, setSelected] = useState(
+		user.info.plan !== "n/a" ? user.info.plan : "free"
+	);
 	const [enterprise, setEnterprise] = useState(false);
 	const plans = [
 		{
@@ -80,11 +82,11 @@ export default function Votes() {
 					Choose a plan
 				</span>
 				{enterprise ? (
-					<div className="self-center w-2/3 h-full leading-5 text-gray-500 flex flex-col items-center justify-center gap-6">
+					<div className="self-center w-2/3 h-full leading-5 text-gray-500 flex flex-col items-center justify-start pt-5 gap-6">
 						<h1 className="text-xl font-light text-center w-full text-gray-600 dark:text-white">
 							Solaris Enterprise
 						</h1>
-						<p className="dark:text-gray-300 leading-6">
+						<p className="dark:text-gray-300 leading-6 text-center">
 							Solaris Enterprise is an exclusive tier offering personal
 							collaboration to best integrate the features of Solaris with your
 							team's unique needs. Click request access and our team will be in

@@ -110,6 +110,29 @@ class HttpService {
 			console.log(error);
 		}
 	};
+	billingPortalSession = async ({ queryKey }) => {
+		const [_, args] = queryKey;
+		const { userID } = args;
+		try {
+			const data = await apiClient
+				.post(`/billing-portal-session`, {
+					userID: userID,
+					headers: {
+						"Content-Type": "application/json",
+					},
+				})
+				.then((res) => {
+					window.location.href = res.data.url;
+					return res;
+				})
+				.catch((err) => err.message);
+			setClicked(false);
+			return { status: 200 };
+		} catch (error) {
+			setClicked(false);
+			console.log(error);
+		}
+	};
 }
 
 const httpService = () => new HttpService();

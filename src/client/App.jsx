@@ -19,9 +19,9 @@ import Issues from "./components/Projects/Issues.jsx";
 import Votes from "./components/Projects/Votes.jsx";
 import Transfer from "./components/Projects/Transfer/Transfer.jsx";
 import Settings from "./components/Projects/Settings/Settings.jsx";
-import Plans from "./Checkout/Plans.jsx";
-import Success from "./Checkout/Success.jsx";
-import WelcomeEnterprise from "./Checkout/WelcomeEnterprise.jsx";
+import Plans from "./components/Checkout/Plans.jsx";
+import Success from "./components/Checkout/Success.jsx";
+import WelcomeEnterprise from "./components/Checkout/WelcomeEnterprise.jsx";
 
 function App() {
 	const { user, setUserInfo } = useStore();

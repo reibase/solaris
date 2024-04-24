@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
-import Plans from "../../Checkout/Plans.jsx";
+import Plans from "../Checkout/Plans.jsx";
 import CodeHostLink from "./CodeHostLink.jsx";
 import ModeBadge from "./ModeBadge.jsx";
 import { useStore } from "../../store.js";

@@ -39,6 +39,7 @@ const User = db.define("User", {
 	},
 	subscriptionID: {
 		type: DataTypes.STRING,
+		defaultValue: null,
 	},
 	plan: {
 		type: DataTypes.STRING,

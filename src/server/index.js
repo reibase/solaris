@@ -28,10 +28,6 @@ import stripeWebhook from "./webhooks/stripe/index.js";
 
 import addToSandbox from "./lib/utils/addToSandbox.js";
 
-const stripe = new Stripe(
-	"sk_test_51P6a4eRqpFR5AlPColHJ7UpH5Nbtfr5wHbCobBLUhmrgxQCREgMijjcQJ2rNoaHF8Fdb1hcaaKXhbshiJqaIaSQm00Gb1KedmV"
-);
-
 /* For testing webhooks in dev environment: */
 const smee = new SmeeClient({
 	source: "https://smee.io/HXzpMdreQh578AmR",
@@ -53,7 +49,11 @@ const {
 	GITLAB_OAUTH_APP_CALLBACK_URL,
 	GITLAB_OAUTH_APP_CLIENT_SECRET,
 	NODE_ENV,
+	PREMIUM_PRICE_ID,
+	STRIPE_SECRET_KEY,
 } = process.env;
+
+const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 const sequelizeStore = SequelizeStore(session.Store);
 const store = new sequelizeStore({ db });
@@ -99,6 +99,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.authenticate("session"));
 passport.serializeUser(function (user, cb) {
+	console.log("serialize called");
 	process.nextTick(function () {
 		cb(null, {
 			id: user.id,
@@ -267,6 +268,7 @@ app.get("/api/auth/logout", function (req, res) {
 
 /* Endpoint the client queries to establish if the user is logged in or not  */
 app.get("/api/auth/me", function (req, res) {
+	console.log("auth called");
 	if (!req.user) {
 		return res.send({ isLoggedIn: false });
 	}
@@ -329,7 +331,7 @@ app.post("/api/create-checkout-session", async (req, res) => {
 		const session = await stripe.checkout.sessions.create({
 			line_items: [
 				{
-					price: "price_1P6x4URqpFR5AlPC9DPyDeyD",
+					price: PREMIUM_PRICE_ID,
 					quantity: 1,
 				},
 			],
@@ -340,6 +342,26 @@ app.post("/api/create-checkout-session", async (req, res) => {
 		});
 		return res.json({ url: session.url });
 	}
+});
+
+app.post("/api/billing-portal-session", async (req, res) => {
+	const { mode, plan, userID } = req.body;
+
+	const userData = await User.findByPk(userID);
+	const userJSON = JSON.stringify(userData, null, 2);
+	const user = JSON.parse(userJSON);
+	if (!user?.customerID) {
+		return;
+	}
+	const session = await stripe.billingPortal.sessions.create({
+		customer: user.customerID,
+		return_url:
+			NODE_ENV === "development"
+				? "http://localhost:3001/profile"
+				: "https://solaris.reibase.rs/profile",
+	});
+
+	return res.json({ url: session.url });
 });
 
 app.use("*", (req, res) => {
