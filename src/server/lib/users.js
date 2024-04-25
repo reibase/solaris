@@ -32,10 +32,13 @@ const {
 const router = express.Router();
 
 /* Endpoint: /users */
-router.get("/:id", async (_req, res) => {
-	const id = _req.params.id;
+router.get("/:username", async (_req, res) => {
+	const username = _req.params.username;
+	console.log("username", username);
 	try {
-		const userData = await User.findByPk(parseInt(id));
+		const userData = await User.findOne({
+			where: { username: username },
+		});
 		const userJSON = JSON.stringify(userData);
 		const user = JSON.parse(userJSON, null, 2);
 		if (user?.id) {
@@ -44,16 +47,15 @@ router.get("/:id", async (_req, res) => {
 			return res.send({ status: 404, user: "not found" });
 		}
 	} catch (error) {
+		console.log(error);
 		return res.send({ status: 500, message: error.message });
 	}
 });
 
-router.get("/:username", async (_req, res) => {
-	const username = _req.params.username;
+router.get("/:id", async (_req, res) => {
+	const id = _req.params.id;
 	try {
-		const userData = await User.findOne({
-			where: { username: username },
-		});
+		const userData = await User.findByPk(parseInt(id));
 		const userJSON = JSON.stringify(userData);
 		const user = JSON.parse(userJSON, null, 2);
 		if (user?.id) {
@@ -75,7 +77,6 @@ router.get("/:id/projects", async (_req, res) => {
 		});
 		const json = JSON.stringify(data);
 		const user = JSON.parse(json, null, 2);
-		console.log(user);
 		// if (user.subscriptionID) {
 		// 	const sub = await checkSubscription(user.subscriptionID);
 		// 	// ?
@@ -242,7 +243,6 @@ router.post("/:id/projects", async (_req, res) => {
 	const owner = _req.params.id;
 	try {
 		const limit = await projectLimit(owner);
-		console.log("limit var:", limit);
 		if (limit) {
 			return res.status(401).json({ message: "Project limit reached." });
 		}
@@ -537,7 +537,10 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 
 		/* Logic for adding a new member to the project based on their id */
 		if (newMember?.id) {
-			if (projectMemberLimit(_req.params.projectID)) {
+			const projectMemberLimitExceeded = await projectMemberLimit(
+				_req.params.projectID
+			);
+			if (projectMemberLimitExceeded) {
 				return res.send({ status: 401, message: "Team member limit reached." });
 			}
 			const proj = await Project.findByPk(parseInt(_req.params.projectID));

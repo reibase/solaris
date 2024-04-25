@@ -1,4 +1,4 @@
-import { Project } from "../../../db/models/index.js";
+import { User, Project } from "../../../db/models/index.js";
 
 export default async function projectMemberLimit(projectID) {
 	const projectData = await Project.findByPk(projectID, {
