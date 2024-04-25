@@ -1,13 +1,14 @@
 // This is your test secret API key.
 import Stripe from "stripe";
 import express from "express";
+import "dotenv/config";
 
 import { User } from "../../../db/models/index.js";
 
 const router = express.Router();
-const stripe = new Stripe(
-	"sk_test_51P6a4eRqpFR5AlPColHJ7UpH5Nbtfr5wHbCobBLUhmrgxQCREgMijjcQJ2rNoaHF8Fdb1hcaaKXhbshiJqaIaSQm00Gb1KedmV"
-);
+
+const { STRIPE_SECRET_KEY } = process.env;
+const stripe = new Stripe(STRIPE_SECRET_KEY);
 const endpointSecret = false;
 
 router.post(
