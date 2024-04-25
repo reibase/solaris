@@ -14,7 +14,6 @@ import SequelizeStore from "connect-session-sequelize";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
 import Stripe from "stripe";
-import cors from "cors";
 
 import db from "../db/index.js";
 import { User } from "../db/models/index.js";
@@ -59,7 +58,6 @@ const sequelizeStore = SequelizeStore(session.Store);
 const store = new sequelizeStore({ db });
 
 const app = express();
-app.use(cors());
 
 const server = createServer(app);
 const io = new Server(server);
