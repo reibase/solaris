@@ -20,7 +20,7 @@ export default function Projects() {
 	if (isFetching) {
 		return "Loading";
 	}
-
+	console.log(projects);
 	if (user.info.plan === "n/a") {
 		return <Plans />;
 	}

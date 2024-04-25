@@ -20,6 +20,8 @@ import getGitLabMergeRequests from "../codehost/gitlab/lib/getGitLabMergeRequest
 import createGitLabWebhook from "../codehost/gitlab/lib/createGitLabWebhook.js";
 import getUserBalance from "./utils/getUserBalance.js";
 import checkSubscription from "./utils/checkSubscription.js";
+import projectLimit from "./utils/projectLimit.js";
+import projectMemberLimit from "./utils/projectMemberLimit.js";
 
 const {
 	GITLAB_APP_CLIENT_ID,
@@ -73,11 +75,12 @@ router.get("/:id/projects", async (_req, res) => {
 		});
 		const json = JSON.stringify(data);
 		const user = JSON.parse(json, null, 2);
-
-		if (user.subscriptionID) {
-			const sub = await checkSubscription(user.subscriptionID);
-			console.log(sub);
-		}
+		console.log(user);
+		// if (user.subscriptionID) {
+		// 	const sub = await checkSubscription(user.subscriptionID);
+		// 	// ?
+		// 	console.log(sub);
+		// }
 		const projects = await Promise.all(
 			user.projects.map(async (project) => {
 				const data = await Project.findByPk(project.id, {
@@ -238,18 +241,11 @@ router.post("/:id/projects", async (_req, res) => {
 	} = _req.body;
 	const owner = _req.params.id;
 	try {
-		const checkPlan = async (owner) => {
-			const userData = await User.findByPk(owner, {
-				include: { model: Projects },
-			});
-			const userJSON = JSON.stringify(userData);
-			const user = JSON.parse(userJSON);
-			if (user.plan === "free") {
-				if (user.projects.length >= 3) {
-					return { status: 401, message: "Project limit for plan reached." };
-				}
-			}
-		};
+		const limit = await projectLimit(owner);
+		console.log("limit var:", limit);
+		if (limit) {
+			return res.status(401).json({ message: "Project limit reached." });
+		}
 		const project = await Project.create({
 			title,
 			owner,
@@ -264,7 +260,6 @@ router.post("/:id/projects", async (_req, res) => {
 			creditAmount,
 		});
 		await project.addMember(owner);
-
 		/* Create a transfer entry which is the initial balance, credited to the maintainer. */
 		const initial = await Transfer.create({
 			sender: owner,
@@ -526,11 +521,7 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 				await transfer.setProject(parseInt(_req.params.projectID));
 			}
 		}
-		/* Logic for adding a new member to the project based on their id */
-		if (newMember?.id) {
-			const proj = await Project.findByPk(parseInt(_req.params.projectID));
-			await proj.addMember(newMember.id);
-		}
+
 		/* Remove user based on their id. Their credits go back to the maintainer. */
 		if (removeMember?.id) {
 			let bal = await getUserBalance(removeMember.id, _req.params.projectID);
@@ -542,6 +533,15 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 			});
 			const proj = await Project.findByPk(parseInt(_req.params.projectID));
 			await proj.removeMember(removeMember.id);
+		}
+
+		/* Logic for adding a new member to the project based on their id */
+		if (newMember?.id) {
+			if (projectMemberLimit(_req.params.projectID)) {
+				return res.send({ status: 401, message: "Team member limit reached." });
+			}
+			const proj = await Project.findByPk(parseInt(_req.params.projectID));
+			await proj.addMember(newMember.id);
 		}
 
 		return res.send({ status: 200, data: project });
