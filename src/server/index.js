@@ -99,7 +99,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.authenticate("session"));
 passport.serializeUser(function (user, cb) {
-	console.log("serialize called");
 	process.nextTick(function () {
 		cb(null, {
 			id: user.id,
@@ -176,7 +175,6 @@ passport.use(
 				},
 			});
 			if (created) {
-				console.log("user id", user.id);
 				await addToSandbox(user.id);
 			}
 			return cb(null, user);
@@ -268,7 +266,6 @@ app.get("/api/auth/logout", function (req, res) {
 
 /* Endpoint the client queries to establish if the user is logged in or not  */
 app.get("/api/auth/me", function (req, res) {
-	console.log("auth called");
 	if (!req.user) {
 		return res.send({ isLoggedIn: false });
 	}
@@ -370,7 +367,7 @@ app.use("*", (req, res) => {
 
 // Connect to database
 const syncDB = async () => {
-	await db.sync();
+	await db.sync({ force: true });
 	console.log("All models were synchronized successfully.");
 };
 

@@ -23,25 +23,27 @@ export default function AddUser({
 		try {
 			setRecipientErrorText("");
 			setRecipientData({ recipientFound: false });
-			await axios.get(`/api/users/${recipientName.current}`).then((res) => {
-				console.log(res);
-				if (res.data.status === 200) {
-					setRecipientData({
-						recipient: res.data.user.id,
-						recipientName: res.data.user.username,
-						recipientFound: true,
-					});
-					recipientName.current = "";
-					setRecipientErrorText("");
-					setUpdatedProject({
-						...updatedProject,
-						newMember: { id: res.data.user.id },
-					});
-				} else {
-					setRecipientErrorText("User not found");
-					setRecipientData({ recipientFound: false });
-				}
-			});
+			await axios
+				.get(`/api/users/username/${recipientName.current}`)
+				.then((res) => {
+					console.log(res);
+					if (res.data.status === 200) {
+						setRecipientData({
+							recipient: res.data.user.id,
+							recipientName: res.data.user.username,
+							recipientFound: true,
+						});
+						recipientName.current = "";
+						setRecipientErrorText("");
+						setUpdatedProject({
+							...updatedProject,
+							newMember: { id: res.data.user.id },
+						});
+					} else {
+						setRecipientErrorText("User not found");
+						setRecipientData({ recipientFound: false });
+					}
+				});
 		} catch (error) {
 			console.log(error);
 		}

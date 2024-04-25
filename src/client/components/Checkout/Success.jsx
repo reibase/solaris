@@ -17,7 +17,7 @@ export default function Success() {
 		queryFn: getUser,
 	});
 	useEffect(() => {
-		console.log(userData);
+		console.log("ud:", userData);
 
 		if (userData?.user) {
 			let data = { isLoggedIn: true, info: userData?.user };
@@ -25,6 +25,7 @@ export default function Success() {
 			localStorage.setItem("user", JSON.stringify(data));
 		}
 	}, [userData]);
+	console.log("ud:", userData);
 
 	return (
 		<div className="flex w-full h-full flex items-center justify-center">

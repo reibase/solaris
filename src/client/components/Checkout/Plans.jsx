@@ -10,9 +10,7 @@ export default function Votes() {
 	const { createCheckoutSession } = httpService();
 	const { user } = useStore();
 	const [clicked, setClicked] = useState(false);
-	const [selected, setSelected] = useState(
-		user.info.plan !== "n/a" ? user.info.plan : "free"
-	);
+	const [selected, setSelected] = useState(user.info.plan || "free");
 	const [enterprise, setEnterprise] = useState(false);
 	const plans = [
 		{

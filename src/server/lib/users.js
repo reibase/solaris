@@ -32,7 +32,7 @@ const {
 const router = express.Router();
 
 /* Endpoint: /users */
-router.get("/:username", async (_req, res) => {
+router.get("/username/:username", async (_req, res) => {
 	const username = _req.params.username;
 	console.log("username", username);
 	try {

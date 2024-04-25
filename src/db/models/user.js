@@ -43,7 +43,7 @@ const User = db.define("User", {
 	},
 	plan: {
 		type: DataTypes.STRING,
-		defaultValue: "n/a",
+		defaultValue: null,
 	},
 });
 
