@@ -48,7 +48,7 @@ const {
 	GITLAB_OAUTH_APP_CALLBACK_URL,
 	GITLAB_OAUTH_APP_CLIENT_SECRET,
 	NODE_ENV,
-	PREMIUM_PRICE_ID,
+	STRIPE_PREMIUM_PRICE_ID,
 	STRIPE_SECRET_KEY,
 } = process.env;
 
@@ -326,7 +326,7 @@ app.post("/api/create-checkout-session", async (req, res) => {
 		const session = await stripe.checkout.sessions.create({
 			line_items: [
 				{
-					price: PREMIUM_PRICE_ID,
+					price: STRIPE_PREMIUM_PRICE_ID,
 					quantity: 1,
 				},
 			],
@@ -365,7 +365,7 @@ app.use("*", (req, res) => {
 
 // Connect to database
 const syncDB = async () => {
-	NODE_ENV === "development" && (await db.sync());
+	NODE_ENV === "development" && (await db.sync({ force: true }));
 	console.log("All models were synchronized successfully.");
 };
 

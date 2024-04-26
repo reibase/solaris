@@ -19,7 +19,7 @@ import getGitLabMergeRequest from "../codehost/gitlab/lib/getGitLabMergeRequest.
 import getGitLabMergeRequests from "../codehost/gitlab/lib/getGitLabMergeRequests.js";
 import createGitLabWebhook from "../codehost/gitlab/lib/createGitLabWebhook.js";
 import getUserBalance from "./utils/getUserBalance.js";
-import checkSubscription from "./utils/checkSubscription.js";
+import getSubscription from "./utils/getSubscription.js";
 import projectLimit from "./utils/projectLimit.js";
 import projectMemberLimit from "./utils/projectMemberLimit.js";
 
@@ -76,11 +76,17 @@ router.get("/:id/projects", async (_req, res) => {
 		});
 		const json = JSON.stringify(data);
 		const user = JSON.parse(json, null, 2);
-		// if (user.subscriptionID) {
-		// 	const sub = await checkSubscription(user.subscriptionID);
-		// 	// ?
-		// 	console.log(sub);
-		// }
+
+		// If a user's plan is inactive, downgrade them to the free tier:
+		if (user.subscriptionID) {
+			const subscription = await getSubscription(user.subscriptionID);
+			if (subscription?.items?.data[0]?.plan.active === false) {
+				const data = await User.update(
+					{ plan: "free" },
+					{ where: { id: user.id } }
+				);
+			}
+		}
 		const projects = await Promise.all(
 			user.projects.map(async (project) => {
 				const data = await Project.findByPk(project.id, {

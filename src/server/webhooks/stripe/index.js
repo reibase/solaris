@@ -7,9 +7,10 @@ import { User } from "../../../db/models/index.js";
 
 const router = express.Router();
 
-const { STRIPE_SECRET_KEY } = process.env;
+// Endpoint secret only in production:
+const { STRIPE_SECRET_KEY, STRIPE_ENDPOINT_SECRET } = process.env;
+
 const stripe = new Stripe(STRIPE_SECRET_KEY);
-const endpointSecret = false;
 
 router.post(
 	"/",
@@ -18,14 +19,14 @@ router.post(
 		let event = request.body;
 		// Only verify the event if you have an endpoint secret defined.
 		// Otherwise use the basic event deserialized with JSON.parse
-		if (endpointSecret) {
+		if (STRIPE_ENDPOINT_SECRET) {
 			// Get the signature sent by Stripe
 			const signature = request.headers["stripe-signature"];
 			try {
 				event = stripe.webhooks.constructEvent(
 					request.body,
 					signature,
-					endpointSecret
+					STRIPE_ENDPOINT_SECRET
 				);
 			} catch (err) {
 				console.log(`⚠️  Webhook signature verification failed.`, err.message);

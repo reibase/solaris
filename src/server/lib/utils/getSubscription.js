@@ -4,7 +4,7 @@ import "dotenv/config";
 const { STRIPE_SECRET_KEY } = process.env;
 const stripe = new Stripe(STRIPE_SECRET_KEY);
 
-export default async function checkSubscription(subscriptionID) {
+export default async function getSubscription(subscriptionID) {
 	try {
 		const subscription = await stripe.subscriptions.retrieve(subscriptionID);
 		return subscription;

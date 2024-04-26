@@ -23,7 +23,7 @@ export default function Projects() {
 	if (!user.info.plan) {
 		return <Plans />;
 	}
-	console.log(user.info.plan);
+
 	return (
 		<div className="w-full h-full p-3 lg:px-4 shadow-lg rounded-lg text-sm flex flex-col items-center bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] overflow-auto">
 			<div className="flex mb-6 flex-row w-full justify-between">
