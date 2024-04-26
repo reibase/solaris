@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import emailjs from "@emailjs/browser";
 
 import { useStore } from "../../store.js";
 import httpService from "../../services/httpService.js";
@@ -40,6 +41,7 @@ export default function Votes() {
 			],
 		},
 	];
+	const form = useRef();
 
 	const { data: planData, isFetching } = useQuery({
 		queryKey: [
@@ -69,8 +71,19 @@ export default function Votes() {
 	};
 
 	const enterpriseHandler = () => {
-		setEnterprise(false);
-		setClicked(true);
+		emailjs
+			.sendForm("service_wmtm7u2", "template_v1ulh7q", form.current, {
+				publicKey: "user_kDFY4AFTuoji3GQqaGDsn",
+			})
+			.then(
+				() => {
+					setEnterprise(false);
+					setClicked(true);
+				},
+				(error) => {
+					console.log("FAILED...", error);
+				}
+			);
 	};
 
 	return (
@@ -91,7 +104,7 @@ export default function Votes() {
 							touch with you by email to see how Solaris can take your
 							development to the next level.
 						</p>
-						<p className="dark:text-gray-300">
+						<p>
 							We will contact you at{" "}
 							<span className="font-bold">{user.info.email}</span>
 						</p>
@@ -103,6 +116,10 @@ export default function Votes() {
 								Request Enterprise Access
 							</button>
 						</span>
+						{/* Email JS requires the element be a form for this implementation */}
+						<form className="hidden" ref={form}>
+							<input type="text" name="user_email" value={user.info.email} />
+						</form>
 					</div>
 				) : (
 					<>
