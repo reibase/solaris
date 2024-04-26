@@ -88,7 +88,6 @@ class HttpService {
 		const [_, args] = queryKey;
 		const { userID, plan, mode, setClicked } = args;
 		try {
-			console.log(plan);
 			const data = await apiClient
 				.post(`/create-checkout-session`, {
 					userID: userID,

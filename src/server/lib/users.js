@@ -34,7 +34,6 @@ const router = express.Router();
 /* Endpoint: /users */
 router.get("/username/:username", async (_req, res) => {
 	const username = _req.params.username;
-	console.log("username", username);
 	try {
 		const userData = await User.findOne({
 			where: { username: username },
