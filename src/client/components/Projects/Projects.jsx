@@ -7,16 +7,19 @@ import { useStore } from "../../store.js";
 import httpService from "../../services/httpService.js";
 
 export default function Projects() {
-	const { user } = useStore();
 	const { getUserProjects } = httpService();
+	const { user } = useStore();
 	const navigate = useNavigate();
 
-	const { data: projects, isFetching } = useQuery(["userID", user.info.id], {
-		queryKey: ["userprojects"],
-		queryFn: getUserProjects,
-	});
+	const { data: projects, isFetching: isFetchingProjects } = useQuery(
+		["userID", user.info.id],
+		{
+			queryKey: ["userprojects"],
+			queryFn: getUserProjects,
+		}
+	);
 
-	if (isFetching) {
+	if (isFetchingProjects) {
 		return "Loading";
 	}
 

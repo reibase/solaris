@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +13,7 @@ import httpService from "../../services/httpService.js";
 
 export default function Issues() {
 	const { getUserProject } = httpService();
-	const { user } = useStore();
+	const { user, currentProject, setCurrentProject } = useStore();
 	let { id } = useParams();
 	const navigate = useNavigate();
 
@@ -21,6 +21,13 @@ export default function Issues() {
 		["project", { userID: user?.info.id, projectID: id }],
 		getUserProject
 	);
+
+	useEffect(() => {
+		if (project?.id) {
+			console.log("setting");
+			setCurrentProject(project);
+		}
+	}, [project]);
 
 	let issueCategory = {
 		closed: [
@@ -39,18 +46,19 @@ export default function Issues() {
 			"bg-[#1C7737] dark:bg-[#bg-emerald-800]",
 		],
 	};
+
 	const handleCategoryClick = (category) => {
 		setCategory(category);
 	};
 
 	const [category, setCategory] = useState("open");
-	if (isFetching) {
+	if (!currentProject.id) {
 		return "Loading";
 	}
+	console.log("currentProject:", currentProject);
 	return (
 		<div className="flex w-full h-full flex-col gap-[10px]">
-			<ProjectHeading project={project} />
-
+			<ProjectHeading />
 			<div className="w-full h-full p-3 lg:px-4 shadow-lg rounded-lg text-sm flex flex-col items-center bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] overflow-auto">
 				<div className="flex w-full justify-start gap-[15px] py-[10px]">
 					<span
@@ -85,8 +93,8 @@ export default function Issues() {
 					</span>
 				</div>
 
-				{project?.issues[category].length ? (
-					project?.issues[category].map((pullRequest, index) => (
+				{currentProject?.issues[category].length ? (
+					currentProject?.issues[category].map((pullRequest, index) => (
 						<div
 							key={pullRequest.id}
 							className="w-full flex row border-b border-[#D4D4D4] py-4 lg:px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]"
@@ -100,7 +108,7 @@ export default function Issues() {
 										<span
 											onClick={() =>
 												navigate(
-													`/projects/${project?.id}/issues/${pullRequest.number}`
+													`/projects/${currentProject?.id}/issues/${pullRequest.number}`
 												)
 											}
 											className="font-semibold lg:text-[14px] truncate dark:text-white cursor-pointer"
@@ -111,7 +119,7 @@ export default function Issues() {
 									<span
 										onClick={() =>
 											navigate(
-												`/projects/${project?.id}/issues/${pullRequest.number}`
+												`/projects/${currentProject?.id}/issues/${pullRequest.number}`
 											)
 										}
 										className="text-slate-500 text-[11px] dark:text-[#8B929F]"
@@ -123,7 +131,7 @@ export default function Issues() {
 									<div className="w-full flex-row items-end align-baseline mt-3 hidden lg:flex">
 										<CodeHostLink
 											url={pullRequest?.url}
-											host={project?.host}
+											host={currentProject?.host}
 											text={
 												"#" +
 												" " +
@@ -137,13 +145,13 @@ export default function Issues() {
 								<div
 									onClick={() =>
 										navigate(
-											`/projects/${project?.id}/issues/${pullRequest.number}`
+											`/projects/${currentProject?.id}/issues/${pullRequest.number}`
 										)
 									}
 									className="mt-2 w-full lg:ml-14 lg:mt-0"
 								>
 									<ProgressBar
-										quorum={project?.quorum}
+										quorum={currentProject?.quorum}
 										totalYesVotes={pullRequest?.totalYesVotes}
 										totalNoVotes={pullRequest?.totalNoVotes}
 										yesPercent={pullRequest.totalYesPercent}
@@ -155,7 +163,7 @@ export default function Issues() {
 							<div
 								onClick={() =>
 									navigate(
-										`/projects/${project?.id}/issues/${pullRequest.number}`
+										`/projects/${currentProject?.id}/issues/${pullRequest.number}`
 									)
 								}
 								className="w-14 flex justify-end"
@@ -163,7 +171,7 @@ export default function Issues() {
 								<img
 									onClick={() =>
 										navigate(
-											`/projects/${project?.id}/issues/${pullRequest.number}`
+											`/projects/${currentProject?.id}/issues/${pullRequest.number}`
 										)
 									}
 									src={Forward}

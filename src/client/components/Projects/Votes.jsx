@@ -12,11 +12,10 @@ import CodeHostLink from "./CodeHostLink.jsx";
 import httpService from "../../services/httpService.js";
 
 export default function Votes() {
-	const { getUserProject, getIssue, getMergeableStatus, postVote } =
-		httpService();
+	const { getIssue, getMergeableStatus, postVote } = httpService();
 	const [voting, setVoting] = useState(false);
 	const side = useRef(null);
-	const { user } = useStore();
+	const { user, currentProject, currentIssue } = useStore();
 	let { id, issueID } = useParams();
 
 	const { data: mergeable, isFetching: isFetchingMergeableStatus } = useQuery({
@@ -26,11 +25,6 @@ export default function Votes() {
 		],
 		queryFn: getMergeableStatus,
 	});
-
-	const { data: project } = useQuery(
-		["project", { userID: user?.info.id, projectID: id }],
-		getUserProject
-	);
 
 	const {
 		data: issue,
@@ -84,16 +78,16 @@ export default function Votes() {
 	const chosenSide = issue?.user.side === true ? "yes" : "no";
 
 	const text = issue?.user.voted
-		? `You voted ${chosenSide} on ${issue?.user.createdAt.slice(0, 10)}`
+		? `You voted ${chosenSide} on ${issue?.user?.createdAt.slice(0, 10)}`
 		: !mergeable
 		? "This pull request is not voteable."
 		: "Vote yes to merge or vote No to close this pull request.";
 
 	const disabled = !mergeable ? true : issue?.user.voted ? true : false;
-
+	console.log(currentProject);
 	return (
 		<div className="flex w-full h-full flex-col gap-[10px]">
-			<ProjectHeading project={project} />
+			<ProjectHeading />
 
 			{!issue?.title ? (
 				<div className="p-4 block w-full h-full shadow-lg rounded-lg text-sm bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
@@ -107,12 +101,12 @@ export default function Votes() {
 								#{issue?.number} {issue?.title}
 							</span>
 							<span className="text-gray-600 mb-2 text-[11px] dark:text-[#8B929F]">
-								Created on {formatDate(issue?.createdAt.slice(0, 10))} by{" "}
+								Created on {formatDate(issue?.createdAt?.slice(0, 10))} by{" "}
 								{issue?.author}
 							</span>
 							<CodeHostLink
 								url={issue?.url}
-								host={project?.host}
+								host={currentProject?.host}
 								text={"#" + " " + issue?.number + " " + issue?.title}
 							/>
 						</div>
@@ -162,7 +156,7 @@ export default function Votes() {
 
 					<div className="flex h-content w-full flex-col text-[#8B929F]">
 						<ProgressBar
-							quorum={project?.quorum}
+							quorum={currentProject?.quorum}
 							totalYesVotes={issue?.voteData.totalYesVotes}
 							totalNoVotes={issue?.voteData.totalNoVotes}
 							yesPercent={issue?.voteData.totalYesPercent}

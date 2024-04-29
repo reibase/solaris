@@ -7,6 +7,7 @@ class HttpService {
 			const { data } = await apiClient
 				.get(`/users/${userID}/projects`)
 				.then(({ data }) => data);
+			console.log(data);
 			return data;
 		} catch (error) {
 			console.log(error);
@@ -20,6 +21,7 @@ class HttpService {
 			const { data } = await apiClient
 				.get(`/users/${userID}/projects/${projectID}`)
 				.then(({ data }) => data);
+			console.log("data", data);
 			return data;
 		} catch (error) {
 			console.log(error);

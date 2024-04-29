@@ -15,6 +15,8 @@ const initialState = {
 					email: "",
 				},
 		  },
+	currentProject: {},
+	currentIssue: {},
 };
 
 export const useStore = create((set) => ({
@@ -24,4 +26,8 @@ export const useStore = create((set) => ({
 	toggleDark: () => set((state) => ({ dark: !state.dark })),
 	setUserInfo: (newUserInfo) =>
 		set((state) => ({ user: { ...state.user, ...newUserInfo } })),
+	setCurrentProject: (newCurrentProject) =>
+		set(() => ({
+			currentProject: { ...state.currentProject, ...newCurrentProject },
+		})),
 }));

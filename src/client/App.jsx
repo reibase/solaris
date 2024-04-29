@@ -19,9 +19,14 @@ import Issues from "./components/Projects/Issues.jsx";
 import Votes from "./components/Projects/Votes.jsx";
 import Transfer from "./components/Projects/Transfer/Transfer.jsx";
 import Settings from "./components/Projects/Settings/Settings.jsx";
+import { useParams } from "react-router-dom";
+import httpService from "./services/httpService.js";
 
 function App() {
+	const { getUserProjects, getUserProject, getIssue, getMergeableStatus } =
+		httpService();
 	const { user, setUserInfo } = useStore();
+	let { currentProjectID, currentIssueID } = useParams();
 
 	const getUser = async () => {
 		try {
@@ -29,23 +34,22 @@ function App() {
 				console.log(res);
 				return res;
 			});
-			console.log(data);
 			return data;
 		} catch (error) {
 			console.log(error);
 		}
 	};
 
-	const { data, isFetching: loading } = useQuery({
+	const { data: userData, isFetching: gettingUser } = useQuery({
 		queryKey: ["userinfo"],
 		queryFn: getUser,
 		enabled: !user.isLoggedIn,
 	});
 
-	if (data?.isLoggedIn && !user.isLoggedIn) {
-		console.log("data", data);
-		setUserInfo(data);
-		localStorage.setItem("user", JSON.stringify(data));
+	if (userData?.isLoggedIn && !user.isLoggedIn) {
+		console.log(userData);
+		setUserInfo(userData);
+		localStorage.setItem("user", JSON.stringify(userData));
 	}
 
 	const router = createBrowserRouter([
@@ -56,7 +60,7 @@ function App() {
 				? [
 						{
 							index: true,
-							element: <Login loading={loading} />,
+							element: <Login gettingUser={gettingUser} />,
 							errorElement: <ErrorBoundary />,
 						},
 						{
@@ -83,7 +87,7 @@ function App() {
 				: [
 						{
 							index: true,
-							element: <Projects />,
+							element: <Projects getUserProjects={getUserProjects} />,
 							errorElement: <ErrorBoundary />,
 						},
 						{
@@ -151,7 +155,7 @@ function App() {
 			</div>
 		);
 	}
-	if (loading) {
+	if (gettingUser) {
 		return "loading";
 	}
 	return <RouterProvider router={router} />;
