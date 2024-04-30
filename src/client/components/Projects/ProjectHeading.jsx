@@ -15,7 +15,7 @@ export default function ProjectHeading() {
 
 	const { dark, user, currentProject } = useStore();
 	let { id } = useParams();
-	console.log("CP", currentProject);
+
 	if (!currentProject?.id) {
 		return "Loading";
 	}

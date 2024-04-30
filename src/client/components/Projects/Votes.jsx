@@ -84,7 +84,7 @@ export default function Votes() {
 		: "Vote yes to merge or vote No to close this pull request.";
 
 	const disabled = !mergeable ? true : issue?.user.voted ? true : false;
-	console.log(currentProject);
+
 	return (
 		<div className="flex w-full h-full flex-col gap-[10px]">
 			<ProjectHeading />

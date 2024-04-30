@@ -25,13 +25,19 @@ import httpService from "./services/httpService.js";
 function App() {
 	const { getUserProjects, getUserProject, getIssue, getMergeableStatus } =
 		httpService();
-	const { user, setUserInfo } = useStore();
+	const { user, dark, setUserInfo } = useStore();
 	let { currentProjectID, currentIssueID } = useParams();
+
+	useEffect(() => {
+		console.log(dark);
+		dark === "true"
+			? document.documentElement.classList.add("dark")
+			: document.documentElement.classList.remove("dark");
+	}, [dark]);
 
 	const getUser = async () => {
 		try {
 			const { data } = await axios.get("/api/auth/me").then((res) => {
-				console.log(res);
 				return res;
 			});
 			return data;
@@ -47,9 +53,7 @@ function App() {
 	});
 
 	if (userData?.isLoggedIn && !user.isLoggedIn) {
-		console.log(userData);
 		setUserInfo(userData);
-		localStorage.setItem("user", JSON.stringify(userData));
 	}
 
 	const router = createBrowserRouter([

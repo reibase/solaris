@@ -55,7 +55,6 @@ export default function Issues() {
 	if (!currentProject.id) {
 		return "Loading";
 	}
-	console.log("currentProject:", currentProject);
 	return (
 		<div className="flex w-full h-full flex-col gap-[10px]">
 			<ProjectHeading />
