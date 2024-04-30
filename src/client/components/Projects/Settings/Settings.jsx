@@ -15,9 +15,9 @@ import SettingsNav from "./SettingsNav.jsx";
 import httpService from "../../../services/httpService.js";
 
 export default function Settings() {
-	let { id } = useParams();
+	let { projectID } = useParams();
 	const navigate = useNavigate();
-	const { dark, user, currentProject } = useStore();
+	const { dark, user } = useStore();
 	const [unsaved, setUnsaved] = useState(false);
 	const { getUserProject } = httpService();
 	const [errorText, setErrorText] = useState("");
@@ -27,28 +27,37 @@ export default function Settings() {
 	const [ownerBalance, setOwnerBalance] = useState(0);
 	const [balances, setBalances] = useState({});
 
+	const {
+		data: project,
+		isFetching,
+		refetch: refetchProject,
+	} = useQuery(
+		["project", { userID: user?.info.id, projectID: projectID }],
+		getUserProject
+	);
+
 	useEffect(() => {
-		setUpdatedProject(currentProject);
-		setMembers(currentProject?.members);
-		setCurrentUser(currentProject?.user);
-		setOwnerBalance(currentProject?.user?.balance);
-	}, [currentProject]);
+		setUpdatedProject(project);
+		setMembers(project?.members);
+		setCurrentUser(project?.user);
+		setOwnerBalance(project?.user?.balance);
+	}, [project]);
 
 	useEffect(() => {
 		let obj = {};
-		currentProject?.members.length &&
-			currentProject.members.forEach((mem) => {
+		project?.members.length &&
+			project.members.forEach((mem) => {
 				if (mem.id !== user.info.id) {
 					obj[mem.id] = mem.balance;
 				}
 			});
 		setBalances(obj);
-	}, [currentProject]);
+	}, [project]);
 
 	const updateProject = async (body = updatedProject) => {
 		try {
 			await axios
-				.put(`/api/users/${id}/projects/${currentProject?.id}`, body)
+				.put(`/api/users/${user?.info.id}/projects/${projectID}`, body)
 				.then((res) => {
 					if (res.data.status === 200) {
 						refetchProject();
@@ -63,7 +72,7 @@ export default function Settings() {
 	const deleteHandler = async (e) => {
 		try {
 			await axios
-				.delete(`/api/users/${user.info.id}/projects/${projectID}`)
+				.delete(`/api/users/${user.info.id}/projects/${id}`)
 				.then((res) => {
 					console.log(res);
 					if (res.data.status === 200) {
@@ -76,7 +85,7 @@ export default function Settings() {
 	};
 
 	useEffect(() => {
-		if (updatedProject?.quorum !== currentProject?.quorum) {
+		if (updatedProject?.quorum !== project?.quorum) {
 			setUnsaved(true);
 			return;
 		}
@@ -90,7 +99,7 @@ export default function Settings() {
 
 	return (
 		<div className="w-full h-full flex flex-col">
-			<ProjectHeading />
+			<ProjectHeading project={project} />
 			<div className="w-full h-full overflow-y-auto flex flex-col lg:flex-row p-4 shadow-lg rounded-lg text-sm bg-white/90 dark:bg-[#202530] border border-1 dark:border-[#373D47]">
 				<SettingsNav />
 				<div className="flex w-full lg:mx-4 flex-col gap-1">
