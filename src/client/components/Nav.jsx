@@ -13,7 +13,10 @@ const Nav = () => {
 
 	const themeHandler = () => {
 		toggleDark();
-		document.documentElement.classList.toggle("dark");
+
+		localStorage.theme === "light"
+			? document.documentElement.classList.add("dark")
+			: document.documentElement.classList.remove("dark");
 
 		localStorage.theme === "dark"
 			? (localStorage.theme = "light")
