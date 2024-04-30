@@ -17,42 +17,45 @@ import httpService from "../../../services/httpService.js";
 export default function Settings() {
 	let { projectID } = useParams();
 	const navigate = useNavigate();
-	const { dark, user } = useStore();
+	const { dark, currentProject, setCurrentProject, user } = useStore();
 	const [unsaved, setUnsaved] = useState(false);
-	const { getUserProject } = httpService();
+	const { getUserProject, deleteProject } = httpService();
 	const [errorText, setErrorText] = useState("");
 	const [updatedProject, setUpdatedProject] = useState({});
 	const [currentUser, setCurrentUser] = useState({});
 	const [members, setMembers] = useState([]);
 	const [ownerBalance, setOwnerBalance] = useState(0);
 	const [balances, setBalances] = useState({});
+	const [updated, setUpdated] = useState(false);
 
-	const {
-		data: project,
-		isFetching,
-		refetch: refetchProject,
-	} = useQuery(
-		["project", { userID: user?.info.id, projectID: projectID }],
-		getUserProject
-	);
+	const { data: savedProject } = useQuery({
+		queryKey: ["project", { userID: user?.info.id, projectID: projectID }],
+		queryFn: getUserProject,
+		manual: true,
+		enabled: updated,
+	});
 
 	useEffect(() => {
-		setUpdatedProject(project);
-		setMembers(project?.members);
-		setCurrentUser(project?.user);
-		setOwnerBalance(project?.user?.balance);
-	}, [project]);
+		if (savedProject?.id) setCurrentProject(savedProject);
+	}, [savedProject]);
+
+	useEffect(() => {
+		setUpdatedProject(currentProject);
+		setMembers(currentProject?.members);
+		setCurrentUser(currentProject?.user);
+		setOwnerBalance(currentProject?.user?.balance);
+	}, [currentProject]);
 
 	useEffect(() => {
 		let obj = {};
-		project?.members.length &&
-			project.members.forEach((mem) => {
+		currentProject?.members.length &&
+			currentProject.members.forEach((mem) => {
 				if (mem.id !== user.info.id) {
 					obj[mem.id] = mem.balance;
 				}
 			});
 		setBalances(obj);
-	}, [project]);
+	}, [currentProject]);
 
 	const updateProject = async (body = updatedProject) => {
 		try {
@@ -60,7 +63,7 @@ export default function Settings() {
 				.put(`/api/users/${user?.info.id}/projects/${projectID}`, body)
 				.then((res) => {
 					if (res.data.status === 200) {
-						refetchProject();
+						setUpdated(true);
 					}
 				})
 				.catch((err) => setErrorText("There was an error:", err));
@@ -70,22 +73,12 @@ export default function Settings() {
 	};
 
 	const deleteHandler = async (e) => {
-		try {
-			await axios
-				.delete(`/api/users/${user.info.id}/projects/${id}`)
-				.then((res) => {
-					console.log(res);
-					if (res.data.status === 200) {
-						navigate("/");
-					}
-				});
-		} catch (error) {
-			console.log(error);
-		}
+		const data = await deleteProject(user.info.id, projectID);
+		if (data.status === 200) navigate("/");
 	};
 
 	useEffect(() => {
-		if (updatedProject?.quorum !== project?.quorum) {
+		if (updatedProject?.quorum !== currentProject?.quorum) {
 			setUnsaved(true);
 			return;
 		}
@@ -99,7 +92,7 @@ export default function Settings() {
 
 	return (
 		<div className="w-full h-full flex flex-col">
-			<ProjectHeading project={project} />
+			<ProjectHeading />
 			<div className="w-full h-full overflow-y-auto flex flex-col lg:flex-row p-4 shadow-lg rounded-lg text-sm bg-white/90 dark:bg-[#202530] border border-1 dark:border-[#373D47]">
 				<SettingsNav />
 				<div className="flex w-full lg:mx-4 flex-col gap-1">

@@ -37,6 +37,7 @@ export default function Votes() {
 		],
 		queryFn: getIssue,
 	});
+
 	const {
 		data: votingData,
 		isFetching: isVoting,

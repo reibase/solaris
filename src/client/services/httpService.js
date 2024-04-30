@@ -32,7 +32,6 @@ class HttpService {
 			const { data } = await apiClient
 				.get(`/users/${userID}/projects/${projectID}`)
 				.then(({ data }) => data);
-			console.log("data", data);
 			return data;
 		} catch (error) {
 			console.log(error);
@@ -82,6 +81,16 @@ class HttpService {
 			return data;
 		} catch (error) {
 			setVoting(false);
+			console.log(error);
+		}
+	};
+	deleteProject = async (userID, projectID) => {
+		try {
+			const { data } = await apiClient
+				.delete(`/users/${userID}/projects/${projectID}`)
+				.then((res) => res);
+			return data;
+		} catch (error) {
 			console.log(error);
 		}
 	};
