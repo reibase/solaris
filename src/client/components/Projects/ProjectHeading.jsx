@@ -14,7 +14,7 @@ export default function ProjectHeading() {
 	const navigate = useNavigate();
 
 	const { dark, user, currentProject } = useStore();
-	let { id } = useParams();
+	let { projectID } = useParams();
 
 	if (!currentProject?.id) {
 		return "Loading";
@@ -27,7 +27,7 @@ export default function ProjectHeading() {
 					{/* top left of header */}
 					<div className="flex flex-row items-center gap-[20px] w-5/6">
 						<span
-							onClick={() => navigate(`/projects/${id}`)}
+							onClick={() => navigate(`/projects/${projectID}`)}
 							className="font-semibold text-[14px] lg:text-lg tracking-wide dark:text-white cursor-pointer truncate overflow-hidden"
 						>
 							{currentProject?.title}
