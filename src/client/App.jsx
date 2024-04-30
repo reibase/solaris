@@ -4,9 +4,8 @@ import {
 	RouterProvider,
 	useRouteError,
 } from "react-router-dom";
-import axios from "axios";
 import { useStore } from "./store";
-import { React, useEffect, useState } from "react";
+import { React, useEffect } from "react";
 
 import RequestAccess from "./components/RequestAccess.jsx";
 import Profile from "./components/Profile.jsx";
@@ -19,31 +18,22 @@ import Issues from "./components/Projects/Issues.jsx";
 import Votes from "./components/Projects/Votes.jsx";
 import Transfer from "./components/Projects/Transfer/Transfer.jsx";
 import Settings from "./components/Projects/Settings/Settings.jsx";
-import { useParams } from "react-router-dom";
 import httpService from "./services/httpService.js";
 
 function App() {
-	const { getUserProjects, getUserProject, getIssue, getMergeableStatus } =
-		httpService();
-	const { user, dark, setUserInfo } = useStore();
-	let { currentProjectID, currentIssueID } = useParams();
+	const { getUser, getUserProjects } = httpService();
+	const { user, toggleDark, setUserInfo, setCurrentProject } = useStore();
 
-	useEffect(() => {
-		console.log(dark);
-		dark === "true"
+	const themeHandler = () => {
+		toggleDark();
+
+		localStorage.theme === "light"
 			? document.documentElement.classList.add("dark")
 			: document.documentElement.classList.remove("dark");
-	}, [dark]);
 
-	const getUser = async () => {
-		try {
-			const { data } = await axios.get("/api/auth/me").then((res) => {
-				return res;
-			});
-			return data;
-		} catch (error) {
-			console.log(error);
-		}
+		localStorage.theme === "dark"
+			? (localStorage.theme = "light")
+			: (localStorage.theme = "dark");
 	};
 
 	const { data: userData, isFetching: gettingUser } = useQuery({
@@ -52,14 +42,16 @@ function App() {
 		enabled: !user.isLoggedIn,
 	});
 
-	if (userData?.isLoggedIn && !user.isLoggedIn) {
-		setUserInfo(userData);
-	}
+	useEffect(() => {
+		if (userData?.isLoggedIn && !user.isLoggedIn) {
+			setUserInfo(userData);
+		}
+	}, [userData]);
 
 	const router = createBrowserRouter([
 		{
 			path: "/",
-			element: <Layout />,
+			element: <Layout themeHandler={themeHandler} />,
 			children: !user.isLoggedIn
 				? [
 						{
@@ -120,22 +112,22 @@ function App() {
 							errorElement: <ErrorBoundary />,
 						},
 						{
-							path: "/projects/:id",
+							path: "/projects/:projectID",
 							element: <Issues />,
 							errorElement: <ErrorBoundary />,
 						},
 						{
-							path: "/projects/:id/transfer",
+							path: "/projects/:projectID/transfer",
 							element: <Transfer />,
 							errorElement: <ErrorBoundary />,
 						},
 						{
-							path: "/projects/:id/issues/:issueID",
+							path: "/projects/:projectID/issues/:issueID",
 							element: <Votes />,
 							errorElement: <ErrorBoundary />,
 						},
 						{
-							path: "/projects/:id/settings",
+							path: "/projects/:projectID/settings",
 							element: <Settings />,
 							errorElement: <ErrorBoundary />,
 						},

@@ -1,6 +1,17 @@
 import apiClient from "./apiClient";
 
 class HttpService {
+	getUser = async () => {
+		try {
+			const { data } = await apiClient.get("/auth/me").then((res) => {
+				console.log(res);
+				return res;
+			});
+			return data;
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	getUserProjects = async ({ queryKey }) => {
 		const [_, userID] = queryKey;
 		try {
@@ -25,6 +36,7 @@ class HttpService {
 			return data;
 		} catch (error) {
 			console.log(error);
+			return error;
 		}
 	};
 	getIssue = async ({ queryKey }) => {

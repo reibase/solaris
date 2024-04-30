@@ -8,20 +8,9 @@ import logo from "../assets/logo.png";
 import darkmodelogo from "../assets/darkmodelogo.png";
 import DropDown from "./DropDown.jsx";
 
-const Nav = () => {
-	const { dark, toggleDark, user } = useStore();
+const Nav = ({ themeHandler }) => {
+	const { dark, user } = useStore();
 
-	const themeHandler = () => {
-		toggleDark();
-
-		localStorage.theme === "light"
-			? document.documentElement.classList.add("dark")
-			: document.documentElement.classList.remove("dark");
-
-		localStorage.theme === "dark"
-			? (localStorage.theme = "light")
-			: (localStorage.theme = "dark");
-	};
 	return (
 		<>
 			<div className="mx-auto justify-between flex items-end h-[11vh] w-full px-2 lg:p-0 lg:items-end lg:w-[66%] mb-[27px] md:mb-[20px] dark:text-white">

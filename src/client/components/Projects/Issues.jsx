@@ -14,17 +14,16 @@ import httpService from "../../services/httpService.js";
 export default function Issues() {
 	const { getUserProject } = httpService();
 	const { user, currentProject, setCurrentProject } = useStore();
-	let { id } = useParams();
+	let { projectID } = useParams();
 	const navigate = useNavigate();
 
-	const { data: project, isFetching } = useQuery(
-		["project", { userID: user?.info.id, projectID: id }],
+	const { data: project } = useQuery(
+		["project", { userID: user?.info.id, projectID: projectID }],
 		getUserProject
 	);
 
 	useEffect(() => {
 		if (project?.id) {
-			console.log("setting");
 			setCurrentProject(project);
 		}
 	}, [project]);

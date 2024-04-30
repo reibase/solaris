@@ -15,7 +15,7 @@ export default function Votes() {
 	const { getIssue, getMergeableStatus, postVote } = httpService();
 	const [voting, setVoting] = useState(false);
 	const side = useRef(null);
-	const { user, currentProject, currentIssue } = useStore();
+	const { user, currentProject } = useStore();
 	let { id, issueID } = useParams();
 
 	const { data: mergeable, isFetching: isFetchingMergeableStatus } = useQuery({
@@ -37,7 +37,6 @@ export default function Votes() {
 		],
 		queryFn: getIssue,
 	});
-
 	const {
 		data: votingData,
 		isFetching: isVoting,

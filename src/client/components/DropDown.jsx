@@ -7,7 +7,7 @@ export default function DropDown() {
 	const { dark, toggleDark, user } = useStore();
 	const [visible, setVisible] = useState(false);
 	const logoutHandler = () => {
-		localStorage.removeItem("user");
+		localStorage.removeItem("solarisStorage");
 		setVisible(false);
 	};
 
