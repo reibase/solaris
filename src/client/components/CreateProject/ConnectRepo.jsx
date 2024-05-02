@@ -188,7 +188,7 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 					{text}
 					{project.host && (
 						<a href={manageAccess[project.host]}>
-							<button className="mt-1 py-1.5 px-3 rounded-md bg-dark-gray text-white border border-transparent dark:bg-midnight dark:border-midnight">
+							<button className="mt-1 py-1.5 px-3 rounded-md bg-charcoal text-white border border-transparent dark:bg-midnight dark:border-midnight">
 								Manage Access
 							</button>
 						</a>
