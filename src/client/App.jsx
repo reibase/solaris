@@ -117,7 +117,7 @@ function App() {
 	function ErrorBoundary() {
 		let error = useRouteError();
 		return (
-			<div className="w-full h-full items-center justify-center px-4 py-2 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+			<div className="w-full h-full items-center justify-center px-4 py-2 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray">
 				Dang - there was an error. Please return to{" "}
 				<a className="underline" href="/">
 					home.

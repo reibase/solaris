@@ -89,17 +89,17 @@ export default function Votes() {
 		<div className="flex w-full h-full flex-col gap-[10px]">
 			<ProjectHeading />
 			{!issue?.title ? (
-				<div className="p-4 block w-full h-full shadow-lg rounded-lg text-sm bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+				<div className="p-4 block w-full h-full shadow-lg rounded-lg text-sm bg-white/90 dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray">
 					Loading
 				</div>
 			) : (
-				<div className="p-4 block w-full h-full shadow-lg gap-10 rounded-lg text-sm flex flex-col md:flex-row items-start bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] lg:justify-between overflow-auto">
+				<div className="p-4 block w-full h-full shadow-lg gap-10 rounded-lg text-sm flex flex-col md:flex-row items-start bg-white/90 dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray lg:justify-between overflow-auto">
 					<div className="flex h-content w-full lg:w-[300px] lg:h-full flex-col gap-6">
 						<div className="flex flex-col">
 							<span className="text-[16px] dark:text-white mb-2">
 								#{issue?.number} {issue?.title}
 							</span>
-							<span className="text-gray-600 mb-2 text-[11px] dark:text-[#8B929F]">
+							<span className="text-gray-600 mb-2 text-[11px] dark:text-slate-gray">
 								Created on {formatDate(issue?.createdAt?.slice(0, 10))} by{" "}
 								{issue?.author}
 							</span>
@@ -140,7 +140,7 @@ export default function Votes() {
 							</div>
 						</div>
 
-						<div className="p-4 w-full hidden md:flex md:flex-col rounded-lg bg-[#f8f8f9] dark:bg-[#171D2B] border border-1 border-transparent dark:border-[#373D47]">
+						<div className="p-4 w-full hidden md:flex md:flex-col rounded-lg bg-off-white dark:bg-midnight border border-1 border-transparent dark:border-dark-gray">
 							<p className="text-slate-600 dark:text-slate-300 text-[11px] mb-1">
 								Your amount of credits will be applied to the side you select.
 								When a side reaches the minimum number of votes required to end
@@ -153,7 +153,7 @@ export default function Votes() {
 						</div>
 					</div>
 
-					<div className="flex h-content w-full flex-col text-[#8B929F]">
+					<div className="flex h-content w-full flex-col text-slate-gray">
 						<ProgressBar
 							quorum={currentProject?.quorum}
 							totalYesVotes={issue?.voteData.totalYesVotes}
@@ -165,16 +165,16 @@ export default function Votes() {
 						<div className="w-full mt-4">
 							<div className=" grid grid-cols-4">
 								<div className="text-center ">
-									<p className="dark:text-[#8B929F] text-[10px]">User</p>
+									<p className="dark:text-slate-gray text-[10px]">User</p>
 								</div>
 								<div className=" text-center ">
-									<p className="dark:text-[#8B929F] text-[10px]">Side</p>
+									<p className="dark:text-slate-gray text-[10px]">Side</p>
 								</div>
 								<div className="text-center">
-									<p className="dark:text-[#8B929F] text-[10px]">Amount</p>
+									<p className="dark:text-slate-gray text-[10px]">Amount</p>
 								</div>
 								<div className="text-center  ">
-									<p className="dark:text-[#8B929F] text-[10px]">Age</p>
+									<p className="dark:text-slate-gray text-[10px]">Age</p>
 								</div>
 							</div>
 							{issue?.voteData?.votes.length > 0 ? (
@@ -182,7 +182,7 @@ export default function Votes() {
 									<div
 										key={index}
 										className={` p-[1px] grid grid-cols-4 ${
-											index % 2 == 0 ? "bg-[#F9F9F9] dark:bg-[#171D2B]" : null
+											index % 2 == 0 ? "bg-off-white dark:bg-midnight" : null
 										} `}
 									>
 										<div className="text-center ">

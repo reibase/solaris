@@ -21,7 +21,7 @@ export default function ProjectHeading() {
 	}
 	return (
 		<>
-			<div className="w-full h-50 items-start justify-start p-2 lg:px-4 shadow-md rounded-lg mb-2 text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+			<div className="w-full h-50 items-start justify-start p-2 lg:px-4 shadow-md rounded-lg mb-2 text-sm flex flex-col bg-white/90 dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray">
 				{/* top row of header */}
 				<div className="flex flex-row w-full justify-between">
 					{/* top left of header */}
@@ -35,12 +35,12 @@ export default function ProjectHeading() {
 						<ModeBadge project={currentProject} />
 					</div>
 					{/* top right of header */}
-					<span className="text-[12px] font-semibold text-slate-500 dark:text-[#DDDCDC] whitespace-nowrap">
+					<span className="text-[12px] font-semibold text-slate-500 dark:text-light-gray whitespace-nowrap">
 						{currentProject?.user?.balance} Credits
 					</span>
 				</div>
 
-				<span className="mt-1 mb-3 text-[#313131] text-[11px] dark:text-[#8B929F]">
+				<span className="mt-1 mb-3 text-charcoal text-[11px] dark:text-slate-gray">
 					Added on {currentProject?.createdAt.slice(0, 10)}
 				</span>
 
@@ -57,7 +57,7 @@ export default function ProjectHeading() {
 								className="w-[20px] opacity-20 cursor-pointer"
 								src={dark ? darkGroup : Group}
 							/>
-							<p className="text-gray-300 dark:text-[#D9D9D9] text-[12px] font-medium cursor-pointer">
+							<p className="text-gray-300 dark:text-light-gray text-[12px] font-medium cursor-pointer">
 								Community
 							</p>
 						</div>
@@ -69,7 +69,7 @@ export default function ProjectHeading() {
 								}
 							>
 								<img src={darkSettings} />
-								<p className="text-[#313131] dark:text-[#D9D9D9] text-[12px] font-medium">
+								<p className="text-charcoal dark:text-light-gray text-[12px] font-medium">
 									Settings
 								</p>
 							</div>

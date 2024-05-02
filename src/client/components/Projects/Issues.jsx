@@ -57,7 +57,7 @@ export default function Issues() {
 	return (
 		<div className="flex w-full h-full flex-col gap-[10px]">
 			<ProjectHeading />
-			<div className="w-full h-full p-3 lg:px-4 shadow-lg rounded-lg text-sm flex flex-col items-center bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47] overflow-auto">
+			<div className="w-full h-full p-3 lg:px-4 shadow-lg rounded-lg text-sm flex flex-col items-center bg-white/90 dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray overflow-auto">
 				<div className="flex w-full justify-start gap-[15px] py-[10px]">
 					<span
 						onClick={() => handleCategoryClick("open")}
@@ -95,7 +95,7 @@ export default function Issues() {
 					currentProject?.issues[category].map((pullRequest, index) => (
 						<div
 							key={pullRequest.id}
-							className="w-full flex row border-b border-[#D4D4D4] py-4 lg:px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-[#373D47]"
+							className="w-full flex row border-b border-lightGray py-4 lg:px-1 hover:bg-slate-100/25 dark:hover:bg-[#161f2d] dark:border-dark-gray"
 						>
 							<div className="flex flex-col justify-between w-full lg:flex-row">
 								<div className="flex flex-col items-stretch justify-items-stretch w-full justify-between">
@@ -120,7 +120,7 @@ export default function Issues() {
 												`/projects/${currentProject?.id}/issues/${pullRequest.number}`
 											)
 										}
-										className="text-slate-500 text-[11px] dark:text-[#8B929F]"
+										className="text-slate-500 text-[11px] dark:text-slate-gray"
 									>
 										#{pullRequest.number} opened on{" "}
 										{pullRequest.createdAt.slice(0, 10)} by {pullRequest.author}

@@ -77,14 +77,14 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 	};
 
 	return (
-		<div className="flex flex-col h-full divide-y gap-4 w-full mb-4 lg:divide-x lg:divide-y-0 lg:flex-row dark:divide-[#373D47]">
-			<div className="w-full lg:w-1/3 dark:text-[#8B929F]">
+		<div className="flex flex-col h-full divide-y gap-4 w-full mb-4 lg:divide-x lg:divide-y-0 lg:flex-row dark:divide-midnight">
+			<div className="w-full lg:w-1/3 dark:text-gray-200">
 				Source Code Provider:
 				<button
 					type="button"
 					className={`${
-						project.host === "github" && "bg-[#E7F0FF] dark:bg-[#18181B]"
-					} flex flex-row gap-8 items-center mt-6 px-4 w-30 py-1 border border-1 rounded-md border-[#8B929F] hover:bg-[#E7F0FF] dark:border-[#8B929F] dark:hover:bg-[#18181B]/75 dark:text-white`}
+						project.host === "github" && "bg-powder-blue dark:bg-midnight"
+					} flex flex-row gap-8 items-center mt-6 px-4 w-30 py-1 border border-1 rounded-md border-slate-gray hover:bg-powder-blue dark:border-slate-gray dark:hover:bg-midnight/75 dark:text-white`}
 					value="github"
 					onClick={(e) => clickHandler(e)}
 				>
@@ -94,8 +94,8 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 				<button
 					type="button"
 					className={`${
-						project.host === "gitlab" && "bg-[#E7F0FF] dark:bg-[#18181B]"
-					} flex flex-row gap-8 items-center mt-6 px-4 w-30 py-1 border border-1 rounded-md border-[#8B929F] hover:bg-[#E7F0FF] dark:border-[#8B929F] dark:hover:bg-[#18181B]/75 dark:text-white`}
+						project.host === "gitlab" && "bg-powder-blue dark:bg-midnight"
+					} flex flex-row gap-8 items-center mt-6 px-4 w-30 py-1 border border-1 rounded-md border-slate-gray hover:bg-powder-blue dark:border-slate-gray dark:hover:bg-midnight/75 dark:text-white`}
 					value="gitlab"
 					onClick={(e) => clickHandler(e)}
 				>
@@ -104,7 +104,7 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 				</button>
 			</div>
 			<div className="flex flex-col mt-5 lg:w-3/5 lg:px-10 lg:mt-0">
-				<span className="dark:text-gray-500">Repository:</span>
+				<span className="dark:text-gray-200">Repository:</span>
 				{isFetching ? (
 					"Loading"
 				) : (
@@ -112,7 +112,7 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 						<div>
 							<button
 								type="button"
-								className="mt-6 inline-flex w-full justify-between gap-x-1.5 rounded-md px-3 py-1 text-sm text-gray-900 hover:bg-gray-50 border border-1 rounded-md border-gray-300 hover:bg-[#E7F0FF] dark:border-[#8B929F] disabled:text-gray-300 disabled:border-gray-300 dark:hover:bg-[#18181B]/75 dark:text-white disabled:hover:bg-transparent disabled:cursor-default disabled:dark:hover:bg-transparent disabled:dark:text-[#373D47] disabled:dark:border-[#373D47]"
+								className="mt-6 inline-flex w-full justify-between gap-x-1.5 rounded-md px-3 py-1 text-sm text-gray-900 hover:bg-gray-50 border border-1 rounded-md border-gray-300 hover:bg-powder-blue dark:border-slate-gray disabled:text-gray-300 disabled:border-gray-300 dark:hover:bg-midnight/75 dark:text-white disabled:hover:bg-transparent disabled:cursor-default disabled:dark:hover:bg-transparent disabled:dark:text-gray-500 disabled:dark:border-dark-gray"
 								id="menu-button"
 								aria-expanded="true"
 								aria-haspopup="true"
@@ -136,7 +136,7 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 						</div>
 						{visible ? (
 							<div
-								class="absolute max-h-40 overflow-y-scroll right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 dark:divide-[#0F172A] rounded-md bg-white dark:bg-[#373D47] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+								class="absolute max-h-40 overflow-y-scroll right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 dark:divide-gray-300 rounded-md bg-white dark:bg-midnight shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
 								role="menu"
 								aria-orientation="vertical"
 								aria-labelledby="menu-button"
@@ -188,7 +188,7 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 					{text}
 					{project.host && (
 						<a href={manageAccess[project.host]}>
-							<button className="mt-1 py-1.5 px-3 rounded-md bg-[#313131] text-white border border-transparent dark:bg-[#18181B] dark:border-[#373D47]">
+							<button className="mt-1 py-1.5 px-3 rounded-md bg-dark-gray text-white border border-transparent dark:bg-midnight dark:border-midnight">
 								Manage Access
 							</button>
 						</a>

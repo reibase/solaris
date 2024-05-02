@@ -9,7 +9,7 @@ export default function Review({ project, user, dark }) {
 		gitlab: gitlabLogo,
 	};
 	return (
-		<div className="flex flex-col h-full gap-4 w-full mb-4 dark:divide-[#373D47] dark:text-white">
+		<div className="flex flex-col h-full gap-4 w-full mb-4 dark:divide-dark-gray dark:text-white">
 			<div>
 				<h1 className="text-lg pb-1">Review</h1>
 				<p className="">You are creating this project with these resources:</p>

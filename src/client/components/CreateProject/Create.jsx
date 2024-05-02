@@ -127,24 +127,24 @@ const Create = (props) => {
 	// 	return "Loading";
 	// }
 	return (
-		<div className="w-full p-4 block h-[455px] shadow-lg text-sm rounded-lg flex flex-col lg:items-center lg:p-[40px] lg:mx-auto lg:w-2/3 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+		<div className="w-full p-4 block h-[455px] shadow-lg text-sm rounded-lg flex flex-col lg:items-center lg:p-[40px] lg:mx-auto lg:w-2/3 bg-white/90 dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray">
 			<div className="flex flex-row gap-4 h-1/6 w-full mb-4">
 				<span
-					className={`text-[10px] lg:text-md h-4/6 dark:text-[#8B929F] ${
+					className={`text-[10px] lg:text-md h-4/6 dark:text-slate-gray ${
 						index !== 0 && "text-gray-300"
 					}`}
 				>
 					Step 1: Connect Repository
 				</span>
 				<span
-					className={`text-[10px] lg:text-md dark:text-[#8B929F] ${
+					className={`text-[10px] lg:text-md dark:text-slate-gray ${
 						index !== 1 && "text-gray-300"
 					}`}
 				>
 					Step 2: Settings
 				</span>
 				<span
-					className={`text-[10px] lg:text-md dark:text-[#8B929F] ${
+					className={`text-[10px] lg:text-md dark:text-slate-gray ${
 						index !== 2 && "text-gray-300"
 					}`}
 				>
@@ -153,7 +153,7 @@ const Create = (props) => {
 			</div>
 
 			{isFetching ? (
-				<div className="flex text w-full h-full w-full mb-4 dark:text-[#8B929F]">
+				<div className="flex text w-full h-full w-full mb-4 dark:text-slate-gray">
 					Loading
 				</div>
 			) : (

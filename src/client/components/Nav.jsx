@@ -20,7 +20,7 @@ const Nav = ({ themeHandler }) => {
 							<img src={dark ? darkmodelogo : logo} />
 						</Link>
 					</span>
-					<span className="flex space-around gap-[20px] items-center text-[#313131] rounded-2xl border border-1 px-[20px] dark:border-[#373D47] border-[#313131]">
+					<span className="flex space-around gap-[20px] items-center text-charcoal rounded-2xl border border-1 px-[20px] dark:border-dark-gray border-charcoal">
 						<img
 							className="w-[14px] h-[14px]"
 							src={dark ? darkmodeLock : lock}
@@ -48,7 +48,7 @@ const Nav = ({ themeHandler }) => {
 						) : (
 							<Link to="/login">
 								<button
-									className=" rounded-md border border-[#313131] px-4 hover:bg-[#313131] hover:text-white dark:bg-[#18181B] dark:border-[#373D47] dark:border-2 dark:text-white "
+									className=" rounded-md border border-charcoal px-4 hover:bg-charcoal hover:text-white dark:bg-charcoal dark:border-dark-gray dark:border-2 dark:text-white "
 									type="button"
 								>
 									Sign in

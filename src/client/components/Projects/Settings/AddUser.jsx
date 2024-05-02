@@ -56,7 +56,7 @@ export default function AddUser({
 	return (
 		<div className="flex flex-col justify-between">
 			<span className="flex flex-row items-center justify-end gap-1 w-full">
-				<span className="text-[11px] text-[#313131] dark:text-white">
+				<span className="text-[11px] text-charcoal dark:text-white">
 					Add a new member:
 				</span>
 				<span className="">
@@ -65,7 +65,7 @@ export default function AddUser({
 						type="text"
 						placeholder="username"
 						onChange={(e) => handleSearch(e)}
-						className={`w-full p-1 rounded-md border dark:bg-[#202530] dark:text-white dark:border-[#373D47] dark:focus:border-indigo-400
+						className={`w-full p-1 rounded-md border dark:bg-mid-gray dark:text-white dark:border-dark-gray dark:focus:border-indigo-400
 					${
 						recipientErrorText !== "" &&
 						"border-red-500 text-red-500 dark:border-red-500"

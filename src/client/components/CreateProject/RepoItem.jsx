@@ -26,7 +26,7 @@ export default function RepoItem({
 
 	return (
 		<div
-			className="cursor-pointer text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
+			className="cursor-pointer text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-midnight/40 dark:text-gray-200 dark:hover:bg-midnight/75"
 			onClick={() => clickHandler()}
 		>
 			{title === project.title ? "x" : null}

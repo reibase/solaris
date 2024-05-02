@@ -21,10 +21,10 @@ const Profile = () => {
 
 	return (
 		<>
-			<div className="mx-auto w-[375px] shadow-lg rounded-lg flex flex-col items-center py-[40px] bg-white dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+			<div className="mx-auto w-[375px] shadow-lg rounded-lg flex flex-col items-center py-[40px] bg-white dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray">
 				<h1
 					className="font-inter mb-[50px] w-4/5 text-xl text-left
-            dark:text-[#DDDCDC]"
+            dark:text-light-gray"
 				>
 					Profile
 				</h1>
