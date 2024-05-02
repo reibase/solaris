@@ -4,7 +4,6 @@ class HttpService {
 	getUser = async () => {
 		try {
 			const { data } = await apiClient.get("/auth/me").then((res) => {
-				console.log(res);
 				return res;
 			});
 			return data;
@@ -18,7 +17,6 @@ class HttpService {
 			const { data } = await apiClient
 				.get(`/users/${userID}/projects`)
 				.then(({ data }) => data);
-			console.log(data);
 			return data;
 		} catch (error) {
 			console.log(error);

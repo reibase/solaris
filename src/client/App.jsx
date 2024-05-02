@@ -16,12 +16,11 @@ import Projects from "./components/Projects/Projects.jsx";
 import Create from "./components/CreateProject/Create.jsx";
 import Issues from "./components/Projects/Issues.jsx";
 import Votes from "./components/Projects/Votes.jsx";
-import Transfer from "./components/Projects/Transfer/Transfer.jsx";
 import Settings from "./components/Projects/Settings/Settings.jsx";
 import httpService from "./services/httpService.js";
 
 function App() {
-	const { getUser, getUserProjects } = httpService();
+	const { getUser } = httpService();
 	const { user, toggleDark, setUserInfo, setCurrentProject } = useStore();
 
 	const themeHandler = () => {
@@ -60,11 +59,6 @@ function App() {
 							errorElement: <ErrorBoundary />,
 						},
 						{
-							path: "/Profile",
-							element: <Profile />,
-							errorElement: <ErrorBoundary />,
-						},
-						{
 							path: "/requestaccess",
 							element: <RequestAccess />,
 							errorElement: <ErrorBoundary />,
@@ -83,26 +77,11 @@ function App() {
 				: [
 						{
 							index: true,
-							element: <Projects getUserProjects={getUserProjects} />,
+							element: <Projects />,
 							errorElement: <ErrorBoundary />,
 						},
 						{
 							path: "/profile",
-							element: <Profile />,
-							errorElement: <ErrorBoundary />,
-						},
-						{
-							path: "/requestaccess",
-							element: <Profile />,
-							errorElement: <ErrorBoundary />,
-						},
-						{
-							path: "/login",
-							element: <Profile />,
-							errorElement: <ErrorBoundary />,
-						},
-						{
-							path: "/access",
 							element: <Profile />,
 							errorElement: <ErrorBoundary />,
 						},
@@ -114,11 +93,6 @@ function App() {
 						{
 							path: "/projects/:projectID",
 							element: <Issues />,
-							errorElement: <ErrorBoundary />,
-						},
-						{
-							path: "/projects/:projectID/transfer",
-							element: <Transfer />,
 							errorElement: <ErrorBoundary />,
 						},
 						{

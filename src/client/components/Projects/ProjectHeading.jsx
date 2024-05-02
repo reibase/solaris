@@ -61,7 +61,7 @@ export default function ProjectHeading() {
 								Community
 							</p>
 						</div>
-						{currentProject?.owner === user.info.id && (
+						{currentProject?.owner === user.id && (
 							<div
 								className="flex gap-[7px] cursor-pointer"
 								onClick={() =>

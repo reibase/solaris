@@ -12,7 +12,7 @@ export default function Projects() {
 	const navigate = useNavigate();
 
 	const { data: projects, isFetching: isFetchingProjects } = useQuery(
-		["userID", user.info.id],
+		["userID", user.id],
 		{
 			queryKey: ["userprojects"],
 			queryFn: getUserProjects,

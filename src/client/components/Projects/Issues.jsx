@@ -18,7 +18,7 @@ export default function Issues() {
 	const navigate = useNavigate();
 
 	const { data: project } = useQuery(
-		["project", { userID: user?.info.id, projectID: projectID }],
+		["project", { userID: user?.id, projectID: projectID }],
 		getUserProject
 	);
 

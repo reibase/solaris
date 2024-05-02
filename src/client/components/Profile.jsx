@@ -7,7 +7,7 @@ import { useStore } from "../store.js";
 const Profile = () => {
 	const { dark, user } = useStore();
 	const logo = (() => {
-		switch (user.info.verifiedThru) {
+		switch (user.verifiedThru) {
 			case "github":
 				return dark ? githubDarkmode : githubLogo; // Use a conditional expression within the case
 			case "gitlab":
@@ -30,7 +30,7 @@ const Profile = () => {
 				</h1>
 				<img
 					className="mb-[35px] w-28 h-28 rounded-full object-cover"
-					src={user.info.avatar}
+					src={user.avatar}
 					alt="User avatar"
 				/>
 				<div
@@ -40,9 +40,9 @@ const Profile = () => {
 					<img
 						src={logo}
 						className="w-[20px] h-[20px]"
-						alt={user.info.verifiedThru}
+						alt={user.verifiedThru}
 					/>
-					{user.info.username}
+					{user.username}
 				</div>
 				<div className="flex flex-col gap-[20px]">
 					<a

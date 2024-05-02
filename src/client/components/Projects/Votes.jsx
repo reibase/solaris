@@ -16,12 +16,12 @@ export default function Votes() {
 	const [voting, setVoting] = useState(false);
 	const side = useRef(null);
 	const { user, currentProject } = useStore();
-	let { id, issueID } = useParams();
+	let { issueID, projectID } = useParams();
 
 	const { data: mergeable, isFetching: isFetchingMergeableStatus } = useQuery({
 		queryKey: [
 			"mergeable",
-			{ userID: user?.info.id, projectID: id, issueID: issueID },
+			{ userID: user?.id, projectID: projectID, issueID: issueID },
 		],
 		queryFn: getMergeableStatus,
 	});
@@ -33,7 +33,7 @@ export default function Votes() {
 	} = useQuery({
 		queryKey: [
 			"issue",
-			{ userID: user.info?.id, projectID: id, issueID: issueID },
+			{ userID: user?.id, projectID: projectID, issueID: issueID },
 		],
 		queryFn: getIssue,
 	});
@@ -46,8 +46,8 @@ export default function Votes() {
 		queryKey: [
 			"vote",
 			{
-				userID: user.info?.id,
-				projectID: id,
+				userID: user?.id,
+				projectID: projectID,
 				issueID: issueID,
 				side: side.current,
 				setVoting: setVoting,
@@ -65,12 +65,12 @@ export default function Votes() {
 
 	useEffect(() => {
 		if (voteCast) {
-			socket.emit("vote cast", id);
+			socket.emit("vote cast", projectID);
 		}
 	}, [voteCast]);
 
 	socket.on("vote received", (projectID) => {
-		if (projectID === id) {
+		if (projectID === projectID) {
 			refetchIssue();
 		}
 	});
@@ -81,14 +81,13 @@ export default function Votes() {
 		? `You voted ${chosenSide} on ${issue?.user?.createdAt.slice(0, 10)}`
 		: !mergeable
 		? "This pull request is not voteable."
-		: "Vote yes to merge or vote No to close this pull request.";
+		: "Vote yes to merge or vote no to close this pull request.";
 
 	const disabled = !mergeable ? true : issue?.user.voted ? true : false;
 
 	return (
 		<div className="flex w-full h-full flex-col gap-[10px]">
 			<ProjectHeading />
-
 			{!issue?.title ? (
 				<div className="p-4 block w-full h-full shadow-lg rounded-lg text-sm bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
 					Loading
@@ -124,17 +123,17 @@ export default function Votes() {
 									<>
 										<button
 											onClick={() => voteHandler(true)}
-											className="bg-[#20B176] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white disabled:opacity-50"
+											className="bg-[#20B176] font-semibold uppercase text-[16px] px-[20px] py-[3px] rounded-md text-white disabled:opacity-50"
 											disabled={disabled}
 										>
-											VOTE YES
+											Vote Yes
 										</button>
 										<button
 											onClick={() => voteHandler(false)}
-											className="bg-[#DC2626] font-semibold text-[16px] px-[20px] py-[3px] rounded-md text-white disabled:opacity-50"
+											className="bg-[#DC2626] font-semibold uppercase text-[16px] px-[20px] py-[3px] rounded-md text-white disabled:opacity-50"
 											disabled={disabled}
 										>
-											VOTE NO
+											Vote No
 										</button>
 									</>
 								)}

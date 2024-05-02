@@ -7,13 +7,11 @@ export const useStore = create(
 			dark: false,
 			user: {
 				isLoggedIn: false,
-				info: {
-					id: null,
-					username: "",
-					avatar: "",
-					verifiedThru: "",
-					email: "",
-				},
+				id: null,
+				username: "",
+				avatar: "",
+				verifiedThru: "",
+				email: "",
 			},
 			currentProject: {},
 			toggleDark: () => set({ dark: get().dark === false ? true : false }),

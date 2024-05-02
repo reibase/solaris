@@ -20,7 +20,7 @@ export default function DropDown() {
 				aria-expanded="true"
 				aria-haspopup="true"
 				className="w-6 h-6 rounded-full object-cover cursor-pointer"
-				src={user.info.avatar}
+				src={user.avatar}
 			/>
 			{visible ? (
 				<div

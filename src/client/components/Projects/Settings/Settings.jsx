@@ -29,7 +29,7 @@ export default function Settings() {
 	const [updated, setUpdated] = useState(false);
 
 	const { data: savedProject } = useQuery({
-		queryKey: ["project", { userID: user?.info.id, projectID: projectID }],
+		queryKey: ["project", { userID: user?.id, projectID: projectID }],
 		queryFn: getUserProject,
 		manual: true,
 		enabled: updated,
@@ -50,7 +50,7 @@ export default function Settings() {
 		let obj = {};
 		currentProject?.members.length &&
 			currentProject.members.forEach((mem) => {
-				if (mem.id !== user.info.id) {
+				if (mem.id !== user.id) {
 					obj[mem.id] = mem.balance;
 				}
 			});
@@ -60,7 +60,7 @@ export default function Settings() {
 	const updateProject = async (body = updatedProject) => {
 		try {
 			await axios
-				.put(`/api/users/${user?.info.id}/projects/${projectID}`, body)
+				.put(`/api/users/${user?.id}/projects/${projectID}`, body)
 				.then((res) => {
 					if (res.data.status === 200) {
 						setUpdated(true);
@@ -73,7 +73,7 @@ export default function Settings() {
 	};
 
 	const deleteHandler = async (e) => {
-		const data = await deleteProject(user.info.id, projectID);
+		const data = await deleteProject(user.id, projectID);
 		if (data.status === 200) navigate("/");
 	};
 

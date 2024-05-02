@@ -42,7 +42,7 @@ const Create = (props) => {
 	const createInstallation = async () => {
 		let provider;
 		let installationID;
-		if (!user.info.id) {
+		if (!user?.id) {
 			return;
 		}
 		if (window.location.href.includes("installation_id=")) {
@@ -58,7 +58,7 @@ const Create = (props) => {
 
 		try {
 			const { data } = await axios
-				.post(`/api/users/${user.info.id}/installations`, {
+				.post(`/api/users/${user?.id}/installations`, {
 					provider: provider,
 					installationID: installationID,
 				})
@@ -75,7 +75,7 @@ const Create = (props) => {
 	const { status, data, isFetching } = useQuery({
 		queryKey: ["repos"],
 		queryFn: createInstallation,
-		enabled: window.location.href.includes("?") && user.info.id !== null,
+		enabled: window.location.href.includes("?") && user?.id !== null,
 	});
 
 	const componentHandler = () => {
@@ -87,7 +87,7 @@ const Create = (props) => {
 						setProject={setProject}
 						setIndex={setIndex}
 						dark={dark}
-						user={user.info}
+						user={user}
 					/>
 				);
 			case 1:
@@ -97,7 +97,7 @@ const Create = (props) => {
 						setProject={setProject}
 						setIndex={setIndex}
 						dark={dark}
-						user={user.info}
+						user={user}
 					/>
 				);
 
@@ -108,7 +108,7 @@ const Create = (props) => {
 						setProject={setProject}
 						setIndex={setIndex}
 						dark={dark}
-						user={user.info}
+						user={user}
 					/>
 				);
 			case 3:
@@ -118,12 +118,12 @@ const Create = (props) => {
 						setProject={setProject}
 						setIndex={setIndex}
 						dark={dark}
-						user={user.info}
+						user={user}
 					/>
 				);
 		}
 	};
-	// if (!user.info.id) {
+	// if (!user?.id) {
 	// 	return "Loading";
 	// }
 	return (

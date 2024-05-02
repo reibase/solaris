@@ -255,7 +255,7 @@ app.get("/api/auth/me", function (req, res) {
 	if (!req.user) {
 		return res.send({ isLoggedIn: false });
 	}
-	return res.send({ isLoggedIn: true, info: req.user });
+	return res.send({ isLoggedIn: true, ...req.user });
 });
 
 /* Route for when user clicks submit access code. Not in use currently: */
