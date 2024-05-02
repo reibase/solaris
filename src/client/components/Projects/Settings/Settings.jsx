@@ -37,6 +37,9 @@ export default function Settings() {
 
 	useEffect(() => {
 		if (savedProject?.id) setCurrentProject(savedProject);
+		return () => {
+			setUpdated(false);
+		};
 	}, [savedProject]);
 
 	useEffect(() => {
