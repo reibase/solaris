@@ -19,23 +19,7 @@ export const useStore = create(
 			setCurrentProject: (data) => set({ currentProject: data }),
 		}),
 		{
-			name: "solarisStorage", // name of the item in the storage (must be unique)
+			name: "solarisStorage",
 		}
 	)
 );
-
-//export const useStore = create(
-// 	persist((set, get) => ({
-// 		...initialState,
-// 		toggleDark: () => set({ dark: !state.dark }),
-// 		setUserInfo: (newUserInfo) => set({ user: { newUserInfo } }),
-// 		setCurrentProject: (newCurrentProject) =>
-// 			set({
-// 				currentProject: { ...state.currentProject, ...newCurrentProject },
-// 			}),
-// 	})),
-// 	{
-// 		name: "solaris-store",
-// 		storage: createJSONStorage(() => sessionStorage),
-// 	}
-// );
