@@ -57,6 +57,7 @@ router.get("/:id", async (_req, res) => {
 		const userData = await User.findByPk(parseInt(id));
 		const userJSON = JSON.stringify(userData);
 		const user = JSON.parse(userJSON, null, 2);
+		console.log(user);
 		if (user?.id) {
 			return res.send({ status: 200, user: user });
 		} else {

@@ -15,7 +15,7 @@ export default function Mode({
 		<>
 			<div className="w-full my-4 border-t dark:border-[#919190]">
 				<div className="flex my-4 justify-start items-start flex-col">
-					<span className="text-[#313131] mb-2 dark:text-white font-[14px]">
+					<span className="text-charcoal mb-2 dark:text-white font-[14px]">
 						Project Mode:
 					</span>
 					<div className="flex">
@@ -23,7 +23,7 @@ export default function Mode({
 							<div className="flex">
 								<label
 									for="live"
-									className="text-[#313131] dark:text-white text-[11px] font-medium text-gray-700"
+									className="text-charcoal dark:text-white text-[11px] font-medium text-gray-700"
 								>
 									Live
 								</label>
@@ -52,7 +52,7 @@ export default function Mode({
 							<div className="flex">
 								<label
 									for="test"
-									className="text-[#313131] dark:text-white text-[11px] font-medium text-gray-700"
+									className="text-charcoal dark:text-white text-[11px] font-medium text-gray-700"
 								>
 									Test
 								</label>

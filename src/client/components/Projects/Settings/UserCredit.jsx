@@ -29,7 +29,7 @@ export default function UserCredit({
 					<span className="">
 						<img src={member.avatar} className="h-4 rounded-xl mx-1" />
 					</span>
-					<span className="text-[#313131] dark:text-white">
+					<span className="text-charcoal dark:text-white">
 						{member.username}
 					</span>
 					<UserDropDown

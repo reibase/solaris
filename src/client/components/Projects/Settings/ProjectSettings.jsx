@@ -19,7 +19,7 @@ export default function ProjectSettings({
 		return "loading";
 	}
 	return (
-		<div className="w-full justify-between text-[#313131] dark:text-white mb-1">
+		<div className="w-full justify-between text-charcoal dark:text-white mb-1">
 			<div className="w-full flex mb-1 flex-row justify-between">
 				<span className="text-[14px]">Project Settings</span>
 				<AddUser

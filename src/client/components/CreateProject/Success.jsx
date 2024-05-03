@@ -45,12 +45,12 @@ export default function Success({ project, user }) {
 		enabled: user.id !== null && incomplete,
 	});
 	if (isFetching) {
-		<div className="flex flex-col justify-center items-center h-full gap-4 w-full mb-4  dark:divide-[#373D47] dark:text-white">
+		<div className="flex flex-col justify-center items-center h-full gap-4 w-full mb-4  dark:divide-dark-gray dark:text-white">
 			Loading
 		</div>;
 	}
 	return (
-		<div className="flex flex-col justify-center items-center h-full gap-4 w-full mb-4  dark:divide-[#373D47] dark:text-white">
+		<div className="flex flex-col justify-center items-center h-full gap-4 w-full mb-4  dark:divide-dark-gray dark:text-white">
 			{text}
 			<button onClick={() => navigate("/projects")}>View Projects</button>
 		</div>

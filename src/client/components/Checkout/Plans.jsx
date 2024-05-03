@@ -11,7 +11,7 @@ export default function Votes() {
 	const { createCheckoutSession } = httpService();
 	const { user } = useStore();
 	const [clicked, setClicked] = useState(false);
-	const [selected, setSelected] = useState(user.info.plan || "free");
+	const [selected, setSelected] = useState(user?.plan || "free");
 	const [enterprise, setEnterprise] = useState(false);
 	const plans = [
 		{
@@ -47,7 +47,7 @@ export default function Votes() {
 		queryKey: [
 			"plan",
 			{
-				userID: user?.info.id,
+				userID: user?.id,
 				plan: selected,
 				mode: "subscription",
 				setClicked,
@@ -106,7 +106,7 @@ export default function Votes() {
 						</p>
 						<p>
 							We will contact you at{" "}
-							<span className="font-bold">{user.info.email}</span>
+							<span className="font-bold">{user.email}</span>
 						</p>
 						<span className="text-[14px] text-gray-700 w-full flex justify-center">
 							<button
@@ -118,7 +118,7 @@ export default function Votes() {
 						</span>
 						{/* Email JS requires the element be a form for this implementation */}
 						<form className="hidden" ref={form}>
-							<input type="text" name="user_email" value={user.info.email} />
+							<input type="text" name="user_email" value={user.email} />
 						</form>
 					</div>
 				) : (

@@ -13,7 +13,7 @@ export default function WelcomeEnterprise() {
 	const navigate = useNavigate();
 
 	const { data: userData, isFetching } = useQuery({
-		queryKey: ["user", { userID: user?.info.id }],
+		queryKey: ["user", { userID: user?.id }],
 		queryFn: getUser,
 	});
 

@@ -33,7 +33,7 @@ export default function UserDropDown({
 			/>
 			{visible ? (
 				<div
-					className="absolute left-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 dark:divide-[#0F172A] rounded-md bg-white dark:bg-[#373D47] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+					className="absolute left-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 dark:divide-midnight rounded-md bg-white dark:bg-dark-gray shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
 					role="menu"
 					aria-orientation="vertical"
 					aria-labelledby="menu-button"
@@ -41,7 +41,7 @@ export default function UserDropDown({
 				>
 					<div className="py-1" onClick={(e) => removeHandler(e)} role="none">
 						<Link
-							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
+							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-dark-gray dark:text-slate-gray dark:hover:bg-midnight/75"
 							role="menuitem"
 							tabindex="-1"
 							id="menu-item-0"
@@ -52,7 +52,7 @@ export default function UserDropDown({
 					<div className="py-1" onClick={() => setVisible(false)} role="none">
 						<Link
 							to="/"
-							className="opacity-50 cursor-auto text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
+							className="opacity-50 cursor-auto text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-dark-gray dark:text-slate-gray dark:hover:bg-midnight/75"
 							role="menuitem"
 							tabindex="-1"
 							id="menu-item-2"

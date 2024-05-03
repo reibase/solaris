@@ -15,7 +15,7 @@ export default function CodeHostLink({ url, text, host, width = "300px" }) {
 	return (
 		<a href={url} target="_blank" className="cursor-pointer">
 			<div
-				className={`flex border text-[11px] border-[#8D4D4D4] hover:bg-[#E7F0FF]/25 text-slate-800 dark:text-white dark:border-[#8B929F] dark:hover:bg-[#18181B]/75 rounded-md py-[2px] px-[12px] w-[${width}] justify-between items-center cursor-pointer`}
+				className={`flex border text-[11px] border-[#8D4D4D4] hover:bg-powder-blue/25 text-slate-800 dark:text-white dark:border-slate-gray dark:hover:bg-charcoal/75 rounded-md py-[2px] px-[12px] w-[${width}] justify-between items-center cursor-pointer`}
 			>
 				<span className="w-content mr-2">
 					<img className="w-[16px]" src={icon[host]} />

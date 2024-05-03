@@ -7,7 +7,7 @@ export default function DropDown() {
 	const { dark, toggleDark, user } = useStore();
 	const [visible, setVisible] = useState(false);
 	const logoutHandler = () => {
-		localStorage.removeItem("user");
+		localStorage.removeItem("solarisStorage");
 		setVisible(false);
 	};
 
@@ -20,11 +20,11 @@ export default function DropDown() {
 				aria-expanded="true"
 				aria-haspopup="true"
 				className="w-6 h-6 rounded-full object-cover cursor-pointer"
-				src={user.info.avatar}
+				src={user.avatar}
 			/>
 			{visible ? (
 				<div
-					className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 dark:divide-[#0F172A] rounded-md bg-white dark:bg-[#373D47] shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+					className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 dark:divide-charcoal rounded-md bg-white dark:bg-dark-gray shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
 					role="menu"
 					aria-orientation="vertical"
 					aria-labelledby="menu-button"
@@ -33,7 +33,7 @@ export default function DropDown() {
 					<div className="py-1" onClick={() => setVisible(false)} role="none">
 						<Link
 							to="/projects"
-							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
+							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-dark-gray dark:text-slate-gray dark:hover:bg-midnight/75"
 							role="menuitem"
 							tabindex="-1"
 							id="menu-item-0"
@@ -42,7 +42,7 @@ export default function DropDown() {
 						</Link>
 						<Link
 							to="/create"
-							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
+							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-dark-gray dark:text-slate-gray dark:hover:bg-midnight/75"
 							role="menuitem"
 							tabindex="-1"
 							id="menu-item-1"
@@ -53,7 +53,7 @@ export default function DropDown() {
 					<div className="py-1" onClick={() => setVisible(false)} role="none">
 						<Link
 							to="/profile"
-							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
+							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-dark-gray dark:text-slate-gray dark:hover:bg-midnight/75"
 							role="menuitem"
 							tabindex="-1"
 							id="menu-item-2"
@@ -64,7 +64,7 @@ export default function DropDown() {
 					<div className="py-1" onClick={() => setVisible(false)} role="none">
 						<Link
 							to="https://discord.gg/K7NkjdDR22"
-							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
+							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-dark-gray dark:text-slate-gray dark:hover:bg-midnight/75"
 							role="menuitem"
 							tabindex="-1"
 							id="menu-item-2"
@@ -75,7 +75,7 @@ export default function DropDown() {
 					<div className="py-1" onClick={(e) => logoutHandler(e)} role="none">
 						<a
 							href="/api/auth/logout"
-							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-[#373D47] dark:text-[#8B929F] dark:hover:bg-[#0F172A]/75"
+							className="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 dark:bg-dark-gray dark:text-slate-gray dark:hover:bg-midnight/75"
 							role="menuitem"
 							tabindex="-1"
 							id="menu-item-6"

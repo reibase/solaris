@@ -23,7 +23,7 @@ const ProgressBar = ({
 					<span className="text-red-400 text-[11px]">{totalNoVotes || 0}</span>
 				</div>
 				<div>
-					<span className="text-slate-400 dark:text-[#8B929F]">{quorum}</span>
+					<span className="text-slate-400 dark:text-slate-gray">{quorum}</span>
 				</div>
 			</div>
 			{/* Colored bars representing votes */}
@@ -42,7 +42,7 @@ const ProgressBar = ({
 				<div className="flex w-full flex-col h-[6px] gap-[2px] overflow-hidden ">
 					<div
 						style={{ width: `${yes}%` }}
-						className={`bg-[#20B176] h-[2px] border-white dark:border-[#333]`}
+						className={`bg-[#20B176] h-[2px] border-white dark:border-charcoal`}
 					></div>
 					<div
 						style={{ width: `${no}%` }}

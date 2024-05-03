@@ -28,7 +28,7 @@ export default function OwnerCredit({
 					<span className="flex flex-row gap-1">
 						<img src={currentUser.avatar} className="h-4 rounded-xl mx-1" />
 					</span>
-					<span className="text-[#313131] dark:text-white">
+					<span className="text-charcoal dark:text-white">
 						{currentUser.username}
 					</span>
 					<span>

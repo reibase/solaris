@@ -11,19 +11,21 @@ export default function Success() {
 	const { user, setUserInfo } = useStore();
 	const { getUser } = httpService();
 	const navigate = useNavigate();
-
 	const { data: userData, isFetching } = useQuery({
-		queryKey: ["user", { userID: user?.info.id }],
+		queryKey: ["user", { userID: user?.id }],
 		queryFn: getUser,
 	});
+
 	useEffect(() => {
 		if (userData?.user) {
-			let data = { isLoggedIn: true, info: userData?.user };
-			setUserInfo(data);
-			localStorage.setItem("user", JSON.stringify(data));
+			setUserInfo({ ...user, ...userData.user });
 		}
 	}, [userData]);
 
+	if (!userData?.user) {
+		return "Loading";
+	}
+	console.log("user data", userData);
 	return (
 		<div className="flex w-full h-full flex items-center justify-center">
 			<div className="p-10 flex w-1/2 h-4/6 gap-5 shadow-lg rounded-lg text-sm flex flex-col items-center bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
@@ -31,8 +33,8 @@ export default function Success() {
 					<img src={check} className="h-14 w-14" />
 					<span className="text-gray-600 text-[14px] font-light mt-2  dark:text-gray-300">
 						Subscribed to{" "}
-						{userData?.user.plan[0].toUpperCase() +
-							userData?.user.plan.slice(1)}{" "}
+						{userData?.user?.plan[0].toUpperCase() +
+							userData?.user?.plan.slice(1)}{" "}
 						Tier
 					</span>
 				</div>

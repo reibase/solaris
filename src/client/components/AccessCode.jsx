@@ -53,9 +53,9 @@ const AccessCode = ({ loading }) => {
 
 	return (
 		<>
-			<div className="mx-2 lg:mx-auto block h-[455px] shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-1/2 bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+			<div className="mx-2 lg:mx-auto block h-[455px] shadow-lg rounded-lg text-sm flex flex-col items-center p-[40px] lg:w-1/2 bg-white/90 dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray">
 				<div className="flex items-center flex-col h-full w-full">
-					<h1 className="font-inter mb-[20px] text-3xl font-bold text-center dark:text-[#DDDCDC]">
+					<h1 className="font-inter mb-[20px] text-3xl font-bold text-center dark:text-light-gray">
 						SOLARIS
 					</h1>
 					<p className="font-inter text-sm text-center dark:text-white">
@@ -75,7 +75,7 @@ const AccessCode = ({ loading }) => {
 							<input
 								type="text"
 								id="code"
-								className={` w-full bg- p-2 rounded-md border dark:bg-[#202530] dark:text-white dark:border-[#373D47] dark:focus:border-indigo-400
+								className={` w-full bg- p-2 rounded-md border dark:bg-mid-gray dark:text-white dark:border-dark-gray dark:focus:border-indigo-400
 					${data?.status === 401 && "border-red-500 text-red-500 dark:border-red-500"}`}
 								placeholder="Access Code"
 								onChange={(e) => changeHandler(e)}
@@ -90,7 +90,7 @@ const AccessCode = ({ loading }) => {
 						</span>
 						<span className="lg:w-2/5 w-full">
 							<button
-								className="font-inter bg-[#313131] p-2 w-full text-white rounded-md dark:bg-[#18181B] dark:border-[#373D47] dark:border-1"
+								className="font-inter bg-charcoal p-2 w-full text-white rounded-md dark:bg-charcoal dark:border-dark-gray dark:border-1"
 								onClick={() => setClicked(true)}
 							>
 								Continue

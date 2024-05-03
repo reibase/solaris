@@ -16,7 +16,7 @@ const Profile = () => {
 		queryKey: [
 			"plan",
 			{
-				userID: user?.info.id,
+				userID: user?.id,
 				setClicked,
 			},
 		],
@@ -37,7 +37,7 @@ const Profile = () => {
 				<div className="w-1/3 flex justify-center">
 					<img
 						className="w-16 h-16 lg:w-28 lg:h-28 rounded-full object-cover bg-gray-300"
-						src={user.info.avatar}
+						src={user?.avatar}
 						alt="User avatar"
 					/>
 				</div>
@@ -49,13 +49,13 @@ const Profile = () => {
 						<div className="flex flex-row gap-4 justify-between">
 							<span className="text-gray-400 dark:text-gray-200">Username</span>
 							<span className="text-gray-700 dark:text-white">
-								{user.info.username}
+								{user.username}
 							</span>
 						</div>
 						<div className="flex flex-row gap-4 justify-between">
 							<span className="text-gray-400 dark:text-gray-200">Email</span>
 							<span className="text-gray-700 dark:text-white">
-								{user.info.email}
+								{user.email}
 							</span>
 						</div>
 					</section>
@@ -68,10 +68,8 @@ const Profile = () => {
 								Plan Type
 							</span>
 							<span className="text-gray-700 dark:text-white flex flex-col items-end gap-1">
-								<span>
-									{user.info.plan[0].toUpperCase() + user?.info.plan.slice(1)}
-								</span>
-								{user.info.plan === "free" && (
+								<span>{user.plan[0].toUpperCase() + user?.plan.slice(1)}</span>
+								{user.plan === "free" && (
 									<span
 										className="text-gray-400 underline cursor-pointer dark:text-gray-300"
 										onClick={() => {
@@ -84,7 +82,7 @@ const Profile = () => {
 							</span>
 						</div>
 						<div className="flex flex-row gap-4 justify-between">
-							{user.info.plan !== "free" && (
+							{user.plan !== "free" && (
 								<span
 									onClick={() => setClicked(true)}
 									className="text-gray-700 dark:text-gray-200 flex flex-row items-center underline cursor-pointer"
