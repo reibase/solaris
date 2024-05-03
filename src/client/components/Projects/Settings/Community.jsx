@@ -32,7 +32,7 @@ export default function Community({
 					balances={balances}
 				/>
 				{members
-					?.filter((member) => member.id !== user.info.id)
+					?.filter((member) => member.id !== user.id)
 					.map((member) => (
 						<UserCredit
 							setMembers={setMembers}

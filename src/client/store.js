@@ -1,27 +1,25 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-const initialState = {
-	dark: localStorage.theme === "dark" ? true : false,
-	user: localStorage.user
-		? JSON.parse(localStorage.user)
-		: {
+export const useStore = create(
+	persist(
+		(set, get) => ({
+			dark: false,
+			user: {
 				isLoggedIn: false,
-				access: false,
-				info: {
-					id: null,
-					username: "",
-					avatar: "",
-					verifiedThru: "",
-					email: "",
-				},
-		  },
-};
-
-export const useStore = create((set) => ({
-	...initialState,
-
-	// State setters (actions):
-	toggleDark: () => set((state) => ({ dark: !state.dark })),
-	setUserInfo: (newUserInfo) =>
-		set((state) => ({ user: { ...state.user, ...newUserInfo } })),
-}));
+				id: null,
+				username: "",
+				avatar: "",
+				verifiedThru: "",
+				email: "",
+			},
+			currentProject: {},
+			toggleDark: () => set({ dark: get().dark === false ? true : false }),
+			setUserInfo: (data) => set({ user: data }),
+			setCurrentProject: (data) => set({ currentProject: data }),
+		}),
+		{
+			name: "solarisStorage",
+		}
+	)
+);

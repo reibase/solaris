@@ -1,6 +1,16 @@
 import apiClient from "./apiClient";
 
 class HttpService {
+	getUser = async () => {
+		try {
+			const { data } = await apiClient.get("/auth/me").then((res) => {
+				return res;
+			});
+			return data;
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	getUserProjects = async ({ queryKey }) => {
 		const [_, userID] = queryKey;
 		try {
@@ -23,6 +33,7 @@ class HttpService {
 			return data;
 		} catch (error) {
 			console.log(error);
+			return error;
 		}
 	};
 	getIssue = async ({ queryKey }) => {
@@ -68,6 +79,16 @@ class HttpService {
 			return data;
 		} catch (error) {
 			setVoting(false);
+			console.log(error);
+		}
+	};
+	deleteProject = async (userID, projectID) => {
+		try {
+			const { data } = await apiClient
+				.delete(`/users/${userID}/projects/${projectID}`)
+				.then((res) => res);
+			return data;
+		} catch (error) {
 			console.log(error);
 		}
 	};

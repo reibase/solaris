@@ -4,9 +4,8 @@ import {
 	RouterProvider,
 	useRouteError,
 } from "react-router-dom";
-import axios from "axios";
 import { useStore } from "./store";
-import { React, useEffect, useState } from "react";
+import { React, useEffect } from "react";
 
 import RequestAccess from "./components/RequestAccess.jsx";
 import Profile from "./components/Profile.jsx";
@@ -17,51 +16,46 @@ import Projects from "./components/Projects/Projects.jsx";
 import Create from "./components/CreateProject/Create.jsx";
 import Issues from "./components/Projects/Issues.jsx";
 import Votes from "./components/Projects/Votes.jsx";
-import Transfer from "./components/Projects/Transfer/Transfer.jsx";
 import Settings from "./components/Projects/Settings/Settings.jsx";
+import httpService from "./services/httpService.js";
 
 function App() {
-	const { user, setUserInfo } = useStore();
+	const { getUser } = httpService();
+	const { user, toggleDark, setUserInfo, setCurrentProject } = useStore();
 
-	const getUser = async () => {
-		try {
-			const { data } = await axios.get("/api/auth/me").then((res) => {
-				console.log(res);
-				return res;
-			});
-			console.log(data);
-			return data;
-		} catch (error) {
-			console.log(error);
-		}
+	const themeHandler = () => {
+		toggleDark();
+
+		localStorage.theme === "light"
+			? document.documentElement.classList.add("dark")
+			: document.documentElement.classList.remove("dark");
+
+		localStorage.theme === "dark"
+			? (localStorage.theme = "light")
+			: (localStorage.theme = "dark");
 	};
 
-	const { data, isFetching: loading } = useQuery({
+	const { data: userData, isFetching: gettingUser } = useQuery({
 		queryKey: ["userinfo"],
 		queryFn: getUser,
 		enabled: !user.isLoggedIn,
 	});
 
-	if (data?.isLoggedIn && !user.isLoggedIn) {
-		console.log("data", data);
-		setUserInfo(data);
-		localStorage.setItem("user", JSON.stringify(data));
-	}
+	useEffect(() => {
+		if (userData?.isLoggedIn && !user.isLoggedIn) {
+			setUserInfo(userData);
+		}
+	}, [userData]);
 
 	const router = createBrowserRouter([
 		{
 			path: "/",
-			element: <Layout />,
+			element: <Layout themeHandler={themeHandler} />,
 			children: !user.isLoggedIn
 				? [
 						{
 							index: true,
-							element: <Login loading={loading} />,
-							errorElement: <ErrorBoundary />,
-						},
-						{
-							path: "/Profile",
-							element: <Profile />,
+							element: <Login gettingUser={gettingUser} />,
 							errorElement: <ErrorBoundary />,
 						},
 						{
@@ -92,42 +86,22 @@ function App() {
 							errorElement: <ErrorBoundary />,
 						},
 						{
-							path: "/requestaccess",
-							element: <Profile />,
-							errorElement: <ErrorBoundary />,
-						},
-						{
-							path: "/login",
-							element: <Profile />,
-							errorElement: <ErrorBoundary />,
-						},
-						{
-							path: "/access",
-							element: <Profile />,
-							errorElement: <ErrorBoundary />,
-						},
-						{
 							path: "/projects",
 							element: <Projects />,
 							errorElement: <ErrorBoundary />,
 						},
 						{
-							path: "/projects/:id",
+							path: "/projects/:projectID",
 							element: <Issues />,
 							errorElement: <ErrorBoundary />,
 						},
 						{
-							path: "/projects/:id/transfer",
-							element: <Transfer />,
-							errorElement: <ErrorBoundary />,
-						},
-						{
-							path: "/projects/:id/issues/:issueID",
+							path: "/projects/:projectID/issues/:issueID",
 							element: <Votes />,
 							errorElement: <ErrorBoundary />,
 						},
 						{
-							path: "/projects/:id/settings",
+							path: "/projects/:projectID/settings",
 							element: <Settings />,
 							errorElement: <ErrorBoundary />,
 						},
@@ -143,7 +117,7 @@ function App() {
 	function ErrorBoundary() {
 		let error = useRouteError();
 		return (
-			<div className="w-full h-full items-center justify-center px-4 py-2 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
+			<div className="w-full h-full items-center justify-center px-4 py-2 shadow-md rounded-lg text-sm flex flex-col bg-white/90 dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray">
 				Dang - there was an error. Please return to{" "}
 				<a className="underline" href="/">
 					home.
@@ -151,7 +125,7 @@ function App() {
 			</div>
 		);
 	}
-	if (loading) {
+	if (gettingUser) {
 		return "loading";
 	}
 	return <RouterProvider router={router} />;

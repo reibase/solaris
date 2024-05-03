@@ -8,7 +8,7 @@ export default function Settings({ project, setProject }) {
 	};
 
 	return (
-		<div className="flex flex-col h-full divide-y gap-4 w-full mb-4 lg:divide-x lg:divide-y-0 lg:flex-row dark:divide-[#373D47] dark:text-white">
+		<div className="flex flex-col h-full divide-y gap-4 w-full mb-4 lg:divide-x lg:divide-y-0 lg:flex-row dark:text-white">
 			<form>
 				<div>
 					<span className="">Total amount of credits for this project:</span>
@@ -60,7 +60,7 @@ export default function Settings({ project, setProject }) {
 					</span>
 					<div>
 						<input
-							className={`w-20 mt-2 p-2 rounded-md border dark:bg-[#202530] dark:text-white dark:border-[#373D47] dark:focus:border-indigo-400
+							className={`w-20 mt-2 p-2 rounded-md border dark:bg-mid-gray dark:text-white dark:border-dark-gray dark:focus:border-indigo-400
                                                     ${
 																											error &&
 																											"border-red-500 text-red-500 dark:border-red-500"
