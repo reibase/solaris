@@ -2,6 +2,7 @@ import express from "express";
 import "dotenv/config";
 import axios from "axios";
 import url from "url";
+import Stripe from "stripe";
 
 import {
 	User,
@@ -27,9 +28,12 @@ const {
 	GITLAB_APP_CLIENT_ID,
 	GITLAB_APP_CLIENT_SECRET,
 	GITLAB_APP_REDIRECT_URI,
+	STRIPE_SECRET_KEY,
+	NODE_ENV,
 } = process.env;
 
 const router = express.Router();
+const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 /* Endpoint: /users */
 router.get("/username/:username", async (_req, res) => {
@@ -561,6 +565,7 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 
 /* Delete single project */
 router.delete("/:id/projects/:projectID", async (_req, res) => {
+	console.log("oich");
 	const { id, projectID } = _req.params;
 	try {
 		const project = await Project.destroy({
@@ -575,10 +580,22 @@ router.delete("/:id/projects/:projectID", async (_req, res) => {
 /* Delete single user */
 router.delete("/:id", async (_req, res) => {
 	try {
-		const user = await User.delete({ where: { id: _req.params.id } });
-		return { status: 200, message: "User deleted successfully." };
+		const user = await User.findByPk(_req.params.id);
+		if (user.subscriptionID) {
+			await stripe.subscriptions.cancel(user.subscriptionID);
+		}
+		await Project.destroy({ where: { owner: _req.params.id } });
+		await user.destroy();
+		return res.send({
+			status: 200,
+			url:
+				NODE_ENV === "development"
+					? "http://localhost:3001/api/auth/logout"
+					: "https://solaris.reibase.rs/api/auth/logout",
+			message: "User and associated data deleted successfully.",
+		});
 	} catch (error) {
-		return { status: 500, message: error.message };
+		return res.send({ status: 500, message: error.message });
 	}
 });
 

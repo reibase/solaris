@@ -2,14 +2,16 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
+import httpService from "../services/httpService.js";
 import { useStore } from "../store.js";
 import externalLink from "../assets/externallink.png";
-import httpService from "../services/httpService.js";
+import Modal from "../components/Projects/Settings/Modal.jsx";
 
 const Profile = () => {
-	const { billingPortalSession } = httpService();
+	const { billingPortalSession, deleteUser } = httpService();
 	const [clicked, setClicked] = useState(false);
 	const { dark, user } = useStore();
+	const [modalOptions, setModalOptions] = useState({ showModal: false });
 	const navigate = useNavigate();
 
 	const { data: planData, isFetching } = useQuery({
@@ -24,6 +26,27 @@ const Profile = () => {
 		manual: true,
 		enabled: clicked,
 	});
+
+	const deleteHandler = () => {
+		setModalOptions({
+			title: "Delete Account",
+			description:
+				"Are you sure you would like to delete your account and all associated data from Solaris? This cannot be undone.",
+			setModalOptions: setModalOptions,
+			showModal: true,
+			cb: deleteUser,
+			config: {
+				prompts: { 0: "Yes, I am sure", 1: "No, Take me back" },
+				args: { userID: user.id },
+				colors: {
+					primary: "red-500",
+					primaryDark: "red-500",
+					secondary: "gray-600",
+					secondaryDark: "gray-300",
+				},
+			},
+		});
+	};
 
 	return (
 		<div className="p-4 w-[590px] h-full shadow-lg rounded-lg flex flex-col bg-white dark:bg-[#202530] border border-transparent border-1 dark:border-[#373D47]">
@@ -95,13 +118,13 @@ const Profile = () => {
 					</section>
 
 					<div className="flex flex-col gap-[20px] h-full justify-end items-end">
-						<a
-							href="/api/auth/etc"
-							className="flex justify-center p-1 w-[150px] rounded-md border border-1 border-red-500"
-						>
-							<span className="text-red-500">Delete Account</span>
-						</a>
+						<div className="flex justify-center p-1 w-[150px] rounded-md border border-1 border-red-500">
+							<span className="text-red-500" onClick={() => deleteHandler()}>
+								Delete Account
+							</span>
+						</div>
 					</div>
+					<Modal modalOptions={modalOptions} />
 				</div>
 			</div>
 		</div>

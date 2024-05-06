@@ -332,8 +332,14 @@ app.post("/api/create-checkout-session", async (req, res) => {
 			],
 			mode: "subscription",
 			customer_email: user.email,
-			success_url: `http://localhost:3001/success`,
-			cancel_url: `http://localhost:3001/plans`,
+			success_url:
+				NODE_ENV === "development"
+					? "http://localhost:3001/success"
+					: "https://solaris.reibase.rs/success",
+			cancel_url:
+				NODE_ENV === "development"
+					? "http://localhost:3001/plans"
+					: "https://solaris.reibase.rs/plans",
 		});
 		return res.json({ url: session.url });
 	}

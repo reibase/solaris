@@ -153,6 +153,22 @@ class HttpService {
 			console.log(error);
 		}
 	};
+	deleteUser = async (args) => {
+		try {
+			const { userID } = args;
+			console.log(userID);
+			const { data } = await apiClient
+				.delete(`/users/${userID}`)
+				.then((res) => {
+					localStorage.removeItem("solarisStorage");
+					window.location.href = res.data.url;
+					return res;
+				});
+			return data;
+		} catch (error) {
+			console.log(error);
+		}
+	};
 }
 const httpService = () => new HttpService();
 
