@@ -21,13 +21,13 @@ export default function Votes() {
 			price: "Free",
 			features: ["3 Projects", "5 team members"],
 		},
-		{
-			id: "premium",
-			name: "Premium",
-			tagline: "All the tools you need to succeed",
-			price: "$20 / month",
-			features: ["Unlimited Projects", "Unlimited Team Members"],
-		},
+		// {
+		// 	id: "premium",
+		// 	name: "Premium",
+		// 	tagline: "All the tools you need to succeed",
+		// 	price: "$20 / month",
+		// 	features: ["Unlimited Projects", "Unlimited Team Members"],
+		// },
 		{
 			id: "enterprise",
 			name: "Enterprise",
