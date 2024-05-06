@@ -118,10 +118,11 @@ const Profile = () => {
 					</section>
 
 					<div className="flex flex-col gap-[20px] h-full justify-end items-end">
-						<div className="flex justify-center p-1 w-[150px] rounded-md border border-1 border-red-500">
-							<span className="text-red-500" onClick={() => deleteHandler()}>
-								Delete Account
-							</span>
+						<div
+							onClick={() => deleteHandler()}
+							className="flex justify-center p-1 w-[150px] rounded-md border border-1 border-red-500 text-red-500 hover:bg-red-500 hover:text-white cursor-pointer"
+						>
+							Delete Account
 						</div>
 					</div>
 					<Modal modalOptions={modalOptions} />
