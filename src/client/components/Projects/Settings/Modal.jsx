@@ -17,7 +17,6 @@ export default function Modal({ modalOptions }) {
 	const { prompts, args } = config;
 
 	const callbackHandler = () => {
-		console.log(args);
 		cb(args);
 		setModalOptions({ showModal: false });
 	};

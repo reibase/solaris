@@ -27,7 +27,7 @@ const Profile = () => {
 		enabled: clicked,
 	});
 
-	const deleteHandler = () => {
+	const deleteUserHandler = () => {
 		setModalOptions({
 			title: "Delete Account",
 			description:
@@ -119,7 +119,7 @@ const Profile = () => {
 
 					<div className="flex flex-col gap-[20px] h-full justify-end items-end">
 						<div
-							onClick={() => deleteHandler()}
+							onClick={() => deleteUserHandler()}
 							className="flex justify-center p-1 w-[150px] rounded-md border border-1 border-red-500 text-red-500 hover:bg-red-500 hover:text-white cursor-pointer"
 						>
 							Delete Account

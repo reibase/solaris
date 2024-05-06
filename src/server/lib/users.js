@@ -61,7 +61,6 @@ router.get("/:id", async (_req, res) => {
 		const userData = await User.findByPk(parseInt(id));
 		const userJSON = JSON.stringify(userData);
 		const user = JSON.parse(userJSON, null, 2);
-		console.log(user);
 		if (user?.id) {
 			return res.send({ status: 200, user: user });
 		} else {
@@ -565,7 +564,6 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 
 /* Delete single project */
 router.delete("/:id/projects/:projectID", async (_req, res) => {
-	console.log("oich");
 	const { id, projectID } = _req.params;
 	try {
 		const project = await Project.destroy({

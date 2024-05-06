@@ -156,7 +156,6 @@ class HttpService {
 	deleteUser = async (args) => {
 		try {
 			const { userID } = args;
-			console.log(userID);
 			const { data } = await apiClient
 				.delete(`/users/${userID}`)
 				.then((res) => {
