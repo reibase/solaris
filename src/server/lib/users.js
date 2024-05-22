@@ -14,6 +14,7 @@ import {
 } from "../../db/models/index.js";
 import getGitHubInstallationRepos from "../codehost/github/getGitHubInstallationRepos.js";
 import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallationRepos.js";
+import getGitHubInstallationOrgs from "../codehost/github/getGitHubInstallationOrgs.js";
 import getGitHubPullRequests from "../codehost/github/lib/getGitHubPullRequests.js";
 import getGitHubPullRequest from "../codehost/github/lib/getGitHubPullRequest.js";
 import getGitLabMergeRequest from "../codehost/gitlab/lib/getGitLabMergeRequest.js";
@@ -227,6 +228,36 @@ router.get("/:id/gitlab/installations/repos", async (_req, res) => {
 
 		const responseData = await getGitLabInstallationRepos(
 			installation.refreshToken
+		);
+
+		return res.send({ status: 200, installations: responseData });
+	} catch (error) {
+		return res.send({ status: 500, error: error.message });
+	}
+});
+
+router.get("/:id/github/installations/orgs", async (_req, res) => {
+	try {
+		const user = await User.findOne({ where: { id: _req.params.id } });
+		const installationsData = await user.getInstallations({
+			where: { provider: "github" },
+		});
+
+		const json = JSON.stringify(installationsData);
+		const obj = JSON.parse(json, null, 2);
+
+		if (obj.length === 0) {
+			return res.send({ status: 404 });
+		}
+
+		const installationOrgs = await Promise.all(
+			obj.map(async (installation) => {
+				return await getGitHubInstallationOrgs(installation.installationID);
+			})
+		);
+
+		const responseData = installationOrgs.filter(
+			(installation) => installation.status === 200
 		);
 
 		return res.send({ status: 200, installations: responseData });

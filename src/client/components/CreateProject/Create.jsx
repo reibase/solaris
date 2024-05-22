@@ -8,11 +8,14 @@ import ConnectRepo from "./ConnectRepo.jsx";
 import Settings from "./Settings.jsx";
 import ContinueButtons from "./ContinueButtons.jsx";
 import Success from "./Success.jsx";
+import ProjectType from "./ProjectType.jsx";
+import ConnectOrg from "./ConnectOrg.jsx";
 
 const Create = (props) => {
 	const { user, setUserInfo, dark } = useStore();
 	const [index, setIndex] = useState(0);
 	const [project, setProject] = useState({
+		type: "",
 		title: "",
 		identifier: "",
 		installationID: null,
@@ -31,10 +34,17 @@ const Create = (props) => {
 	const [canGoBack, setCanGoBack] = useState(false);
 
 	useEffect(() => {
+		if (!project.type) {
+			setCanContinue(false);
+			return;
+		}
+		if (project.type) {
+			setCanContinue(true);
+		}
 		if (project.host !== "" && project.hostID !== null) {
 			setCanContinue(true);
 		}
-		if (index > 0 && index < 3) {
+		if (index > 0 && index < 4) {
 			setCanGoBack(true);
 		}
 	}, [project, index]);
@@ -82,7 +92,7 @@ const Create = (props) => {
 		switch (index) {
 			case 0:
 				return (
-					<ConnectRepo
+					<ProjectType
 						project={project}
 						setProject={setProject}
 						setIndex={setIndex}
@@ -91,6 +101,24 @@ const Create = (props) => {
 					/>
 				);
 			case 1:
+				return project.type === "repository" ? (
+					<ConnectRepo
+						project={project}
+						setProject={setProject}
+						setIndex={setIndex}
+						dark={dark}
+						user={user}
+					/>
+				) : (
+					<ConnectOrg
+						project={project}
+						setProject={setProject}
+						setIndex={setIndex}
+						dark={dark}
+						user={user}
+					/>
+				);
+			case 2:
 				return (
 					<Settings
 						project={project}
@@ -101,7 +129,7 @@ const Create = (props) => {
 					/>
 				);
 
-			case 2:
+			case 3:
 				return (
 					<Review
 						project={project}
@@ -111,7 +139,7 @@ const Create = (props) => {
 						user={user}
 					/>
 				);
-			case 3:
+			case 4:
 				return (
 					<Success
 						project={project}
@@ -123,9 +151,7 @@ const Create = (props) => {
 				);
 		}
 	};
-	// if (!user?.id) {
-	// 	return "Loading";
-	// }
+
 	return (
 		<div className="w-full p-4 block h-[455px] shadow-lg text-sm rounded-lg flex flex-col lg:items-center lg:p-[40px] lg:mx-auto lg:w-2/3 bg-white/90 dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray">
 			<div className="flex flex-row gap-4 h-1/6 w-full mb-4">
