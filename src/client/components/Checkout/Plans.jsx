@@ -17,7 +17,7 @@ export default function Votes() {
 		{
 			id: "free",
 			name: "Free",
-			tagline: "Perfect for small projects",
+			tagline: "Get started",
 			price: "Free",
 			features: ["3 Projects", "5 team members"],
 		},
