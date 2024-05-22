@@ -4,7 +4,6 @@ import axios from "axios";
 import add from "../../../assets/add.png";
 import adddarkmode from "../../../assets/adddarkmode.png";
 import { useStore } from "../../../store.js";
-import Alert from "@mui/material/Alert";
 
 export default function AddUser({
 	updateProject,
@@ -24,23 +23,27 @@ export default function AddUser({
 		try {
 			setRecipientErrorText("");
 			setRecipientData({ recipientFound: false });
-			await axios.get(`/api/users/${recipientName.current}`).then((res) => {
-				if (res.data.status === 200) {
-					setRecipientData({
-						recipient: res.data.user.id,
-						recipientName: res.data.user.username,
-						recipientFound: true,
-					});
-					setRecipientErrorText("");
-					setUpdatedProject({
-						...updatedProject,
-						newMember: { id: res.data.user.id },
-					});
-				} else {
-					setRecipientErrorText("User not found");
-					setRecipientData({ recipientFound: false });
-				}
-			});
+			await axios
+				.get(`/api/users/username/${recipientName.current}`)
+				.then((res) => {
+					console.log(res);
+					if (res.data.status === 200) {
+						setRecipientData({
+							recipient: res.data.user.id,
+							recipientName: res.data.user.username,
+							recipientFound: true,
+						});
+						recipientName.current = "";
+						setRecipientErrorText("");
+						setUpdatedProject({
+							...updatedProject,
+							newMember: { id: res.data.user.id },
+						});
+					} else {
+						setRecipientErrorText("User not found");
+						setRecipientData({ recipientFound: false });
+					}
+				});
 		} catch (error) {
 			console.log(error);
 		}
@@ -70,10 +73,12 @@ export default function AddUser({
 						recipientErrorText !== "" &&
 						"border-red-500 text-red-500 dark:border-red-500"
 					}`}
+						disabled={updatedProject.members.length >= 5}
 					/>
 				</span>
 				<span
 					className=""
+					disabled={updatedProject.members.length >= 5}
 					onClick={() => {
 						updateProject();
 					}}
@@ -86,6 +91,8 @@ export default function AddUser({
 			</span>
 			<div className="h-4 text-sm text-red-500">
 				{recipientErrorText !== "" && recipientErrorText}
+				{updatedProject?.members.length >= 5 &&
+					"Plesase upgrade to add more team members."}
 			</div>
 		</div>
 	);

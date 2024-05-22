@@ -12,6 +12,7 @@ export const useStore = create(
 				avatar: "",
 				verifiedThru: "",
 				email: "",
+				plan: "",
 			},
 			currentProject: {},
 			toggleDark: () => set({ dark: get().dark === false ? true : false }),

@@ -17,10 +17,13 @@ import Create from "./components/CreateProject/Create.jsx";
 import Issues from "./components/Projects/Issues.jsx";
 import Votes from "./components/Projects/Votes.jsx";
 import Settings from "./components/Projects/Settings/Settings.jsx";
+import Plans from "./components/Checkout/Plans.jsx";
+import Success from "./components/Checkout/Success.jsx";
+import WelcomeEnterprise from "./components/Checkout/WelcomeEnterprise.jsx";
 import httpService from "./services/httpService.js";
 
 function App() {
-	const { getUser } = httpService();
+	const { getAuth } = httpService();
 	const { user, toggleDark, setUserInfo, setCurrentProject } = useStore();
 
 	const themeHandler = () => {
@@ -37,7 +40,7 @@ function App() {
 
 	const { data: userData, isFetching: gettingUser } = useQuery({
 		queryKey: ["userinfo"],
-		queryFn: getUser,
+		queryFn: getAuth,
 		enabled: !user.isLoggedIn,
 	});
 
@@ -86,6 +89,36 @@ function App() {
 							errorElement: <ErrorBoundary />,
 						},
 						{
+							path: "/plans",
+							element: <Plans />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/success",
+							element: <Success />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/welcomeenterprise",
+							element: <WelcomeEnterprise />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/requestaccess",
+							element: <Profile />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/login",
+							element: <Profile />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
+							path: "/access",
+							element: <Profile />,
+							errorElement: <ErrorBoundary />,
+						},
+						{
 							path: "/projects",
 							element: <Projects />,
 							errorElement: <ErrorBoundary />,
@@ -105,6 +138,7 @@ function App() {
 							element: <Settings />,
 							errorElement: <ErrorBoundary />,
 						},
+
 						{
 							path: "/create",
 							element: <Create />,

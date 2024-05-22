@@ -2,6 +2,7 @@ import express from "express";
 import "dotenv/config";
 import axios from "axios";
 import url from "url";
+import Stripe from "stripe";
 
 import {
 	User,
@@ -19,23 +20,45 @@ import getGitLabMergeRequest from "../codehost/gitlab/lib/getGitLabMergeRequest.
 import getGitLabMergeRequests from "../codehost/gitlab/lib/getGitLabMergeRequests.js";
 import createGitLabWebhook from "../codehost/gitlab/lib/createGitLabWebhook.js";
 import getUserBalance from "./utils/getUserBalance.js";
+import getSubscription from "./utils/getSubscription.js";
+import projectLimit from "./utils/projectLimit.js";
+import projectMemberLimit from "./utils/projectMemberLimit.js";
 
 const {
 	GITLAB_APP_CLIENT_ID,
 	GITLAB_APP_CLIENT_SECRET,
 	GITLAB_APP_REDIRECT_URI,
+	STRIPE_SECRET_KEY,
+	NODE_ENV,
 } = process.env;
 
 const router = express.Router();
+const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 /* Endpoint: /users */
-
-router.get("/:username", async (_req, res) => {
+router.get("/username/:username", async (_req, res) => {
 	const username = _req.params.username;
 	try {
 		const userData = await User.findOne({
 			where: { username: username },
 		});
+		const userJSON = JSON.stringify(userData);
+		const user = JSON.parse(userJSON, null, 2);
+		if (user?.id) {
+			return res.send({ status: 200, user: user });
+		} else {
+			return res.send({ status: 404, user: "not found" });
+		}
+	} catch (error) {
+		console.log(error);
+		return res.send({ status: 500, message: error.message });
+	}
+});
+
+router.get("/:id", async (_req, res) => {
+	const id = _req.params.id;
+	try {
+		const userData = await User.findByPk(parseInt(id));
 		const userJSON = JSON.stringify(userData);
 		const user = JSON.parse(userJSON, null, 2);
 		if (user?.id) {
@@ -58,6 +81,16 @@ router.get("/:id/projects", async (_req, res) => {
 		const json = JSON.stringify(data);
 		const user = JSON.parse(json, null, 2);
 
+		// If a user's plan is inactive, downgrade them to the free tier:
+		if (user.subscriptionID) {
+			const subscription = await getSubscription(user.subscriptionID);
+			if (subscription?.items?.data[0]?.plan.active === false) {
+				const data = await User.update(
+					{ plan: "free" },
+					{ where: { id: user.id } }
+				);
+			}
+		}
 		const projects = await Promise.all(
 			user.projects.map(async (project) => {
 				const data = await Project.findByPk(project.id, {
@@ -218,6 +251,10 @@ router.post("/:id/projects", async (_req, res) => {
 	} = _req.body;
 	const owner = _req.params.id;
 	try {
+		const limit = await projectLimit(owner);
+		if (limit) {
+			return res.status(401).json({ message: "Project limit reached." });
+		}
 		const project = await Project.create({
 			title,
 			owner,
@@ -232,7 +269,6 @@ router.post("/:id/projects", async (_req, res) => {
 			creditAmount,
 		});
 		await project.addMember(owner);
-
 		/* Create a transfer entry which is the initial balance, credited to the maintainer. */
 		const initial = await Transfer.create({
 			sender: owner,
@@ -494,11 +530,7 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 				await transfer.setProject(parseInt(_req.params.projectID));
 			}
 		}
-		/* Logic for adding a new member to the project based on their id */
-		if (newMember?.id) {
-			const proj = await Project.findByPk(parseInt(_req.params.projectID));
-			await proj.addMember(newMember.id);
-		}
+
 		/* Remove user based on their id. Their credits go back to the maintainer. */
 		if (removeMember?.id) {
 			let bal = await getUserBalance(removeMember.id, _req.params.projectID);
@@ -510,6 +542,18 @@ router.put("/:id/projects/:projectID", async (_req, res) => {
 			});
 			const proj = await Project.findByPk(parseInt(_req.params.projectID));
 			await proj.removeMember(removeMember.id);
+		}
+
+		/* Logic for adding a new member to the project based on their id */
+		if (newMember?.id) {
+			const projectMemberLimitExceeded = await projectMemberLimit(
+				_req.params.projectID
+			);
+			if (projectMemberLimitExceeded) {
+				return res.send({ status: 401, message: "Team member limit reached." });
+			}
+			const proj = await Project.findByPk(parseInt(_req.params.projectID));
+			await proj.addMember(newMember.id);
 		}
 
 		return res.send({ status: 200, data: project });
@@ -534,10 +578,22 @@ router.delete("/:id/projects/:projectID", async (_req, res) => {
 /* Delete single user */
 router.delete("/:id", async (_req, res) => {
 	try {
-		const user = await User.delete({ where: { id: _req.params.id } });
-		return { status: 200, message: "User deleted successfully." };
+		const user = await User.findByPk(_req.params.id);
+		if (user.subscriptionID) {
+			await stripe.subscriptions.cancel(user.subscriptionID);
+		}
+		await Project.destroy({ where: { owner: _req.params.id } });
+		await user.destroy();
+		return res.send({
+			status: 200,
+			url:
+				NODE_ENV === "development"
+					? "http://localhost:3001/api/auth/logout"
+					: "https://solaris.reibase.rs/api/auth/logout",
+			message: "User and associated data deleted successfully.",
+		});
 	} catch (error) {
-		return { status: 500, message: error.message };
+		return res.send({ status: 500, message: error.message });
 	}
 });
 

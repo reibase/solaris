@@ -13,6 +13,7 @@ import "dotenv/config";
 import SequelizeStore from "connect-session-sequelize";
 import { createServer } from "node:http";
 import { Server } from "socket.io";
+import Stripe from "stripe";
 
 import db from "../db/index.js";
 import { User } from "../db/models/index.js";
@@ -22,6 +23,7 @@ import users from "./lib/users.js";
 
 import githubWebhook from "./webhooks/github/index.js";
 import gitlabWebhook from "./webhooks/gitlab/index.js";
+import stripeWebhook from "./webhooks/stripe/index.js";
 
 import addToSandbox from "./lib/utils/addToSandbox.js";
 
@@ -46,7 +48,11 @@ const {
 	GITLAB_OAUTH_APP_CALLBACK_URL,
 	GITLAB_OAUTH_APP_CLIENT_SECRET,
 	NODE_ENV,
+	STRIPE_PREMIUM_PRICE_ID,
+	STRIPE_SECRET_KEY,
 } = process.env;
+
+const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 const sequelizeStore = SequelizeStore(session.Store);
 const store = new sequelizeStore({ db });
@@ -82,6 +88,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const events = NODE_ENV === "development" && smee.start();
 app.use("/api/webhooks/github", githubWebhook);
 app.use("/api/webhooks/gitlab", gitlabWebhook);
+app.use("/api/webhooks/stripe", stripeWebhook);
 NODE_ENV === "development" && events.close();
 
 /* Initialize Passport!  Also use passport.session() middleware, to support
@@ -91,7 +98,13 @@ app.use(passport.session());
 app.use(passport.authenticate("session"));
 passport.serializeUser(function (user, cb) {
 	process.nextTick(function () {
-		cb(null, { id: user.id, username: user.username, avatar: user.avatar });
+		cb(null, {
+			id: user.id,
+			username: user.username,
+			avatar: user.avatar,
+			plan: user.plan,
+			email: user.email,
+		});
 	});
 });
 passport.deserializeUser(function (obj, done) {
@@ -160,7 +173,6 @@ passport.use(
 				},
 			});
 			if (created) {
-				console.log("user id", user.id);
 				await addToSandbox(user.id);
 			}
 			return cb(null, user);
@@ -291,13 +303,75 @@ app.use("/api/projects", ensureAuthenticated, async function (req, res) {
 	return projects(req, res);
 });
 
+app.post("/api/create-checkout-session", async (req, res) => {
+	const { mode, plan, userID } = req.body;
+
+	const userData = await User.findByPk(userID);
+	const userJSON = JSON.stringify(userData, null, 2);
+	const user = JSON.parse(userJSON);
+
+	if (plan === "free") {
+		await User.update({ plan: plan }, { where: { id: userID } });
+		return res.json({ url: "/success" });
+	}
+
+	if (plan === "enterprise") {
+		await User.update({ plan: "free" }, { where: { id: userID } });
+		return res.json({ url: "/welcomeenterprise" });
+	}
+
+	if (plan === "premium") {
+		await User.update({ plan: "premium" }, { where: { id: userID } });
+
+		const session = await stripe.checkout.sessions.create({
+			line_items: [
+				{
+					price: STRIPE_PREMIUM_PRICE_ID,
+					quantity: 1,
+				},
+			],
+			mode: "subscription",
+			customer_email: user.email,
+			success_url:
+				NODE_ENV === "development"
+					? "http://localhost:3001/success"
+					: "https://solaris.reibase.rs/success",
+			cancel_url:
+				NODE_ENV === "development"
+					? "http://localhost:3001/plans"
+					: "https://solaris.reibase.rs/plans",
+		});
+		return res.json({ url: session.url });
+	}
+});
+
+app.post("/api/billing-portal-session", async (req, res) => {
+	const { mode, plan, userID } = req.body;
+
+	const userData = await User.findByPk(userID);
+	const userJSON = JSON.stringify(userData, null, 2);
+	const user = JSON.parse(userJSON);
+	if (!user?.customerID) {
+		return;
+	}
+	const session = await stripe.billingPortal.sessions.create({
+		customer: user.customerID,
+		return_url:
+			NODE_ENV === "development"
+				? "http://localhost:3001/profile"
+				: "https://solaris.reibase.rs/profile",
+	});
+
+	return res.json({ url: session.url });
+});
+
 app.use("*", (req, res) => {
 	res.sendFile(path.join(__dirname, "/dist/index.html"));
 });
 
 // Connect to database
 const syncDB = async () => {
-	await db.sync();
+	NODE_ENV === "development" && (await db.sync({ force: true }));
 	console.log("All models were synchronized successfully.");
 };
 

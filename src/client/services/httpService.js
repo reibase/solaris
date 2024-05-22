@@ -1,7 +1,20 @@
 import apiClient from "./apiClient";
 
 class HttpService {
-	getUser = async () => {
+	getUser = async ({ queryKey }) => {
+		const [_, args] = queryKey;
+		const { userID } = args;
+		try {
+			const { data } = await apiClient.get(`/users/${userID}`).then((res) => {
+				return res;
+			});
+			return data;
+		} catch (error) {
+			console.log(error);
+			return error;
+		}
+	};
+	getAuth = async () => {
 		try {
 			const { data } = await apiClient.get("/auth/me").then((res) => {
 				return res;
@@ -12,7 +25,8 @@ class HttpService {
 		}
 	};
 	getUserProjects = async ({ queryKey }) => {
-		const [_, userID] = queryKey;
+		const [_, args] = queryKey;
+		const { userID } = args;
 		try {
 			const { data } = await apiClient
 				.get(`/users/${userID}/projects`)
@@ -82,6 +96,53 @@ class HttpService {
 			console.log(error);
 		}
 	};
+	createCheckoutSession = async ({ queryKey }) => {
+		const [_, args] = queryKey;
+		const { userID, plan, mode, setClicked } = args;
+		try {
+			const data = await apiClient
+				.post(`/create-checkout-session`, {
+					userID: userID,
+					plan: plan,
+					mode: mode,
+					headers: {
+						"Content-Type": "application/json",
+					},
+				})
+				.then((res) => {
+					window.location.href = res.data.url;
+					return res;
+				})
+				.catch((err) => err.message);
+			setClicked(false);
+			return { status: 200 };
+		} catch (error) {
+			setClicked(false);
+			console.log(error);
+		}
+	};
+	billingPortalSession = async ({ queryKey }) => {
+		const [_, args] = queryKey;
+		const { userID } = args;
+		try {
+			const data = await apiClient
+				.post(`/billing-portal-session`, {
+					userID: userID,
+					headers: {
+						"Content-Type": "application/json",
+					},
+				})
+				.then((res) => {
+					window.location.href = res.data.url;
+					return res;
+				})
+				.catch((err) => err.message);
+			setClicked(false);
+			return { status: 200 };
+		} catch (error) {
+			setClicked(false);
+		}
+	};
 	deleteProject = async (userID, projectID) => {
 		try {
 			const { data } = await apiClient
@@ -92,8 +153,22 @@ class HttpService {
 			console.log(error);
 		}
 	};
+	deleteUser = async (args) => {
+		try {
+			const { userID } = args;
+			const { data } = await apiClient
+				.delete(`/users/${userID}`)
+				.then((res) => {
+					localStorage.removeItem("solarisStorage");
+					window.location.href = res.data.url;
+					return res;
+				});
+			return data;
+		} catch (error) {
+			console.log(error);
+		}
+	};
 }
-
 const httpService = () => new HttpService();
 
 export default httpService;

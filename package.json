@@ -12,7 +12,7 @@
     "start-server": "concurrently \"npm run preview\" \"npm start\""
   },
   "dependencies": {
-    "@emailjs/browser": "^4.1.0",
+    "@emailjs/browser": "^4.3.3",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.15.13",
@@ -42,6 +42,7 @@
     "smee-client": "^2.0.1",
     "socket.io": "^4.7.4",
     "socket.io-client": "^4.7.4",
+    "stripe": "^15.2.0",
     "styled-components": "^6.1.8",
     "zustand": "^4.3.7"
   },
