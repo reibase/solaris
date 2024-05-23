@@ -48,6 +48,7 @@ const Create = (props) => {
 			setCanGoBack(true);
 		}
 	}, [project, index]);
+	console.log(window.location.href);
 
 	const createInstallation = async () => {
 		let provider;
@@ -60,6 +61,7 @@ const Create = (props) => {
 			installationID = parseInt(
 				window.location.href.split("=")[1].split("&")[0]
 			);
+			console.log(window.location.href);
 		}
 		if (window.location.href.includes("code=")) {
 			provider = "gitlab";

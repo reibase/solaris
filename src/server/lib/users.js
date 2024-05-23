@@ -255,6 +255,7 @@ router.get("/:id/github/installations/orgs", async (_req, res) => {
 				return await getGitHubInstallationOrgs(installation.installationID);
 			})
 		);
+		console.log("in orgs:", installationOrgs);
 
 		const responseData = installationOrgs.filter(
 			(installation) => installation.status === 200

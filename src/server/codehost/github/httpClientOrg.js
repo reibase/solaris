@@ -2,17 +2,20 @@ import "dotenv/config";
 import { App } from "octokit";
 import jwt from "jsonwebtoken";
 
-const { GITHUB_APP_PRIVATE_KEY, GITHUB_APP_ID, GITHUB_APP_WEBHOOK_SECRET } =
-	process.env;
+const {
+	GITHUB_ORG_APP_PRIVATE_KEY,
+	GITHUB_ORG_APP_ID,
+	GITHUB_ORG_APP_WEBHOOK_SECRET,
+} = process.env;
 
-const privateKey = GITHUB_APP_PRIVATE_KEY;
+const privateKey = GITHUB_ORG_APP_PRIVATE_KEY;
 
 // Create a authenticated as a GitHub App
 const gitHubApp = new App({
-	appId: GITHUB_APP_ID,
+	appId: GITHUB_ORG_APP_ID,
 	privateKey,
 	webhooks: {
-		secret: GITHUB_APP_WEBHOOK_SECRET,
+		secret: GITHUB_ORG_APP_WEBHOOK_SECRET,
 	},
 });
 
@@ -27,7 +30,7 @@ const httpClientOrg = async (org) => {
 		iat: Math.floor(Date.now() / 1000) - 60,
 		// JWT expiration time (10 minute maximum)
 		exp: Math.floor(Date.now() / 1000) + 10 * 60,
-		iss: GITHUB_APP_ID,
+		iss: GITHUB_ORG_APP_ID,
 	};
 	const jwtToken = jwt.sign(payload, privateKey, { algorithm: "RS256" });
 
