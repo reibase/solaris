@@ -20,18 +20,25 @@ const gitHubApp = new App({
 	},
 });
 
-const getInstallationRepos = async (installationID) => {
+const getInstallationOrgs = async (installationID) => {
 	const client = await gitHubApp.getInstallationOctokit(installationID);
 	try {
-		const res = await client.request(`GET /app/installations`);
-		console.log("res", res?.data[0]?.account);
+		const { data, status } = await client.request(
+			`GET /app/installations/${installationID}`,
+			{
+				installation_id: installationID,
+			}
+		);
+		console.log("data", data?.account);
+
 		return {
+			status,
 			installationID: installationID,
+			org: data?.account,
 		};
 	} catch (error) {
 		console.log("error", error);
-
 		return { status: 500, data: error.message };
 	}
 };
-export default getInstallationRepos;
+export default getInstallationOrgs;

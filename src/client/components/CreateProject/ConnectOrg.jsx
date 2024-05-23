@@ -31,7 +31,7 @@ export default function ConnectOrg({ project, setProject, dark, user }) {
 	};
 
 	const { status, data, isFetching } = useQuery({
-		queryKey: ["repos"],
+		queryKey: ["orgs"],
 		queryFn: getInstallationOrgs,
 		enabled: user.id !== null && clicked,
 	});
@@ -146,29 +146,29 @@ export default function ConnectOrg({ project, setProject, dark, user }) {
 							>
 								<div class="py-1" role="none">
 									{data?.installations &&
-										data.installations.map((org) => {
+										data?.installations.map((installation) => {
 											return (
 												<RepoItem
 													project={project}
 													setProject={setProject}
-													hostID={org.id}
+													hostID={installation.org.id}
 													isPrivate={
 														project.host === "github"
-															? org?.private
-															: org?.visibility === "private"
+															? installation?.org?.private
+															: installation?.org?.visibility === "private"
 															? true
 															: false
 													}
 													url={
 														project.host === "github"
-															? org?.html_url
-															: org?.web_url
+															? installation?.org?.html_url
+															: installation?.org?.web_url
 													}
-													installationID={org?.installationID}
+													installationID={installation?.org?.installationID}
 													title={
 														project.host === "github"
-															? org?.full_name
-															: org?.name_with_namespace
+															? installation?.org?.login
+															: installation?.org?.name_with_namespace
 													}
 													visible={visible}
 													setVisible={setVisible}
