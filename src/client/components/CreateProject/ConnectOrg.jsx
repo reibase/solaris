@@ -53,6 +53,7 @@ export default function ConnectOrg({ project, setProject, dark, user }) {
 	const clickHandler = (e) => {
 		setClicked(true);
 		setProject({
+			type: "organization",
 			host: e.target.value,
 			title: "",
 			identifier: "",
@@ -164,7 +165,7 @@ export default function ConnectOrg({ project, setProject, dark, user }) {
 															? installation?.org?.html_url
 															: installation?.org?.web_url
 													}
-													installationID={installation?.org?.installationID}
+													installationID={installation?.installationID}
 													title={
 														project.host === "github"
 															? installation?.org?.login

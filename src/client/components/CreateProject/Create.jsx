@@ -48,7 +48,6 @@ const Create = (props) => {
 			setCanGoBack(true);
 		}
 	}, [project, index]);
-	console.log(window.location.href);
 
 	const createInstallation = async () => {
 		let provider;
@@ -61,7 +60,6 @@ const Create = (props) => {
 			installationID = parseInt(
 				window.location.href.split("=")[1].split("&")[0]
 			);
-			console.log(window.location.href);
 		}
 		if (window.location.href.includes("code=")) {
 			provider = "gitlab";
@@ -83,7 +81,7 @@ const Create = (props) => {
 			console.log(error);
 		}
 	};
-
+	console.log(project);
 	const { status, data, isFetching } = useQuery({
 		queryKey: ["repos"],
 		queryFn: createInstallation,
@@ -155,7 +153,7 @@ const Create = (props) => {
 	};
 
 	return (
-		<div className="w-full p-4 block h-[455px] shadow-lg text-sm rounded-lg flex flex-col lg:items-center lg:p-[40px] lg:mx-auto lg:w-2/3 bg-white/90 dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray">
+		<div className="w-full p-4 block h-[455px] shadow-lg text-sm rounded-lg flex flex-col lg:items-center lg:p-[20px] lg:mx-auto lg:w-[660px] bg-white/90 dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray">
 			<div className="flex flex-row gap-4 h-1/6 w-full mb-4">
 				<span
 					className={`text-[10px] lg:text-md h-4/6 dark:text-slate-gray ${

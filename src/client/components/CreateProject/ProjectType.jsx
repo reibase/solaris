@@ -6,9 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useStore } from "../../store.js";
 import { useEffect } from "react";
-import githubLogo from "../../assets/github.svg";
-import githubLogoDarkMode from "../../assets/github-darkmode.svg";
-import gitlabLogo from "../../assets/gitlab.svg";
+import repository from "../../assets/repository.png";
+import repositorydarkmode from "../../assets/repositorydarkmode.png";
+import organizationdarkmode from "../../assets/organizationdarkmode.png";
+import organization from "../../assets/organization.png";
 import RepoItem from "./RepoItem.jsx";
 
 export default function ProjectType({ project, setProject, dark, user }) {
@@ -38,24 +39,50 @@ export default function ProjectType({ project, setProject, dark, user }) {
 					type="button"
 					className={`${
 						project.type === "repository" && "bg-powder-blue dark:bg-midnight"
-					} flex flex-row gap-8 items-center mt-6 px-4 w-32 py-1 border border-1 rounded-md border-slate-gray hover:bg-powder-blue dark:border-slate-gray dark:hover:bg-midnight/75 dark:text-white`}
+					} flex flex-row gap-4 mt-6 items-center px-4 w-[140px] py-1 border border-1 rounded-md border-slate-gray hover:bg-powder-blue dark:border-slate-gray dark:hover:bg-midnight/75 dark:text-white`}
 					value="repository"
 					onClick={(e) => clickHandler(e)}
 				>
+					<img className="w-5" src={dark ? repositorydarkmode : repository} />
 					Repository
 				</button>
 				<button
 					type="button"
 					className={`${
 						project.type === "organization" && "bg-powder-blue dark:bg-midnight"
-					} flex flex-row gap-8 items-center mt-6 px-4 w-32 py-1 border border-1 rounded-md border-slate-gray hover:bg-powder-blue dark:border-slate-gray dark:hover:bg-midnight/75 dark:text-white`}
+					} flex flex-row gap-4 mt-6 items-center px-4 w-[140px] py-1 border border-1 rounded-md border-slate-gray hover:bg-powder-blue dark:border-slate-gray dark:hover:bg-midnight/75 dark:text-white`}
 					value="organization"
 					onClick={(e) => clickHandler(e)}
 				>
+					<img
+						className="w-5"
+						src={dark ? organizationdarkmode : organization}
+					/>
 					Organization
 				</button>
 			</div>
-			<div className="flex flex-col mt-5 lg:w-3/5 lg:px-10 lg:mt-0">{text}</div>
+			<div className="flex flex-col mt-5 lg:w-4/5 gap-4 lg:px-10 lg:mt-0">
+				<div className="flex flex-col w-full">
+					<header className="leading-8 text-[14px] text-charcoal dark:text-white">
+						Repository
+					</header>
+					<p className="text-[12px] text-mid-gray dark:text-gray-300 leading-6">
+						Connect a codebase repository from GitHub or elsewhere to enable
+						your team to vote on things like pull requests or merge requests to
+						the codebase.
+					</p>
+				</div>
+				<div className="flex flex-col w-full">
+					<header className="leading-8 text-[14px] text-charcoal dark:text-white">
+						Organization
+					</header>
+					<p className="text-[12px] text-mid-gray dark:text-gray-300 leading-6">
+						Connect an organization to allow your team to vote on things like
+						adding new members, changing their role within the organization, and
+						other membership administrative actions.
+					</p>
+				</div>
+			</div>
 		</div>
 	);
 }
