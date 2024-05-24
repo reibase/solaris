@@ -39,10 +39,6 @@ export default function Review({ project, user, dark }) {
 						<span>Credit Amount:</span>
 						<span>{project.creditAmount}</span>
 					</span>
-					<span className="flex p-1 justify-between flex-row gap-4">
-						<span>Number of credits required to end voting:</span>
-						<span>{project.quorum}</span>
-					</span>
 				</div>
 			</div>
 		</div>

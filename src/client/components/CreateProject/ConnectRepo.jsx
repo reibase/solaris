@@ -53,6 +53,7 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 	const clickHandler = (e) => {
 		setClicked(true);
 		setProject({
+			...project,
 			host: e.target.value,
 			title: "",
 			identifier: "",
@@ -62,9 +63,6 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 			creditAmount: 1000,
 			url: "",
 			quorum: 510,
-			clawBack: true,
-			headless: true,
-			isPrivate: false,
 		});
 	};
 

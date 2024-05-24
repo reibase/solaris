@@ -24,6 +24,25 @@ class HttpService {
 			console.log(error);
 		}
 	};
+	createInstallation = async ({ queryKey }) => {
+		const [_, args] = queryKey;
+		const { userID, provider, installationID } = args;
+		if (!provider || !installationID) return;
+		try {
+			const { data } = await apiClient
+				.post(`/users/${userID}/installations`, {
+					provider: provider,
+					installationID: installationID,
+				})
+				.then((res) => {
+					window.location.href = window.location.href.split("?")[0];
+					return res;
+				});
+			return data;
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	getUserProjects = async ({ queryKey }) => {
 		const [_, args] = queryKey;
 		const { userID } = args;

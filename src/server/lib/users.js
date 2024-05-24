@@ -115,6 +115,7 @@ router.get("/:id/projects", async (_req, res) => {
 	 in the URL params and the client immediately sends it here. We create a new entry in our database that a user is associated
 	 with a new installation id for future reference. */
 router.post("/:id/installations", async (_req, res) => {
+	console.log(_req.body);
 	try {
 		if (!_req.body.installationID || !_req.body.provider || !_req.params.id) {
 			return res.send({ status: 401, message: "invalid input data" });
