@@ -19,7 +19,7 @@ export default function Navigation({ index, project, setIndex }) {
 	return (
 		<div className="flex justify-between justify-end w-full h-1/6">
 			<span>
-				{index > 0 && index < 4 && (
+				{index === 1 && (
 					<button
 						className="mt-2 py-1.5 w-24 px-3 rounded-md border border-charcoal dark:text-white dark:border-dark-gray disabled:bg-gray-300 disabled:cursor-auto disabled:dark:bg-gray-400"
 						onClick={() => setIndex(index - 1)}
@@ -29,7 +29,7 @@ export default function Navigation({ index, project, setIndex }) {
 				)}
 			</span>
 			<span>
-				{index < 4 && (
+				{index < 2 && (
 					<button
 						disabled={disabled}
 						className="mt-2 py-1.5 w-24 px-3 rounded-md bg-charcoal text-white border border-transparent dark:bg-midnight dark:border-dark-gray disabled:bg-gray-300 disabled:cursor-auto disabled:dark:bg-midnight/50"

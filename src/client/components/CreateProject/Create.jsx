@@ -62,35 +62,35 @@ const Create = (props) => {
 
 	const componentHandler = () => {
 		switch (index) {
+			// case 0:
+			// 	return (
+			// 		<ProjectType
+			// 			project={project}
+			// 			setProject={setProject}
+			// 			setIndex={setIndex}
+			// 			dark={dark}
+			// 			user={user}
+			// 		/>
+			// 	);
 			case 0:
-				return (
-					<ProjectType
-						project={project}
-						setProject={setProject}
-						setIndex={setIndex}
-						dark={dark}
-						user={user}
-					/>
-				);
+				// return project.type === "repository" ? (
+				<ConnectRepo
+					project={project}
+					setProject={setProject}
+					setIndex={setIndex}
+					dark={dark}
+					user={user}
+				/>;
+			// ) : (
+			// 	<ConnectOrg
+			// 		project={project}
+			// 		setProject={setProject}
+			// 		setIndex={setIndex}
+			// 		dark={dark}
+			// 		user={user}
+			// 	/>
+			// );
 			case 1:
-				return project.type === "repository" ? (
-					<ConnectRepo
-						project={project}
-						setProject={setProject}
-						setIndex={setIndex}
-						dark={dark}
-						user={user}
-					/>
-				) : (
-					<ConnectOrg
-						project={project}
-						setProject={setProject}
-						setIndex={setIndex}
-						dark={dark}
-						user={user}
-					/>
-				);
-			case 2:
 				return (
 					<Review
 						project={project}
@@ -100,7 +100,7 @@ const Create = (props) => {
 						user={user}
 					/>
 				);
-			case 3:
+			case 2:
 				return (
 					<Success
 						project={project}
@@ -112,7 +112,7 @@ const Create = (props) => {
 				);
 		}
 	};
-	const steps = ["Project Type", "Connect Project", "Review"];
+	const steps = ["Connect Project", "Review"];
 	return (
 		<div className="w-full p-4 block h-[455px] shadow-lg text-sm rounded-lg flex flex-col justify-between lg:items-center lg:p-[20px] lg:mx-auto lg:w-[660px] bg-white/90 dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray">
 			<div className="flex flex-row gap-4 h-1/6 w-full mb-4">
