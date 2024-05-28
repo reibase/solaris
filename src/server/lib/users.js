@@ -442,6 +442,15 @@ router.get(
 			const project = await Project.findOne({
 				where: { id: _req.params.projectID },
 			});
+			const data = await Issue.findOne({
+				where: { id: _req.params.issueID },
+			});
+			const json = JSON.stringify(data, null, 2);
+			const issue = JSON.parse(json);
+			console.log(issue);
+			if (issue.type === "issue") {
+				return res.send({ status: 200, data: true });
+			}
 			if (project.host === "github") {
 				const gitHubPullRequest = await getGitHubPullRequest(
 					project.identifier,

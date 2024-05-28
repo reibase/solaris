@@ -46,7 +46,7 @@ router.post("/", async (_req, res) => {
 				state: "open",
 				mergeable: true,
 				title: _req.body.issue.title,
-				number: _req.body.number,
+				number: _req.body.issue.number,
 				author: _req.body.issue.user.login,
 				description: _req.body.issue.body,
 				createdAt: _req.body.issue.created_at,
@@ -63,6 +63,7 @@ router.post("/", async (_req, res) => {
 			const project = await Project.findOne({
 				where: { hostID: _req.body.repository.id },
 			});
+			console.log("issue created:", issue);
 			await issue.setProject(project.id);
 		}
 	}
