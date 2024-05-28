@@ -454,13 +454,13 @@ router.get(
 			if (project.host === "github") {
 				const gitHubPullRequest = await getGitHubPullRequest(
 					project.identifier,
-					_req.params.issueID
+					issue.number
 				);
 				mergeable = gitHubPullRequest.data.mergeable;
 			} else if (project.host === "gitlab") {
 				const gitLabMergeRequest = await getGitLabMergeRequest(
 					project.hostID,
-					_req.params.issueID,
+					issue.number,
 					project.owner
 				);
 				mergeable =

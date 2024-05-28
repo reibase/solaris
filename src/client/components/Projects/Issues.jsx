@@ -106,7 +106,7 @@ export default function Issues() {
 										<span
 											onClick={() =>
 												navigate(
-													`/projects/${currentProject?.id}/issues/${pullRequest.number}`
+													`/projects/${currentProject?.id}/issues/${pullRequest.id}`
 												)
 											}
 											className="font-semibold lg:text-[14px] truncate dark:text-white cursor-pointer"
@@ -117,7 +117,7 @@ export default function Issues() {
 									<span
 										onClick={() =>
 											navigate(
-												`/projects/${currentProject?.id}/issues/${pullRequest.number}`
+												`/projects/${currentProject?.id}/issues/${pullRequest.id}`
 											)
 										}
 										className="text-slate-500 text-[11px] dark:text-slate-gray"
