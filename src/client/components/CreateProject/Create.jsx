@@ -73,23 +73,15 @@ const Create = (props) => {
 			// 		/>
 			// 	);
 			case 0:
-				// return project.type === "repository" ? (
-				<ConnectRepo
-					project={project}
-					setProject={setProject}
-					setIndex={setIndex}
-					dark={dark}
-					user={user}
-				/>;
-			// ) : (
-			// 	<ConnectOrg
-			// 		project={project}
-			// 		setProject={setProject}
-			// 		setIndex={setIndex}
-			// 		dark={dark}
-			// 		user={user}
-			// 	/>
-			// );
+				return (
+					<ConnectRepo
+						project={project}
+						setProject={setProject}
+						setIndex={setIndex}
+						dark={dark}
+						user={user}
+					/>
+				);
 			case 1:
 				return (
 					<Review
