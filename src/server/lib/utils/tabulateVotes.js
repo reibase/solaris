@@ -1,10 +1,4 @@
-import {
-	Project,
-	Issue,
-	Vote,
-	User,
-	Transfer,
-} from "../../../db/models/index.js";
+import { Project, Issue, Vote } from "../../../db/models/index.js";
 import mergeGitHubPullRequest from "../../codehost/github/lib/mergeGitHubPullRequest.js";
 import closeGitHubPullRequest from "../../codehost/github/lib/closeGitHubPullRequest.js";
 import mergeGitLabMergeRequest from "../../codehost/gitlab/lib/mergeGitLabMergeRequest.js";

@@ -24,6 +24,7 @@ import getUserBalance from "./utils/getUserBalance.js";
 import getSubscription from "./utils/getSubscription.js";
 import projectLimit from "./utils/projectLimit.js";
 import projectMemberLimit from "./utils/projectMemberLimit.js";
+import validateIssue from "./utils/validateIssue.js";
 
 const {
 	GITLAB_APP_CLIENT_ID,
@@ -438,7 +439,6 @@ router.get(
 	"/:id/projects/:projectID/issues/:issueID/mergeable",
 	async (_req, res) => {
 		try {
-			let mergeable;
 			const projectData = await Project.findOne({
 				where: { id: _req.params.projectID },
 				include: { model: Issue },
@@ -449,32 +449,13 @@ router.get(
 			const [issue] = project.Issues.filter(
 				(issue) => issue.id === parseInt(_req.params.issueID)
 			);
-			console.log("oof", issue);
-			// More broadly, this should verify if the desired action is possible. Ie, mergeable PR, valid collaborator, etc:
-			// Convert to its own function:
-			if (issue.type === "addCollaborator") {
-				return res.send({ status: 200, data: true });
-			}
-			//
-			if (project.host === "github") {
-				const gitHubPullRequest = await getGitHubPullRequest(
-					project.identifier,
-					issue.number
-				);
-				mergeable = gitHubPullRequest.data.mergeable;
-			} else if (project.host === "gitlab") {
-				const gitLabMergeRequest = await getGitLabMergeRequest(
-					project.hostID,
-					issue.number,
-					project.owner
-				);
-				mergeable =
-					gitLabMergeRequest.data.merge_status === "cannot_be_merged"
-						? false
-						: true;
-			}
 
-			return res.send({ status: 200, data: mergeable });
+			const actionable = await validateIssue(
+				_req.params.projectID,
+				_req.params.issueID
+			);
+
+			return res.send({ status: 200, data: actionable });
 		} catch (error) {
 			console.log(error);
 		}
