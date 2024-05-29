@@ -3,6 +3,7 @@ import mergeGitHubPullRequest from "../../codehost/github/lib/mergeGitHubPullReq
 import closeGitHubPullRequest from "../../codehost/github/lib/closeGitHubPullRequest.js";
 import mergeGitLabMergeRequest from "../../codehost/gitlab/lib/mergeGitLabMergeRequest.js";
 import closeGitLabMergeRequest from "../../codehost/gitlab/lib/closeGitLabMergeRequest.js";
+import addGitHubCollaborator from "../../codehost/github/lib/addCollaborator.js";
 
 export default async function tabulateVotes(projectID, issueID) {
 	const project = await Project.findOne({
@@ -46,7 +47,11 @@ export default async function tabulateVotes(projectID, issueID) {
 				if (issue.type === "pullRequest") {
 					await mergeGitHubPullRequest(project.identifier, issue.number);
 				} else if (issue.type === "addCollaborator") {
-					await addCollaborator(project.identifier, issue.number, issue.title);
+					await addGitHubCollaborator(
+						project.identifier,
+						issue.number,
+						issue.title
+					);
 				}
 			} else if (project.host === "gitlab") {
 				if (issue.type === "pullRequest") {

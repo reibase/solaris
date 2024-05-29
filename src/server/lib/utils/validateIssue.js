@@ -17,7 +17,7 @@ export default async function validateIssue(projectID, issueID) {
 		},
 		include: Vote,
 	});
-
+	console.log("issue::", issue);
 	if (issue.type === "addCollaborator") {
 		return true;
 	}

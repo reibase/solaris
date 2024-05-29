@@ -7,14 +7,18 @@ export default async function addGitHubCollaborator(
 ) {
 	const owner = repoName.split("/")[0];
 	const repo = repoName.split("/")[1];
-	// hard code to triage for now
 	const permission = "triage";
-	// search for @ in issueTitle
-	const username = "";
+
+	const usernamePattern = /@\w+/;
+
+	const match = issueTitle.match(usernamePattern);
+
+	let username = match ? match[0] : null;
+
 	const { client, jwtToken } = await httpClient(repoName);
 
 	const { status, data } = await client.request(
-		`PUT /repos/${repoName}/collaborators/${username}`,
+		`PUT /repos/${repoName}/collaborators/${username.slice(1)}`,
 		{
 			owner: owner,
 			repo: repo,
