@@ -439,17 +439,8 @@ router.get(
 	"/:id/projects/:projectID/issues/:issueID/mergeable",
 	async (_req, res) => {
 		try {
-			const projectData = await Project.findOne({
-				where: { id: _req.params.projectID },
-				include: { model: Issue },
-			});
-			const projectJSON = JSON.stringify(projectData, null, 2);
-			const project = JSON.parse(projectJSON);
-
-			const [issue] = project.Issues.filter(
-				(issue) => issue.id === parseInt(_req.params.issueID)
-			);
-
+			// This checks the actual issue on the codehost to see if the intended result of voting is actionable
+			// before allowing a user to vote on it.
 			const actionable = await validateIssue(
 				_req.params.projectID,
 				_req.params.issueID
