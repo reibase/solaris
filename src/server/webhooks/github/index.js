@@ -58,7 +58,7 @@ router.post("/", async (_req, res) => {
 				repoID: _req.body.repository.id,
 				merged: false,
 				url: _req.body.issue?.html_url,
-				type: "issue",
+				type: "addCollaborator",
 			});
 			const project = await Project.findOne({
 				where: { hostID: _req.body.repository.id },
@@ -67,6 +67,21 @@ router.post("/", async (_req, res) => {
 			await issue.setProject(project.id);
 		}
 	}
+
+	//
+	if (_req.body.action === "unlabeled" && _req.body.label.name === "vote") {
+		if (_req.body?.pull_request) {
+			const issue = await Issue.destroy({
+				where: { hostID: _req.body.pull_request.id },
+			});
+		} else if (_req.body?.issue) {
+			const issue = await Issue.destroy({
+				where: { hostID: _req.body.issue.id },
+			});
+			console.log("issue destoryed", issue);
+		}
+	}
+	//
 });
 
 export default router;

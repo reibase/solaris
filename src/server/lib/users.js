@@ -448,7 +448,9 @@ router.get(
 			const json = JSON.stringify(data, null, 2);
 			const issue = JSON.parse(json);
 			console.log(issue);
-			if (issue.type === "issue") {
+			// More broadly, this should verify if the desired action is possible. Ie, mergeable PR, valid collaborator, etc:
+			// Convert to its own function:
+			if (issue.type === "addCollaborator") {
 				return res.send({ status: 200, data: true });
 			}
 			if (project.host === "github") {

@@ -57,6 +57,8 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 			});
 			await vote.setUser(_req.user.id);
 			await issueData.addVote(vote.id);
+
+			// Convert below to function
 			const votesData = await issueData.getVotes();
 			const votesJson = JSON.stringify(votesData);
 			const votes = JSON.parse(votesJson);
@@ -83,7 +85,15 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 			if (yesTotals >= project.quorum) {
 				if (project.live) {
 					if (project.host === "github") {
-						await mergeGitHubPullRequest(project.identifier, issue.number);
+						if (issue.type === "pullRequest") {
+							await mergeGitHubPullRequest(project.identifier, issue.number);
+						} else if (issue.type === "issue") {
+							await addCollaborator(
+								project.identifier,
+								issue.number,
+								issue.title
+							);
+						}
 					} else if (project.host === "gitlab") {
 						await mergeGitLabMergeRequest(
 							project.hostID,
@@ -108,7 +118,11 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 			} else if (noTotals >= project.quorum) {
 				if (project.live) {
 					if (project.host === "github") {
-						await closeGitHubPullRequest(project.identifier, issue.number);
+						if (issue.type === "pullRequest") {
+							await closeGitHubPullRequest(project.identifier, issue.number);
+						} else if (issue.type === "issue") {
+							await closeGitHubIssue(project.identifier, issue.number);
+						}
 					} else if (project.host === "gitlab") {
 						await closeGitLabMergeRequest(
 							project.hostID,
