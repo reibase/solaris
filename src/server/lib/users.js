@@ -439,20 +439,23 @@ router.get(
 	async (_req, res) => {
 		try {
 			let mergeable;
-			const project = await Project.findOne({
+			const projectData = await Project.findOne({
 				where: { id: _req.params.projectID },
+				include: { model: Issue },
 			});
-			const data = await Issue.findOne({
-				where: { id: _req.params.issueID },
-			});
-			const json = JSON.stringify(data, null, 2);
-			const issue = JSON.parse(json);
-			console.log(issue);
+			const projectJSON = JSON.stringify(projectData, null, 2);
+			const project = JSON.parse(projectJSON);
+
+			const [issue] = project.Issues.filter(
+				(issue) => issue.id === parseInt(_req.params.issueID)
+			);
+			console.log("oof", issue);
 			// More broadly, this should verify if the desired action is possible. Ie, mergeable PR, valid collaborator, etc:
 			// Convert to its own function:
 			if (issue.type === "addCollaborator") {
 				return res.send({ status: 200, data: true });
 			}
+			//
 			if (project.host === "github") {
 				const gitHubPullRequest = await getGitHubPullRequest(
 					project.identifier,
@@ -484,9 +487,8 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 			where: { id: _req.params.projectID },
 			include: Issue,
 		});
-
 		const issueData = await project.getIssues({
-			where: { number: _req.params.issueID },
+			where: { id: _req.params.issueID },
 			order: [[Vote, "createdAt", "DESC"]],
 			include: Vote,
 		});

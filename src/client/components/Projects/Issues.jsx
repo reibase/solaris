@@ -143,7 +143,7 @@ export default function Issues() {
 								<div
 									onClick={() =>
 										navigate(
-											`/projects/${currentProject?.id}/issues/${pullRequest.number}`
+											`/projects/${currentProject?.id}/issues/${pullRequest.id}`
 										)
 									}
 									className="mt-2 w-full lg:ml-14 lg:mt-0"
@@ -161,7 +161,7 @@ export default function Issues() {
 							<div
 								onClick={() =>
 									navigate(
-										`/projects/${currentProject?.id}/issues/${pullRequest.number}`
+										`/projects/${currentProject?.id}/issues/${pullRequest.id}`
 									)
 								}
 								className="w-14 flex justify-end"
@@ -169,7 +169,7 @@ export default function Issues() {
 								<img
 									onClick={() =>
 										navigate(
-											`/projects/${currentProject?.id}/issues/${pullRequest.number}`
+											`/projects/${currentProject?.id}/issues/${pullRequest.id}`
 										)
 									}
 									src={Forward}
