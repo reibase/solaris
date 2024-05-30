@@ -14,6 +14,7 @@ import {
 } from "../../db/models/index.js";
 import getGitHubInstallationRepos from "../codehost/github/getGitHubInstallationRepos.js";
 import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallationRepos.js";
+import getGitHubInstallationOrgs from "../codehost/github/getGitHubInstallationOrgs.js";
 import getGitHubPullRequests from "../codehost/github/lib/getGitHubPullRequests.js";
 import getGitHubPullRequest from "../codehost/github/lib/getGitHubPullRequest.js";
 import getGitLabMergeRequest from "../codehost/gitlab/lib/getGitLabMergeRequest.js";
@@ -235,6 +236,36 @@ router.get("/:id/gitlab/installations/repos", async (_req, res) => {
 	}
 });
 
+router.get("/:id/github/installations/orgs", async (_req, res) => {
+	try {
+		const user = await User.findOne({ where: { id: _req.params.id } });
+		const installationsData = await user.getInstallations({
+			where: { provider: "github" },
+		});
+
+		const json = JSON.stringify(installationsData);
+		const obj = JSON.parse(json, null, 2);
+
+		if (obj.length === 0) {
+			return res.send({ status: 404 });
+		}
+
+		const installationOrgs = await Promise.all(
+			obj.map(async (installation) => {
+				return await getGitHubInstallationOrgs(installation.installationID);
+			})
+		);
+		const responseData = installationOrgs.filter(
+			(installation) => installation.status === 200
+		);
+
+		return res.send({ status: 200, installations: responseData });
+	} catch (error) {
+		console.log("error:", error);
+		return res.send({ status: 500, error: error.message });
+	}
+});
+
 /* Create project */
 router.post("/:id/projects", async (_req, res) => {
 	const {
@@ -281,7 +312,6 @@ router.post("/:id/projects", async (_req, res) => {
 		/* Get all currently open pull requests and create new entries in our database for them. */
 		if (host === "github") {
 			const pulls = await getGitHubPullRequests(identifier, "open");
-
 			await Promise.all(
 				pulls.data.map(async (pull) => {
 					const pullRequest = await Issue.create({

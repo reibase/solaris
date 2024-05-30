@@ -11,16 +11,16 @@ import githubLogoDarkMode from "../../assets/github-darkmode.svg";
 import gitlabLogo from "../../assets/gitlab.svg";
 import RepoItem from "./RepoItem.jsx";
 
-export default function ConnectRepo({ project, setProject, dark, user }) {
+export default function ConnectOrg({ project, setProject, dark, user }) {
 	const [visible, setVisible] = useState(false);
 	const [clicked, setClicked] = useState(false);
 
-	const getInstallationRepos = async () => {
+	const getInstallationOrgs = async () => {
 		try {
 			const { data } = await axios
-				.get(`/api/users/${user.id}/${project.host}/installations/repos`)
+				.get(`/api/users/${user.id}/${project.host}/installations/orgs`)
 				.then((res) => {
-					console.log(res);
+					console.log("res>", res);
 					return res;
 				});
 			setClicked(false);
@@ -31,8 +31,8 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 	};
 
 	const { status, data, isFetching } = useQuery({
-		queryKey: ["repos"],
-		queryFn: getInstallationRepos,
+		queryKey: ["orgs"],
+		queryFn: getInstallationOrgs,
 		enabled: user.id !== null && clicked,
 	});
 
@@ -41,11 +41,11 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 	useEffect(() => {
 		if (data?.status === 200) {
 			setText(
-				"Don't see the repo you're looking for? Click below to manage Solaris' access to your repositories."
+				"Don't see the organization you're looking for? Click below to manage Solaris' access to your organizations."
 			);
 		} else if (data?.status === 404) {
 			setText(
-				`Solaris does not have access to your ${project.host} repositories. Please allow Solaris access only to the repository you wish to connect.`
+				`Solaris does not have access to your ${project.host} organizations. Please allow Solaris access only to the organization you wish to connect.`
 			);
 		}
 	}, [data]);
@@ -53,7 +53,7 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 	const clickHandler = (e) => {
 		setClicked(true);
 		setProject({
-			...project,
+			type: "organization",
 			host: e.target.value,
 			title: "",
 			identifier: "",
@@ -63,13 +63,16 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 			creditAmount: 1000,
 			url: "",
 			quorum: 510,
+			clawBack: true,
+			headless: true,
+			isPrivate: false,
 		});
 	};
 
 	const manageAccess = {
 		github:
 			window.location.hostname === "localhost"
-				? `https://github.com/apps/reibase-solaris/installations/new`
+				? `https://github.com/apps/solaris-reibase-orgs/installations/new`
 				: "https://github.com/apps/solaris-by-reibase/installations/new",
 		gitlab: `https://gitlab.com/oauth/authorize?client_id=66859395df9b0ec65ba6f8add687fceffba6d17b39cde677fd0933336227b2b1&redirect_uri=${window.location.href}&response_type=code&scope=api`,
 	};
@@ -102,7 +105,7 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 				</button>
 			</div>
 			<div className="flex flex-col mt-5 lg:w-3/5 lg:px-10 lg:mt-0">
-				<span className="dark:text-gray-200">Repository:</span>
+				<span className="dark:text-gray-200">Organization:</span>
 				{isFetching ? (
 					"Loading"
 				) : (
@@ -117,7 +120,9 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 								onClick={() => setVisible(!visible)}
 								disabled={!data?.installations}
 							>
-								{project.title === "" ? "Select a Repository" : project.title}
+								{project.title === ""
+									? "Select an Organization"
+									: project.title}
 								<svg
 									class="-mr-1 h-5 w-5 text-gray-400"
 									viewBox="0 0 20 20"
@@ -142,36 +147,34 @@ export default function ConnectRepo({ project, setProject, dark, user }) {
 							>
 								<div class="py-1" role="none">
 									{data?.installations &&
-										data.installations.map((installation) => {
-											return installation.repositories.map((repo) => {
-												return (
-													<RepoItem
-														project={project}
-														setProject={setProject}
-														hostID={repo.id}
-														isPrivate={
-															project.host === "github"
-																? repo?.private
-																: repo?.visibility === "private"
-																? true
-																: false
-														}
-														url={
-															project.host === "github"
-																? repo?.html_url
-																: repo?.web_url
-														}
-														installationID={repo?.installationID}
-														title={
-															project.host === "github"
-																? repo?.full_name
-																: repo?.name_with_namespace
-														}
-														visible={visible}
-														setVisible={setVisible}
-													/>
-												);
-											});
+										data?.installations.map((installation) => {
+											return (
+												<RepoItem
+													project={project}
+													setProject={setProject}
+													hostID={installation.org.id}
+													isPrivate={
+														project.host === "github"
+															? installation?.org?.private
+															: installation?.org?.visibility === "private"
+															? true
+															: false
+													}
+													url={
+														project.host === "github"
+															? installation?.org?.html_url
+															: installation?.org?.web_url
+													}
+													installationID={installation?.installationID}
+													title={
+														project.host === "github"
+															? installation?.org?.login
+															: installation?.org?.name_with_namespace
+													}
+													visible={visible}
+													setVisible={setVisible}
+												/>
+											);
 										})}
 								</div>
 							</div>

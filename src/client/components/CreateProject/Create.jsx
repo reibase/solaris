@@ -1,18 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { useStore } from "../../store.js";
-import { useEffect } from "react";
+
 import Review from "./Review.jsx";
 import ConnectRepo from "./ConnectRepo.jsx";
 import Settings from "./Settings.jsx";
-import ContinueButtons from "./ContinueButtons.jsx";
+import Navigation from "./Navigation.jsx";
 import Success from "./Success.jsx";
+import ProjectType from "./ProjectType.jsx";
+import ConnectOrg from "./ConnectOrg.jsx";
+import httpService from "../../services/httpService.js";
 
 const Create = (props) => {
-	const { user, setUserInfo, dark } = useStore();
+	const { createInstallation } = httpService();
+	const { user, dark } = useStore();
 	const [index, setIndex] = useState(0);
+	const [installationID, setInstallationID] = useState("");
+	const [provider, setProvider] = useState("");
+	const [enabled, setEnabled] = useState(false);
 	const [project, setProject] = useState({
+		type: "repository",
 		title: "",
 		identifier: "",
 		installationID: null,
@@ -22,64 +29,49 @@ const Create = (props) => {
 		host: "",
 		quorum: 510,
 		creditAmount: 1000,
-		clawBack: true,
-		headless: true,
-		isPrivate: false,
 	});
-
-	const [canContinue, setCanContinue] = useState(false);
-	const [canGoBack, setCanGoBack] = useState(false);
 
 	useEffect(() => {
-		if (project.host !== "" && project.hostID !== null) {
-			setCanContinue(true);
+		if (window.location.href.includes("?")) {
+			if (window.location.href.includes("installation_id=")) {
+				setProvider("github");
+				setInstallationID(
+					parseInt(window.location.href.split("=")[1].split("&")[0])
+				);
+			}
+			if (window.location.href.includes("code=")) {
+				setProvider("gitlab");
+				setInstallationID(window.location.href.split("=")[1]);
+			}
+			setEnabled(true);
 		}
-		if (index > 0 && index < 3) {
-			setCanGoBack(true);
-		}
-	}, [project, index]);
+	}, []);
 
-	const createInstallation = async () => {
-		let provider;
-		let installationID;
-		if (!user?.id) {
-			return;
+	const { status, data, isFetching } = useQuery(
+		[
+			"installation",
+			{ userID: user.id, installationID: installationID, provider: provider },
+		],
+		{
+			queryKey: ["installation"],
+			queryFn: createInstallation,
+			enabled: enabled,
+			manual: true,
 		}
-		if (window.location.href.includes("installation_id=")) {
-			provider = "github";
-			installationID = parseInt(
-				window.location.href.split("=")[1].split("&")[0]
-			);
-		}
-		if (window.location.href.includes("code=")) {
-			provider = "gitlab";
-			installationID = window.location.href.split("=")[1];
-		}
-
-		try {
-			const { data } = await axios
-				.post(`/api/users/${user?.id}/installations`, {
-					provider: provider,
-					installationID: installationID,
-				})
-				.then((res) => {
-					window.location.href = window.location.href.split("?")[0];
-					return res;
-				});
-			return data;
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	const { status, data, isFetching } = useQuery({
-		queryKey: ["repos"],
-		queryFn: createInstallation,
-		enabled: window.location.href.includes("?") && user?.id !== null,
-	});
+	);
 
 	const componentHandler = () => {
 		switch (index) {
+			// case 0:
+			// 	return (
+			// 		<ProjectType
+			// 			project={project}
+			// 			setProject={setProject}
+			// 			setIndex={setIndex}
+			// 			dark={dark}
+			// 			user={user}
+			// 		/>
+			// 	);
 			case 0:
 				return (
 					<ConnectRepo
@@ -92,17 +84,6 @@ const Create = (props) => {
 				);
 			case 1:
 				return (
-					<Settings
-						project={project}
-						setProject={setProject}
-						setIndex={setIndex}
-						dark={dark}
-						user={user}
-					/>
-				);
-
-			case 2:
-				return (
 					<Review
 						project={project}
 						setProject={setProject}
@@ -111,7 +92,7 @@ const Create = (props) => {
 						user={user}
 					/>
 				);
-			case 3:
+			case 2:
 				return (
 					<Success
 						project={project}
@@ -123,33 +104,19 @@ const Create = (props) => {
 				);
 		}
 	};
-	// if (!user?.id) {
-	// 	return "Loading";
-	// }
+	const steps = ["Connect Project", "Review"];
 	return (
-		<div className="w-full p-4 block h-[455px] shadow-lg text-sm rounded-lg flex flex-col lg:items-center lg:p-[40px] lg:mx-auto lg:w-2/3 bg-white/90 dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray">
+		<div className="w-full p-4 block h-[455px] shadow-lg text-sm rounded-lg flex flex-col justify-between lg:items-center lg:p-[20px] lg:mx-auto lg:w-[660px] bg-white/90 dark:bg-mid-gray border border-transparent border-1 dark:border-dark-gray">
 			<div className="flex flex-row gap-4 h-1/6 w-full mb-4">
-				<span
-					className={`text-[10px] lg:text-md h-4/6 dark:text-slate-gray ${
-						index !== 0 && "text-gray-300"
-					}`}
-				>
-					Step 1: Connect Repository
-				</span>
-				<span
-					className={`text-[10px] lg:text-md dark:text-slate-gray ${
-						index !== 1 && "text-gray-300"
-					}`}
-				>
-					Step 2: Settings
-				</span>
-				<span
-					className={`text-[10px] lg:text-md dark:text-slate-gray ${
-						index !== 2 && "text-gray-300"
-					}`}
-				>
-					Step 3: Review
-				</span>
+				{steps.map((step, idx) => (
+					<span
+						className={`text-[12px] lg:text-md h-4/6 dark:text-slate-gray ${
+							idx !== index && "text-gray-300"
+						}`}
+					>
+						Step {idx + 1}: {step}
+					</span>
+				))}
 			</div>
 
 			{isFetching ? (
@@ -160,12 +127,7 @@ const Create = (props) => {
 				componentHandler()
 			)}
 
-			<ContinueButtons
-				index={index}
-				setIndex={setIndex}
-				canContinue={canContinue}
-				canGoBack={canGoBack}
-			/>
+			<Navigation project={project} index={index} setIndex={setIndex} />
 		</div>
 	);
 };
