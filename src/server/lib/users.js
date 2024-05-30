@@ -312,56 +312,56 @@ router.post("/:id/projects", async (_req, res) => {
 
 		/* Get all currently open pull requests and create new entries in our database for them. */
 		if (host === "github") {
-			const pulls = await getGitHubPullRequests(identifier, "open");
-			await Promise.all(
-				pulls.data.map(async (pull) => {
-					const pullRequest = await Issue.create({
-						number: pull.number,
-						hostID: pull.id,
-						url: pull.html_url,
-						title: pull.title,
-						state: pull.state,
-						host: host,
-						author: pull.user.login,
-						createdAt: pull.created_at,
-						mergeable: pull.mergeable,
-						conflict: pull.mergeable,
-						head: pull.head.sha,
-						ref: pull.head.ref,
-						base: pull.base.sha,
-						baseRef: pull.base.ref,
-						repoID: pull.base.repo.id,
-					});
-					await pullRequest.setProject(project.id);
-				})
-			);
+			// const pulls = await getGitHubPullRequests(identifier, "open");
+			// await Promise.all(
+			// 	pulls.data.map(async (pull) => {
+			// 		const pullRequest = await Issue.create({
+			// 			number: pull.number,
+			// 			hostID: pull.id,
+			// 			url: pull.html_url,
+			// 			title: pull.title,
+			// 			state: pull.state,
+			// 			host: host,
+			// 			author: pull.user.login,
+			// 			createdAt: pull.created_at,
+			// 			mergeable: pull.mergeable,
+			// 			conflict: pull.mergeable,
+			// 			head: pull.head.sha,
+			// 			ref: pull.head.ref,
+			// 			base: pull.base.sha,
+			// 			baseRef: pull.base.ref,
+			// 			repoID: pull.base.repo.id,
+			// 		});
+			// 		await pullRequest.setProject(project.id);
+			// 	})
+			// );
 		} else if (host === "gitlab") {
-			const pulls = await getGitLabMergeRequests(
-				hostID,
-				parseInt(_req.params.id)
-			);
-			await Promise.all(
-				pulls.data.map(async (pull) => {
-					const pullRequest = await Issue.create({
-						number: pull.iid,
-						url: pull.web_url,
-						hostID: pull.id,
-						state: pull.state === "opened" ? "open" : pull.state,
-						description: pull.description,
-						title: pull.title,
-						host: host,
-						mergeable: pull.merge_status === "cannot_be_merged" ? false : true,
-						author: pull.author.username,
-						createdAt: pull.created_at,
-						conflict: pull.has_conflicts,
-						head: pull.sha,
-						ref: pull.source_branch,
-						baseRef: pull.target_branch,
-						repoID: pull.target_project_id,
-					});
-					await pullRequest.setProject(project.id);
-				})
-			);
+			// const pulls = await getGitLabMergeRequests(
+			// 	hostID,
+			// 	parseInt(_req.params.id)
+			// );
+			// await Promise.all(
+			// 	pulls.data.map(async (pull) => {
+			// 		const pullRequest = await Issue.create({
+			// 			number: pull.iid,
+			// 			url: pull.web_url,
+			// 			hostID: pull.id,
+			// 			state: pull.state === "opened" ? "open" : pull.state,
+			// 			description: pull.description,
+			// 			title: pull.title,
+			// 			host: host,
+			// 			mergeable: pull.merge_status === "cannot_be_merged" ? false : true,
+			// 			author: pull.author.username,
+			// 			createdAt: pull.created_at,
+			// 			conflict: pull.has_conflicts,
+			// 			head: pull.sha,
+			// 			ref: pull.source_branch,
+			// 			baseRef: pull.target_branch,
+			// 			repoID: pull.target_project_id,
+			// 		});
+			// 		await pullRequest.setProject(project.id);
+			// 	})
+			// );
 
 			/* Create a webhook to listen for events from the repo on Gitlab. New merge requests will then make POST requests
 			to our database. This is done for GitHub automatically based on the GitHub App configuration. */
