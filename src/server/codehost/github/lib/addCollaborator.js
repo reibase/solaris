@@ -22,7 +22,7 @@ export default async function addGitHubCollaborator(
 		{
 			owner: owner,
 			repo: repo,
-			username: username,
+			username: username.slice(1),
 			permission: permission,
 			headers: {
 				"X-GitHub-Api-Version": "2022-11-28",

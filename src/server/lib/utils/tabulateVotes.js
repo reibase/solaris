@@ -47,6 +47,7 @@ export default async function tabulateVotes(projectID, issueID) {
 				if (issue.type === "pullRequest") {
 					await mergeGitHubPullRequest(project.identifier, issue.number);
 				} else if (issue.type === "addCollaborator") {
+					// This endpoint is returning 422. Needs revisiting as well as the corresponding close call/gitlab call
 					await addGitHubCollaborator(
 						project.identifier,
 						issue.number,

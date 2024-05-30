@@ -7,15 +7,27 @@ import { Issue, Project } from "../../../db/models/index.js";
 router.post("/", async (_req, res) => {
 	console.log("event:", _req.body);
 	if (_req.body.action === "closed") {
-		await Issue.update(
-			{
-				state: "closed",
-				mergeable: false,
-				merged: _req.body.pull_request.merged,
-				closedAt: String(_req.body.pull_request.closed_at),
-			},
-			{ where: { hostID: _req.body.pull_request.id } }
-		);
+		if (_req.body?.pull_request) {
+			await Issue.update(
+				{
+					state: "closed",
+					mergeable: false,
+					merged: _req.body.pull_request.merged,
+					closedAt: String(_req.body.pull_request.closed_at),
+				},
+				{ where: { hostID: _req.body.pull_request.id } }
+			);
+		} else if (_req.body?.issue) {
+			await Issue.update(
+				{
+					state: "closed",
+					mergeable: false,
+					merged: _req.body?.issue?.state_reason === "completed" ? true : false,
+					closedAt: String(_req.body.issue.closed_at),
+				},
+				{ where: { hostID: _req.body.issue.id } }
+			);
+		}
 	}
 	if (_req.body.action === "labeled" && _req.body.label.name === "vote") {
 		if (_req.body?.pull_request) {
