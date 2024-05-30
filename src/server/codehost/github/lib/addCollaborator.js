@@ -1,4 +1,5 @@
 import httpClient from "../httpClient.js";
+import closeGitHubIssue from "./closeGitHubIssue.js";
 
 export default async function addGitHubCollaborator(
 	repoName,
@@ -31,20 +32,7 @@ export default async function addGitHubCollaborator(
 		}
 	);
 
-	const { status: issueStatus, data: issueData } = await client.request(
-		`PATCH /repos/${owner}/${repo}/issues/${number}`,
-		{
-			owner: owner,
-			repo: repo,
-			issue_number: number,
-			state: "closed",
-			state_reason: "completed",
-			headers: {
-				"X-GitHub-Api-Version": "2022-11-28",
-				Authorization: `Bearer ${jwtToken}`,
-			},
-		}
-	);
+	await closeGitHubIssue(repoName, number, "completed");
 
 	return { issueStatus, issueData };
 }

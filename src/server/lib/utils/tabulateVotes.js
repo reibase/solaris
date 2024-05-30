@@ -4,6 +4,7 @@ import closeGitHubPullRequest from "../../codehost/github/lib/closeGitHubPullReq
 import mergeGitLabMergeRequest from "../../codehost/gitlab/lib/mergeGitLabMergeRequest.js";
 import closeGitLabMergeRequest from "../../codehost/gitlab/lib/closeGitLabMergeRequest.js";
 import addGitHubCollaborator from "../../codehost/github/lib/addCollaborator.js";
+import closeGitHubIssue from "../../codehost/github/lib/closeGitHubIssue.js";
 
 export default async function tabulateVotes(projectID, issueID) {
 	const project = await Project.findOne({
