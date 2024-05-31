@@ -34,5 +34,5 @@ export default async function addGitHubCollaborator(
 
 	await closeGitHubIssue(repoName, number, "completed");
 
-	return { issueStatus, issueData };
+	return { status, data };
 }

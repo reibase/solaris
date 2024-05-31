@@ -80,7 +80,6 @@ router.post("/", async (_req, res) => {
 		}
 	}
 
-	//
 	if (_req.body.action === "unlabeled" && _req.body.label.name === "vote") {
 		if (_req.body?.pull_request) {
 			const issue = await Issue.destroy({
@@ -90,10 +89,8 @@ router.post("/", async (_req, res) => {
 			const issue = await Issue.destroy({
 				where: { hostID: _req.body.issue.id },
 			});
-			console.log("issue destoryed", issue);
 		}
 	}
-	//
 });
 
 export default router;
