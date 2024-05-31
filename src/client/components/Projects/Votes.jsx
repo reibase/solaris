@@ -25,7 +25,7 @@ export default function Votes() {
 		],
 		queryFn: getMergeableStatus,
 	});
-	console.log("projectID", projectID);
+
 	const {
 		data: issue,
 		isFetching: isFetchingIssue,
