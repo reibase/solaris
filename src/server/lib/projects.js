@@ -5,6 +5,7 @@ import mergeGitHubPullRequest from "../codehost/github/lib/mergeGitHubPullReques
 import closeGitHubPullRequest from "../codehost/github/lib/closeGitHubPullRequest.js";
 import mergeGitLabMergeRequest from "../codehost/gitlab/lib/mergeGitLabMergeRequest.js";
 import closeGitLabMergeRequest from "../codehost/gitlab/lib/closeGitLabMergeRequest.js";
+import tabulateVotes from "./utils/tabulateVotes.js";
 
 const router = express.Router();
 
@@ -30,7 +31,7 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 			const issueData = await Issue.findOne({
 				where: {
 					ProjectId: _req.params.id,
-					number: _req.params.issueID,
+					id: _req.params.issueID,
 				},
 				include: Vote,
 			});
@@ -57,79 +58,9 @@ router.post("/:id/issues/:issueID/vote", async (_req, res) => {
 			});
 			await vote.setUser(_req.user.id);
 			await issueData.addVote(vote.id);
-			const votesData = await issueData.getVotes();
-			const votesJson = JSON.stringify(votesData);
-			const votes = JSON.parse(votesJson);
 
-			let yesTotals = 0;
-			let noTotals = 0;
-
-			votes.map((vote) => {
-				if (vote.side) {
-					yesTotals += vote.amount;
-				} else if (!vote.side) {
-					noTotals += vote.amount;
-				}
-			});
-
-			await Issue.update(
-				{
-					totalYesVotes: yesTotals,
-					totalNoVotes: noTotals,
-				},
-				{ where: { ProjectId: _req.params.id, number: _req.params.issueID } }
-			);
-
-			if (yesTotals >= project.quorum) {
-				if (project.live) {
-					if (project.host === "github") {
-						await mergeGitHubPullRequest(project.identifier, issue.number);
-					} else if (project.host === "gitlab") {
-						await mergeGitLabMergeRequest(
-							project.hostID,
-							issue.number,
-							project.owner
-						);
-					}
-				} else {
-					/* Artificially merge for testing purposes if the project's mode is set to 'demo': */
-					await Issue.update(
-						{
-							state: "closed",
-							mergedAt: Date.now(),
-							merged: true,
-							mergeable: false,
-						},
-						{
-							where: { ProjectId: _req.params.id, number: _req.params.issueID },
-						}
-					);
-				}
-			} else if (noTotals >= project.quorum) {
-				if (project.live) {
-					if (project.host === "github") {
-						await closeGitHubPullRequest(project.identifier, issue.number);
-					} else if (project.host === "gitlab") {
-						await closeGitLabMergeRequest(
-							project.hostID,
-							issue.number,
-							project.owner
-						);
-					}
-				} else {
-					await Issue.update(
-						{
-							state: "closed",
-							closedAt: Date.now(),
-							mergeable: false,
-							merged: false,
-						},
-						{
-							where: { ProjectId: _req.params.id, number: _req.params.issueID },
-						}
-					);
-				}
-			}
+			// Convert below to function
+			await tabulateVotes(project.id, issue.id);
 
 			return res.send({
 				status: 200,

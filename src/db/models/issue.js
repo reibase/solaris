@@ -68,6 +68,9 @@ const Issue = db.define("Issue", {
 	merged: {
 		type: DataTypes.BOOLEAN,
 	},
+	type: {
+		type: DataTypes.STRING,
+	},
 });
 
 export default Issue;

@@ -12,18 +12,17 @@ import {
 	Transfer,
 	Vote,
 } from "../../db/models/index.js";
+
 import getGitHubInstallationRepos from "../codehost/github/getGitHubInstallationRepos.js";
 import getGitLabInstallationRepos from "../codehost/gitlab/getGitLabInstallationRepos.js";
 import getGitHubInstallationOrgs from "../codehost/github/getGitHubInstallationOrgs.js";
-import getGitHubPullRequests from "../codehost/github/lib/getGitHubPullRequests.js";
-import getGitHubPullRequest from "../codehost/github/lib/getGitHubPullRequest.js";
-import getGitLabMergeRequest from "../codehost/gitlab/lib/getGitLabMergeRequest.js";
-import getGitLabMergeRequests from "../codehost/gitlab/lib/getGitLabMergeRequests.js";
 import createGitLabWebhook from "../codehost/gitlab/lib/createGitLabWebhook.js";
 import getUserBalance from "./utils/getUserBalance.js";
 import getSubscription from "./utils/getSubscription.js";
 import projectLimit from "./utils/projectLimit.js";
 import projectMemberLimit from "./utils/projectMemberLimit.js";
+import validateIssue from "./utils/validateIssue.js";
+import createGitHubVoteLabel from "../codehost/github/lib/createGitHubVoteLabel.js";
 
 const {
 	GITLAB_APP_CLIENT_ID,
@@ -311,57 +310,8 @@ router.post("/:id/projects", async (_req, res) => {
 
 		/* Get all currently open pull requests and create new entries in our database for them. */
 		if (host === "github") {
-			const pulls = await getGitHubPullRequests(identifier, "open");
-			await Promise.all(
-				pulls.data.map(async (pull) => {
-					const pullRequest = await Issue.create({
-						number: pull.number,
-						hostID: pull.id,
-						url: pull.html_url,
-						title: pull.title,
-						state: pull.state,
-						host: host,
-						author: pull.user.login,
-						createdAt: pull.created_at,
-						mergeable: pull.mergeable,
-						conflict: pull.mergeable,
-						head: pull.head.sha,
-						ref: pull.head.ref,
-						base: pull.base.sha,
-						baseRef: pull.base.ref,
-						repoID: pull.base.repo.id,
-					});
-					await pullRequest.setProject(project.id);
-				})
-			);
+			await createGitHubVoteLabel(project.identifier);
 		} else if (host === "gitlab") {
-			const pulls = await getGitLabMergeRequests(
-				hostID,
-				parseInt(_req.params.id)
-			);
-			await Promise.all(
-				pulls.data.map(async (pull) => {
-					const pullRequest = await Issue.create({
-						number: pull.iid,
-						url: pull.web_url,
-						hostID: pull.id,
-						state: pull.state === "opened" ? "open" : pull.state,
-						description: pull.description,
-						title: pull.title,
-						host: host,
-						mergeable: pull.merge_status === "cannot_be_merged" ? false : true,
-						author: pull.author.username,
-						createdAt: pull.created_at,
-						conflict: pull.has_conflicts,
-						head: pull.sha,
-						ref: pull.source_branch,
-						baseRef: pull.target_branch,
-						repoID: pull.target_project_id,
-					});
-					await pullRequest.setProject(project.id);
-				})
-			);
-
 			/* Create a webhook to listen for events from the repo on Gitlab. New merge requests will then make POST requests
 			to our database. This is done for GitHub automatically based on the GitHub App configuration. */
 			await createGitLabWebhook(hostID, parseInt(_req.params.id));
@@ -438,29 +388,14 @@ router.get(
 	"/:id/projects/:projectID/issues/:issueID/mergeable",
 	async (_req, res) => {
 		try {
-			let mergeable;
-			const project = await Project.findOne({
-				where: { id: _req.params.projectID },
-			});
-			if (project.host === "github") {
-				const gitHubPullRequest = await getGitHubPullRequest(
-					project.identifier,
-					_req.params.issueID
-				);
-				mergeable = gitHubPullRequest.data.mergeable;
-			} else if (project.host === "gitlab") {
-				const gitLabMergeRequest = await getGitLabMergeRequest(
-					project.hostID,
-					_req.params.issueID,
-					project.owner
-				);
-				mergeable =
-					gitLabMergeRequest.data.merge_status === "cannot_be_merged"
-						? false
-						: true;
-			}
+			// This checks the actual issue on the codehost to see if the intended result of voting is actionable
+			// before allowing a user to vote on it.
+			const actionable = await validateIssue(
+				_req.params.projectID,
+				_req.params.issueID
+			);
 
-			return res.send({ status: 200, data: mergeable });
+			return res.send({ status: 200, data: actionable });
 		} catch (error) {
 			console.log(error);
 		}
@@ -473,9 +408,8 @@ router.get("/:id/projects/:projectID/issues/:issueID", async (_req, res) => {
 			where: { id: _req.params.projectID },
 			include: Issue,
 		});
-
 		const issueData = await project.getIssues({
-			where: { number: _req.params.issueID },
+			where: { id: _req.params.issueID },
 			order: [[Vote, "createdAt", "DESC"]],
 			include: Vote,
 		});
